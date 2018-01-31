@@ -115,7 +115,17 @@
         </script>
         <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
         <script>
-            // Initialize Firebase
+            // Initialize Will's Firebase
+            /*var config = {
+                apiKey: "AIzaSyBrjkpdRRDhQE554qEmWHAeMbrlh_lIIX8",
+                authDomain: "mapeople-558c8.firebaseapp.com",
+                databaseURL: "https://mapeople-558c8.firebaseio.com",
+                projectId: "mapeople-558c8",
+                storageBucket: "mapeople-558c8.appspot.com",
+                messagingSenderId: "104232274398"
+            };*/
+        
+            // Initialize Mapeople Firebase
             var config = {
                 apiKey: "AIzaSyBrebIOvJpdsYgFmfy3APrhqsG45eRTpfo",
                 authDomain: "mapeople-7bcd9.firebaseapp.com",
@@ -178,27 +188,25 @@
 
                 // tap to add pin to fb
                 google.maps.event.addListener(map, 'click', function( event ){
-                    firebase.database().ref().push().set({
+                    firebase.database().ref('Maps/public/map2/pins').push().set({
                         "lat": event.latLng.lat(),
-                        "long": event.latLng.lng()
+                        "long": event.latLng.lng(),
+                        "type":"basicPin"
                     });
                 });
 
                 // load from fb
-                var commentsRef = firebase.database().ref();
+                var commentsRef = firebase.database().ref('Maps/public/map2/pins');
                 commentsRef.on('child_added', function(data) {
-                    var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                    var marker = new google.maps.Marker({
-                        position: myLatLng,
-                        map: map,
-                        title: 'Hello World!',
-                        icon: 'oPin3.png'
-                    });
-
-                    google.maps.event.addListener(marker, 'click', function() {
-                        // Put video here.
-                        window.location.href = data.val().url;
-                    });
+                    if(data.val().type == "basicPin"){
+                        var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                        var marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            title: 'Hello World!',
+                            icon: 'oPin3.png'
+                        });
+                    }
                 });
             }
         </script>
