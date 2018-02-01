@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+            <title>Mapeople</title>
+            <style>
+                /* Always set the map height explicitly to define the size of the div
+                * element that contains the map. */
+                #map {
+                    height: 90%;
+                }
+                /* Optional: Makes the sample page fill the window. */
+                html, body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                }
+                #floating-panel {
+                    position: absolute;
+                    top: 10px;
+                    left: 25%;
+                    z-index: 5;
+                    background-color: #fff;
+                    padding: 5px;
+                    border: 1px solid #999;
+                    text-align: center;
+                    font-family: 'Roboto','sans-serif';
+                    line-height: 30px;
+                    padding-left: 10px;
+                }
+                #floating-panel {
+                    background-color: #fff;
+                    border: 1px solid #999;
+                    left: 25%;
+                    padding: 5px;
+                    position: absolute;
+                    top: 10px;
+                    z-index: 5;
+                }
+            </style>
+            <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+            <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+            <title>Starter Template - Materialize</title>
+
+            <!-- CSS  -->
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+            <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js '></script>
+    </head>
+    <body>
+        <nav class="green lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Mapeople</a>
+            <ul class="right hide-on-med-and-down">
+            </ul>
+
+            <ul id="nav-mobile" class="side-nav">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+
+            <ul id="nav-mobile-list" class="right hide-on-med-and-down">
+            <!-- We populate li's automatically -->
+            </ul>
+
+            <ul class="side-nav" id="mobile-demo">
+            </ul>
+        </div>
+        </nav>
+        
+        <div id="map"></div>
+        <script>
+            function loginOnClick() {
+                var email = prompt("Enter your email:","hello@example.com")
+                var password = prompt("Enter your password:","")
+                    firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+                    // Successful login
+                    alert("Successfully logged in");
+                    initMap();
+                }).catch(function(error) {
+                    // Handle Errors here
+                    var errorMessage = error.message;
+                    alert("Sorry, we were unable to log you in: " + errorMessage);
+                });
+            }
+
+            function signUpOnClick() {
+                var email = prompt("Enter your email:","hello@example.com")
+                var password = prompt("Enter a password:","")
+                firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
+                    // Sign up successful
+                    alert("Account successfully created");
+                    initMap();
+                }).catch(function(error) {
+                    // Handle Errors here
+                    var errorMessage = error.message;
+                    alert("Sorry, we were unable to sign you up: " + errorMessage);
+                });
+            }
+
+            function logOutOnClick() {
+                firebase.auth().signOut().then(function() {
+                    // Log out successful
+                    alert("Successfully logged out");
+                }).catch(function(error) {
+                    // Handle Errors here
+                    var errorMessage = error.message;
+                    alert("Sorry, we were unable to log you out: " + errorMessage);
+                });
+            }
+        </script>
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script>
+            // Initialize Will's Firebase
+            /*var config = {
+                apiKey: "AIzaSyBrjkpdRRDhQE554qEmWHAeMbrlh_lIIX8",
+                authDomain: "mapeople-558c8.firebaseapp.com",
+                databaseURL: "https://mapeople-558c8.firebaseio.com",
+                projectId: "mapeople-558c8",
+                storageBucket: "mapeople-558c8.appspot.com",
+                messagingSenderId: "104232274398"
+            };*/
+        
+            // Initialize Mapeople Firebase
+            var config = {
+                apiKey: "AIzaSyBrebIOvJpdsYgFmfy3APrhqsG45eRTpfo",
+                authDomain: "mapeople-7bcd9.firebaseapp.com",
+                databaseURL: "https://mapeople-7bcd9.firebaseio.com",
+                projectId: "mapeople-7bcd9",
+                storageBucket: "",
+                messagingSenderId: "282260381580"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    $('#Login').remove();
+                    $('#SignUp').remove();
+                    $('#nav-mobile-list').append('<li id=\"Upload\"><a href=\"vumeLocIn.html\">Upload</a></li>');
+                    $('#nav-mobile-list').append('<li id=\"LogOut\"><a onclick=\"logOutOnClick()\">Log Out</a></li>');
+                    initMap();
+                } else {
+                    // No user is signed in.
+                    $('#LogOut').remove();
+                    $('#Upload').remove();
+                    $('#nav-mobile-list').append('<li id=\"Login\"><a onclick=\"loginOnClick()\">Login</a></li>');
+                    $('#nav-mobile-list').append('<li id=\"SignUp\"><a onclick=\"signUpOnClick()\">Sign Up</a></li>');
+                    initMap();
+                }
+            });
+
+            var map;
+
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: {lat: 38.940451750007945, lng: -92.32772827148438}
+                });
+
+                var customMapTypeId = 'custom_style';
+                var customMapType = new google.maps.StyledMapType([
+                {
+                    stylers: [
+                        {hue: '#81F9FB'},
+                        {visibility: 'simplified'},
+                        {gamma: 0.3},
+                        {weight: 0.20}
+                    ]
+                    },
+                    {
+                        elementType: 'labels',
+                        stylers: [{visibility: 'on'}]
+                    },
+                    {
+                        featureType: 'water',
+                        stylers: [{color: '#346FFF'}]
+                    }
+                    ], {
+                    name: 'Trippy'
+                });
+
+                map.mapTypes.set(customMapTypeId, customMapType);
+                map.setMapTypeId(customMapTypeId);
+
+                // tap to add pin to fb
+                google.maps.event.addListener(map, 'click', function( event ){
+                    firebase.database().ref('Maps/public/map2/pins').push().set({
+                        "lat": event.latLng.lat(),
+                        "long": event.latLng.lng(),
+                        "type":"basicPin"
+                    });
+                });
+
+                // load from fb
+                var commentsRef = firebase.database().ref('Maps/public/map2/pins');
+                commentsRef.on('child_added', function(data) {
+                    if(data.val().type == "basicPin"){
+                        var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                        var marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            title: 'Hello World!',
+                            icon: 'oPin3.png'
+                        });
+                    }
+                });
+            }
+        </script>
+            
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap">
+        </script>
+        <div class="app"></div>
+        <script type="text/javascript" src="cordova.js"></script>-->
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
+
+
+
+<!--<body>-->
+<!--    <div class="app">-->
+<!--        <h1>PhoneGap</h1>-->
+<!--        <div id="deviceready" class="blink">-->
+<!--            <p class="event listening">Connecting to Device</p>-->
+<!--            <p class="event received">Device is Ready</p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <script type="text/javascript" src="cordova.js"></script>-->
+<!--    <script type="text/javascript" src="js/index.js"></script>-->
+<!--    <script type="text/javascript">-->
+<!--        app.initialize();-->
+<!--    </script>-->
+<!--</body>-->
+
+<!--</html>-->
+
