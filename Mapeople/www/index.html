@@ -40,6 +40,8 @@
                 }
             </style>
             <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+			<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.css" />
+			
             <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
             <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -113,46 +115,11 @@
                 });
             }
         </script>
-        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+		<script src="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.js"></script>
+		<script type="text/javascript" src="js/config.js"></script>
+		<script type="text/javascript" src="js/login.js"></script>
         <script>
-            // Initialize Will's Firebase
-            /*var config = {
-                apiKey: "AIzaSyBrjkpdRRDhQE554qEmWHAeMbrlh_lIIX8",
-                authDomain: "mapeople-558c8.firebaseapp.com",
-                databaseURL: "https://mapeople-558c8.firebaseio.com",
-                projectId: "mapeople-558c8",
-                storageBucket: "mapeople-558c8.appspot.com",
-                messagingSenderId: "104232274398"
-            };*/
-        
-            // Initialize Mapeople Firebase
-            var config = {
-                apiKey: "AIzaSyBrebIOvJpdsYgFmfy3APrhqsG45eRTpfo",
-                authDomain: "mapeople-7bcd9.firebaseapp.com",
-                databaseURL: "https://mapeople-7bcd9.firebaseio.com",
-                projectId: "mapeople-7bcd9",
-                storageBucket: "",
-                messagingSenderId: "282260381580"
-            };
-            firebase.initializeApp(config);
-
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                    $('#Login').remove();
-                    $('#SignUp').remove();
-                    $('#nav-mobile-list').append('<li id=\"Upload\"><a href=\"vumeLocIn.html\">Upload</a></li>');
-                    $('#nav-mobile-list').append('<li id=\"LogOut\"><a onclick=\"logOutOnClick()\">Log Out</a></li>');
-                    initMap();
-                } else {
-                    // No user is signed in.
-                    $('#LogOut').remove();
-                    $('#Upload').remove();
-                    $('#nav-mobile-list').append('<li id=\"Login\"><a onclick=\"loginOnClick()\">Login</a></li>');
-                    $('#nav-mobile-list').append('<li id=\"SignUp\"><a onclick=\"signUpOnClick()\">Sign Up</a></li>');
-                    initMap();
-                }
-            });
-
             var map;
 
             function initMap() {
