@@ -98,52 +98,6 @@
             <h6><a id="picture-pin" onclick="selectPin('picturePin')" class="">Picture</a></h6>
             <h6><a id="poll-pin" onclick="selectPin('pollPin')" class="">Poll</a></h6>
         </div>
-        <script>
-            function loginOnClick() {
-                var email = prompt("Enter your email:","hello@example.com")
-                var password = prompt("Enter your password:","")
-                    firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-                    // Successful login
-                    alert("Successfully logged in");
-                    initMap();
-                }).catch(function(error) {
-                    // Handle Errors here
-                    var errorMessage = error.message;
-                    alert("Sorry, we were unable to log you in: " + errorMessage);
-                });
-            }
-
-            function signUpOnClick() {
-                var email = prompt("Enter your email:","hello@example.com")
-                var password = prompt("Enter a password:","")
-                firebase.auth().createUserWithEmailAndPassword(email, password).then(function() {
-                    // Sign up successful
-                    alert("Account successfully created");
-                    initMap();
-                }).catch(function(error) {
-                    // Handle Errors here
-                    var errorMessage = error.message;
-                    alert("Sorry, we were unable to sign you up: " + errorMessage);
-                });
-            }
-
-            function logOutOnClick() {
-                firebase.auth().signOut().then(function() {
-                    // Log out successful
-                    alert("Successfully logged out");
-                }).catch(function(error) {
-                    // Handle Errors here
-                    var errorMessage = error.message;
-                    alert("Sorry, we were unable to log you out: " + errorMessage);
-                });
-            }
-
-            function selectPin(selectedPin) {
-                console.log("selectPin(selectedPin) called")
-                console.dir(selectedPin);
-                currentPinSelection = selectedPin;
-            }
-        </script>
         <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 		<script src="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.js"></script>
 		<script type="text/javascript" src="js/config.js"></script>
@@ -249,7 +203,7 @@
                     
                 });
 
-                // load from fb
+                // load from firebase
                 var commentsRef = firebase.database().ref('Maps/public/map2/pins');
                 commentsRef.on('child_added', function(data) {
 
@@ -346,7 +300,12 @@
                 var legend = document.getElementById('legend');
 
                 map.controls[google.maps.ControlPosition.LEFT].push(legend);
-
+            }
+			
+			function selectPin(selectedPin) {
+                console.log("selectPin(selectedPin) called")
+                console.dir(selectedPin);
+                currentPinSelection = selectedPin;
             }
         </script>
             
@@ -361,23 +320,3 @@
         </script>
     </body>
 </html>
-
-
-
-<!--<body>-->
-<!--    <div class="app">-->
-<!--        <h1>PhoneGap</h1>-->
-<!--        <div id="deviceready" class="blink">-->
-<!--            <p class="event listening">Connecting to Device</p>-->
-<!--            <p class="event received">Device is Ready</p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <script type="text/javascript" src="cordova.js"></script>-->
-<!--    <script type="text/javascript" src="js/index.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--        app.initialize();-->
-<!--    </script>-->
-<!--</body>-->
-
-<!--</html>-->
-
