@@ -16,6 +16,19 @@
                     margin: 0;
                     padding: 0;
                 }
+                #legend {
+                    font-family: Arial, sans-serif;
+                    background: #fff;
+                    padding: 10px;
+                    margin: 10px;
+                    border: 3px solid #000;
+                }
+                #legend h3 {
+                    margin-top: 0;
+                }
+                #legend img {
+                    vertical-align: middle;
+                }
                 #floating-panel {
                     position: absolute;
                     top: 10px;
@@ -75,6 +88,16 @@
         </nav>
         
         <div id="map"></div>
+        <div id="legend">
+            <h4>Pins</h3>
+            <h6><a id="basic-pin" onclick="selectPin('basicPin')" class="">Basic</a></h6>
+            <h6><a id="text-pin" onclick="selectPin('textPin')" class="">Text</a></h6>
+            <h6><a id="meeting-pin" onclick="selectPin('meetingPin')" class="">Meeting</a></h6>
+            <h6><a id="landmark-pin" onclick="selectPin('landmarkPin')" class="">Landmark</a></h6>
+            <h6><a id="line-pin" onclick="selectPin('linePin')" class="">Line</a></h6>
+            <h6><a id="picture-pin" onclick="selectPin('picturePin')" class="">Picture</a></h6>
+            <h6><a id="poll-pin" onclick="selectPin('pollPin')" class="">Poll</a></h6>
+        </div>
         <script>
             function loginOnClick() {
                 var email = prompt("Enter your email:","hello@example.com")
@@ -114,6 +137,12 @@
                     alert("Sorry, we were unable to log you out: " + errorMessage);
                 });
             }
+
+            function selectPin(selectedPin) {
+                console.log("selectPin(selectedPin) called")
+                console.dir(selectedPin);
+                currentPinSelection = selectedPin;
+            }
         </script>
         <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 		<script src="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.js"></script>
@@ -121,6 +150,7 @@
 		<script type="text/javascript" src="js/login.js"></script>
         <script>
             var map;
+            var currentPinSelection = "basicPin";
 
             function initMap() {
                 map = new google.maps.Map(document.getElementById('map'), {
@@ -155,16 +185,152 @@
 
                 // tap to add pin to fb
                 google.maps.event.addListener(map, 'click', function( event ){
-                    firebase.database().ref('Maps/public/map2/pins').push().set({
-                        "lat": event.latLng.lat(),
-                        "long": event.latLng.lng(),
-                        "type":"basicPin"
-                    });
+
+                    switch (currentPinSelection)
+                    {
+                        case "basicPin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"basicPin"
+                            });
+                            break;
+                        case "textPin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "text": "PLACE HOLDER",
+                                "type":"textPin"
+                            });
+                            break;
+                        case "meetingPin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"meetingPin"
+                            });
+                            break;
+                        case "landmarkPin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"landmarkPin"
+                            });
+                            break;
+                        case "linePin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"linePin"
+                            });
+                            break;
+                        case "picturePin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"picturePin"
+                            });
+                            break;
+                        case "pollPin":
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"pollPin"
+                            });
+                            break;
+                        default:
+                            firebase.database().ref('Maps/public/map2/pins').push().set({
+                                "lat": event.latLng.lat(),
+                                "long": event.latLng.lng(),
+                                "type":"basicPin"
+                            });
+                            break;
+                    } //End switch (currentPinSelection)
+                    
                 });
 
                 // load from fb
                 var commentsRef = firebase.database().ref('Maps/public/map2/pins');
                 commentsRef.on('child_added', function(data) {
+
+                    switch (data.val().type)
+                    {
+                        case "basicPin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "textPin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: data.val().text,
+                                label: {color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: data.val().text},
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "meetingPin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "landmarkPin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "linePin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "picturePin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        case "pollPin":
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                        default:
+                            var myLatLng = {lat: data.val().lat, lng: data.val().long};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: 'Hello World!',
+                                icon: 'oPin3.png'
+                            });
+                            break;
+                    } //End switch (data.val().type)
+
+                    /*
                     if(data.val().type == "basicPin"){
                         var myLatLng = {lat: data.val().lat, lng: data.val().long};
                         var marker = new google.maps.Marker({
@@ -174,7 +340,13 @@
                             icon: 'oPin3.png'
                         });
                     }
+                    */
                 });
+
+                var legend = document.getElementById('legend');
+
+                map.controls[google.maps.ControlPosition.LEFT].push(legend);
+
             }
         </script>
             
@@ -182,7 +354,7 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap">
         </script>
         <div class="app"></div>
-        <script type="text/javascript" src="cordova.js"></script>-->
+        <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();
