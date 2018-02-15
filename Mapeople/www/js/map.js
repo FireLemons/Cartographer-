@@ -181,6 +181,8 @@ function initMap() {
 				});
 				break;
 			case "textPin":
+				getTextPinUserInput();
+
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
 				
@@ -188,6 +190,7 @@ function initMap() {
 					position: myLatLng,
 					map: map,
 					title: 'textPin',
+					user: 'Mapeople', //Need to connect it to actual users when management is figured out.
 					icon: pinIcons['textPin'].icon
 				});
 
@@ -282,14 +285,14 @@ function initMap() {
 		legend.appendChild(div);
 	}
 
-	map.controls[google.maps.ControlPosition.LEFT].push(legend);
+	map.controls[google.maps.ControlPosition.LEFT_TOP].push(legend);
 }
 
 function selectPin(selectedPin) {
 	console.log("selectPin(selectedPin) called")
 	console.dir(selectedPin);
 	currentPinSelection = selectedPin;
-}
+} //End function selectPin(selectedPin)
 
 function initTextPinWindow(user, userText) {
 	var contentString = '<div id="content">'+
@@ -305,4 +308,13 @@ function initTextPinWindow(user, userText) {
 	return new google.maps.InfoWindow({
 		content: contentString
 	});
+} //End function initTextPinWindow(user, userText)
+
+function getTextPinUserInput() {
+	$('#text-pin-dialog').dialog({
+		autoOpen: false,
+		modal: true
+	});
+
+	$('#text-pin-dialog').dialog('open');
 } //End 
