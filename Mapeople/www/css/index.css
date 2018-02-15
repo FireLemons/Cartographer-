@@ -38,11 +38,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	margin-top: 0;
 }
 
-#login-button {
-	padding-top: 5%;
-}
-
-#logout-button > a{
+#nav-mobile-list a{
 	font-weight: bold;
     font-size: 14pt;
 }
