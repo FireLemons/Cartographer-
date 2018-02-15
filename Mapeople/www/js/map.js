@@ -58,6 +58,37 @@ function initMap() {
 		name: 'Trippy'
 	});
 
+	var pinIcons = {
+		basicPin: {
+            name: 'basicPin',
+            icon: 'oPin3.png'
+		},
+		textPin: {
+			name: 'textPin',
+			icon: 'oPin3.png'
+		},
+		meetingPin: {
+			name: 'meetingPin',
+			icon: 'oPin3.png'
+		},
+		landmarkPin: {
+			name: 'lanndmarkPin',
+			icon: 'oPin3.png'
+		},
+		linePin: {
+			name: 'linePin',
+			icon: 'oPin3.png'
+		},
+		picturePin: {
+			name: 'picturePin',
+			icon: 'oPin3.png'
+		},
+		pollPin: {
+			name: 'pollPin',
+			icon: 'oPin3.png'
+		}
+	};
+
 	map.mapTypes.set(customMapTypeId, customMapType);
 	map.setMapTypeId(customMapTypeId);
 
@@ -138,27 +169,34 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'basicPin',
+					icon: pinIcons['basicPin'].icon
+					//icon: 'oPin3.png'
 				});
 				break;
 			case "textPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
+				var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
+				
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: data.val().text,
-					label: {color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: data.val().text},
-					icon: 'oPin3.png'
+					title: 'textPin',
+					icon: pinIcons['textPin'].icon
 				});
+
+				marker.addListener('click', function() {
+					textPinWindow.open(map, marker);
+				});
+
 				break;
 			case "meetingPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'meetingPin',
+					icon: pinIcons['meetingPin'].icon
 				});
 				break;
 			case "landmarkPin":
@@ -166,8 +204,8 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'landmarkPin',
+					icon: pinIcons['landmarkPin'].icon
 				});
 				break;
 			case "linePin":
@@ -175,8 +213,8 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'linePin',
+					icon: pinIcons['linePin'].icon
 				});
 				break;
 			case "picturePin":
@@ -184,8 +222,8 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'picturePin',
+					icon: pinIcons['picturePin'].icon
 				});
 				break;
 			case "pollPin":
@@ -193,8 +231,8 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
-					icon: 'oPin3.png'
+					title: 'pollPin',
+					icon: pinIcons['pollPin'].icon
 				});
 				break;
 			default:
@@ -202,7 +240,7 @@ function initMap() {
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
-					title: 'Hello World!',
+					title: 'basicPin',
 					icon: 'oPin3.png'
 				});
 				break;
@@ -223,6 +261,17 @@ function initMap() {
 
 	var legend = document.getElementById('legend');
 
+	/*
+	for (var key in icons) {
+		var type = icons[key];
+		var name = type.name;
+		var icon = type.icon;
+		var div = document.createElement('div');
+		div.innerHTML = '<img src="' + icon + '"> ' + name;
+		legend.appendChild(div);
+	}
+	*/
+
 	map.controls[google.maps.ControlPosition.LEFT].push(legend);
 }
 
@@ -231,3 +280,19 @@ function selectPin(selectedPin) {
 	console.dir(selectedPin);
 	currentPinSelection = selectedPin;
 }
+
+function initTextPinWindow(user, userText) {
+	var contentString = '<div id="content">'+
+	'<div id="siteNotice">'+
+	'</div>'+
+	'<h6 id="firstHeading" class="firstHeading">' + 
+	'<b>' + user + ':' + '</b>' + 
+	'</h6>'+
+	'<div id="bodyContent">'+
+	'<p>' + userText + '</p>'+
+	'</div>'+
+	'</div>';
+	return new google.maps.InfoWindow({
+		content: contentString
+	});
+} //End 
