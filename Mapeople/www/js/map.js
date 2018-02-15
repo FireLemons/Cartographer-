@@ -60,31 +60,38 @@ function initMap() {
 
 	var pinIcons = {
 		basicPin: {
-            name: 'basicPin',
+			htmlID: 'basic-pin',
+            name: 'Basic',
             icon: 'oPin3.png'
 		},
 		textPin: {
-			name: 'textPin',
+			htmlID: 'text-pin',
+			name: 'Text',
 			icon: 'oPin3.png'
 		},
 		meetingPin: {
-			name: 'meetingPin',
+			htmlID: 'meeting-pin',
+			name: 'Meeting',
 			icon: 'oPin3.png'
 		},
 		landmarkPin: {
-			name: 'lanndmarkPin',
+			htmlID: 'landmark-pin',
+			name: 'Landmark',
 			icon: 'oPin3.png'
 		},
 		linePin: {
-			name: 'linePin',
+			htmlID: 'line-pin',
+			name: 'Line',
 			icon: 'oPin3.png'
 		},
 		picturePin: {
-			name: 'picturePin',
+			htmlID: 'picture-pin',
+			name: 'Picture',
 			icon: 'oPin3.png'
 		},
 		pollPin: {
-			name: 'pollPin',
+			htmlID: 'poll-pin',
+			name: 'Poll',
 			icon: 'oPin3.png'
 		}
 	};
@@ -94,7 +101,6 @@ function initMap() {
 
 	// tap to add pin to fb
 	google.maps.event.addListener(map, 'click', function( event ){
-
 		switch (currentPinSelection)
 		{
 			case "basicPin":
@@ -241,7 +247,7 @@ function initMap() {
 					position: myLatLng,
 					map: map,
 					title: 'basicPin',
-					icon: 'oPin3.png'
+					icon: pinIcons['basicPin'].icon
 				});
 				break;
 		} //End switch (data.val().type)
@@ -261,16 +267,20 @@ function initMap() {
 
 	var legend = document.getElementById('legend');
 
-	/*
-	for (var key in icons) {
-		var type = icons[key];
+	//Put the icons and their names in the legend
+	for (var key in pinIcons) {
+		var type = pinIcons[key];
 		var name = type.name;
 		var icon = type.icon;
 		var div = document.createElement('div');
-		div.innerHTML = '<img src="' + icon + '"> ' + name;
+		div.innerHTML = '<a id="' + 
+		type.htmlID + '" ' +
+		'onclick="selectPin(\'' + key.toString() + '\')" class="">' +
+		'<img src="' + icon + '"> ' + 
+		name + 
+		'</a>';
 		legend.appendChild(div);
 	}
-	*/
 
 	map.controls[google.maps.ControlPosition.LEFT].push(legend);
 }
