@@ -1,5 +1,7 @@
 if(!firebase){
-	console.error("Firebase API has failed to load on this page.");
+	console.error("Firebase has failed to load on this page.");
+} else if(!jQuery){
+	console.error("JQuery failed to load on this page.");
 } else {
 	 
 	var uiConfig = {
@@ -36,10 +38,20 @@ if(!firebase){
 	
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user){
-			//User successfully logged in
+			$("#login-button").hide();
+			$("#logout-button").show();
 		} else {
 			displayAnonymous();
 		}
+	});
+	
+	
+	$("#logout-button").click(function(){
+		firebase.auth().signOut().then(function() {
+			location.reload();
+		}).catch(function(error) {
+			// An error happened.
+		});
 	});
 }
 
