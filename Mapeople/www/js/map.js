@@ -111,6 +111,8 @@ function initMap() {
 				});
 				break;
 			case "textPin":
+				getTextPinUserInput();
+
 				firebase.database().ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
@@ -181,8 +183,6 @@ function initMap() {
 				});
 				break;
 			case "textPin":
-				getTextPinUserInput();
-
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
 				
@@ -313,8 +313,19 @@ function initTextPinWindow(user, userText) {
 function getTextPinUserInput() {
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
-		modal: true
+		modal: true,
+		draggable: false,
+		buttons: {
+			"Post": function () {
+			
+			},
+		},
+		close: function() {
+			
+		}
 	});
 
 	$('#text-pin-dialog').dialog('open');
 } //End 
+
+function addUser() {}
