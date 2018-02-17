@@ -111,14 +111,29 @@ function initMap() {
 				});
 				break;
 			case "textPin":
-				getTextPinUserInput();
+				newTextPin(event.latLng.lat(), event.latLng.lng());
+				//getTextPinUserInput();
 
-				firebase.database().ref('Maps/public/map2/pins').push().set({
-					"lat": event.latLng.lat(),
-					"long": event.latLng.lng(),
-					"text": "PLACE HOLDER",
-					"type":"textPin"
-				});
+				//while ($('#text-pin-dialog').dialog('isOpen'));
+
+				//var textPinText = $('#text-pin-dialog').val();
+
+				//console.log("Value receieved from getTextPinUserInput(): " + textPinText);
+				//console.dir(textPinText);
+
+				/*
+				if (textPinText != null) {
+					firebase.database().ref('Maps/public/map2/pins').push().set({
+						"lat": event.latLng.lat(),
+						"long": event.latLng.lng(),
+						"text": "PLACE HOLDER",
+						"type":"textPin"
+					});
+				} //End 
+				else {
+
+				} //End else
+				*/
 				break;
 			case "meetingPin":
 				firebase.database().ref('Maps/public/map2/pins').push().set({
@@ -310,22 +325,42 @@ function initTextPinWindow(user, userText) {
 	});
 } //End function initTextPinWindow(user, userText)
 
-function getTextPinUserInput() {
+function newTextPin(lat, lng) {
+	/*var textDialog = */
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
 		modal: true,
 		draggable: false,
 		buttons: {
-			"Post": function () {
+			"Post": function() {
+				console.log("Post: I happened");
+
+				firebase.database().ref('Maps/public/map2/pins').push().set({
+					"lat": lat,
+					"long": lng,
+					"text": $('#text-pin-dialog-input').val(),
+					"type":"textPin"
+				});
+
+				$('#text-pin-dialog').dialog('close');
+			}
 			
-			},
 		},
 		close: function() {
-			
+			$('#text-pin-dialog-input').val("");
 		}
 	});
+	//*/
 
 	$('#text-pin-dialog').dialog('open');
+}
+
+function getTextPinUserInput() {
+	
+	$('#text-pin-dialog').dialog('close');
+	return;
+	//return $('#text-pin-dialog').val();
+
 } //End 
 
 function addUser() {}
