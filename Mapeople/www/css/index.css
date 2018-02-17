@@ -28,7 +28,8 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 #legend {
-	font-family: Arial, sans-serif;
+	/*font-family: Arial, sans-serif;*/
+	font-family: 'Comfortaa';
 	background: #fff;
 	padding: 10px;
 	margin: 10px;
@@ -36,6 +37,18 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 #legend h4 {
 	margin-top: 0;
+}
+
+#text-pin-dialog-textarea {
+	resize: none;
+}
+
+
+.textPinContent p {
+	font-family: 'Comfortaa';
+	word-wrap: break-word;
+	width: inherit;
+	white-space: pre-wrap;
 }
 
 #nav-mobile-list a{

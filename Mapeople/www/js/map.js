@@ -112,15 +112,6 @@ function initMap() {
 				break;
 			case "textPin":
 				newTextPin(event.latLng.lat(), event.latLng.lng());
-				//getTextPinUserInput();
-
-				//while ($('#text-pin-dialog').dialog('isOpen'));
-
-				//var textPinText = $('#text-pin-dialog').val();
-
-				//console.log("Value receieved from getTextPinUserInput(): " + textPinText);
-				//console.dir(textPinText);
-
 				/*
 				if (textPinText != null) {
 					firebase.database().ref('Maps/public/map2/pins').push().set({
@@ -200,16 +191,19 @@ function initMap() {
 			case "textPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
-				
+				var maxWidth = 200;
+
 				var marker = new google.maps.Marker({
 					position: myLatLng,
 					map: map,
 					title: 'textPin',
 					user: 'Mapeople', //Need to connect it to actual users when management is figured out.
-					icon: pinIcons['textPin'].icon
+					icon: pinIcons['textPin'].icon,
+					maxWidth: maxWidth
 				});
 
 				marker.addListener('click', function() {
+					textPinWindow.setOptions({maxWidth:maxWidth}); 
 					textPinWindow.open(map, marker);
 				});
 
@@ -313,12 +307,13 @@ function initTextPinWindow(user, userText) {
 	var contentString = '<div id="content">'+
 	'<div id="siteNotice">'+
 	'</div>'+
-	'<h6 id="firstHeading" class="firstHeading">' + 
+	'<h6 id="" class="firstHeading">' + 
 	'<b>' + user + ':' + '</b>' + 
 	'</h6>'+
-	'<div id="bodyContent">'+
-	'<p>' + userText + '</p>'+
-	'</div>'+
+	'<div id="bodyContent" class="textPinContent">' +
+	//'<pre>' + userText + '</pre>' +
+	'<p>' + userText + '</p>' +
+	'</div>' +
 	'</div>';
 	return new google.maps.InfoWindow({
 		content: contentString
@@ -326,19 +321,25 @@ function initTextPinWindow(user, userText) {
 } //End function initTextPinWindow(user, userText)
 
 function newTextPin(lat, lng) {
-	/*var textDialog = */
+	$('#text-pin-dialog-textarea').each(function () {
+		this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+	}).on('input', function () {
+		this.style.height = 'auto';
+		this.style.height = (this.scrollHeight) + 'px';
+	});
+
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
 		modal: true,
 		draggable: false,
 		buttons: {
 			"Post": function() {
-				console.log("Post: I happened");
-
+				console.log("Attempting to create a new text pin.");
+				console.log("lat: " + lat + " lng: " + lng);
 				firebase.database().ref('Maps/public/map2/pins').push().set({
 					"lat": lat,
 					"long": lng,
-					"text": $('#text-pin-dialog-input').val(),
+					"text": $('#text-pin-dialog-textarea').val(),
 					"type":"textPin"
 				});
 
@@ -347,20 +348,12 @@ function newTextPin(lat, lng) {
 			
 		},
 		close: function() {
-			$('#text-pin-dialog-input').val("");
+			$('#text-pin-dialog-textarea').val("");
 		}
 	});
 	//*/
 
 	$('#text-pin-dialog').dialog('open');
-}
-
-function getTextPinUserInput() {
-	
-	$('#text-pin-dialog').dialog('close');
-	return;
-	//return $('#text-pin-dialog').val();
-
-} //End 
+} //End function newTextPin(lat, lng)
 
 function addUser() {}
