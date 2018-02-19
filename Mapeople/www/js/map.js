@@ -88,37 +88,37 @@ function initMap() {
 
 	var pinIcons = {
 		basicPin: {
-			htmlID: 'basic-pin',
+			htmlID: 'basicPin',
             name: 'Basic',
             icon: 'oPin3.png'
 		},
 		textPin: {
-			htmlID: 'text-pin',
+			htmlID: 'textPin',
 			name: 'Text',
 			icon: 'oPin3.png'
 		},
 		meetingPin: {
-			htmlID: 'meeting-pin',
+			htmlID: 'meetingPin',
 			name: 'Meeting',
 			icon: 'oPin3.png'
 		},
 		landmarkPin: {
-			htmlID: 'landmark-pin',
+			htmlID: 'landmarkPin',
 			name: 'Landmark',
 			icon: 'oPin3.png'
 		},
 		linePin: {
-			htmlID: 'line-pin',
+			htmlID: 'linePin',
 			name: 'Line',
 			icon: 'oPin3.png'
 		},
 		picturePin: {
-			htmlID: 'picture-pin',
+			htmlID: 'picturePin',
 			name: 'Picture',
 			icon: 'oPin3.png'
 		},
 		pollPin: {
-			htmlID: 'poll-pin',
+			htmlID: 'pollPin',
 			name: 'Poll',
 			icon: 'oPin3.png'
 		}
@@ -328,6 +328,13 @@ function initMap() {
 function selectPin(selectedPin) {
 	console.log("selectPin(selectedPin) called")
 	console.dir(selectedPin);
+
+	$('#' + currentPinSelection).css('font-weight', 'normal');
+	console.dir($('#' + currentPinSelection).css);
+
+	$('#' + selectedPin).css('font-weight', 'bold');
+	console.dir($('#' + selectedPin));
+
 	currentPinSelection = selectedPin;
 } //End function selectPin(selectedPin)
 

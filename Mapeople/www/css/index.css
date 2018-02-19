@@ -50,8 +50,13 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	opacity: .5;
 }
 
-#legend:hover{
+#legend:hover {
 	opacity: 1;
+}
+
+#legend a:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 #legend>div>a{
