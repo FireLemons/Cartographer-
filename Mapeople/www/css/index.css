@@ -50,7 +50,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	opacity: .5;
 }
 
-#legend:hover, #legend:active, #legend:focus {
+#legend:hover{
 	opacity: 1;
 }
 
@@ -74,7 +74,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	display: flex;
 }
 
-#pinHide:hover, #pinHide:focus {
+#pinHide:hover, #pinHide:active, #pinHide:focus {
 	background-color: #eee;
 }
 

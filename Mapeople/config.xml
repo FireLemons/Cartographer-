@@ -8,8 +8,15 @@
         PhoneGap Team
     </author>
     <content src="index.html" />
+    <universal-links>
+        <host name="rys4t.app.goo.gl" scheme="https" />
+        <host name="mapeople-7bcd9.firebaseapp.com" scheme="https">
+            <path url="/__/auth/callback" />
+        </host>
+    </universal-links>
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="14" />
+    <preference name="AndroidLaunchMode" value="singleTask" />
     <platform name="android">
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="www/res/icon/android/drawable-mdpi-icon.png" />
