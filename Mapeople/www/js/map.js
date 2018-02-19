@@ -7,6 +7,34 @@ function onDeviceReady() {
 	navigator.geolocation.getCurrentPosition(onSuccess, onError);
 }
 
+// DOM has loaded
+//
+$(function(){
+	$("#pinHide").click(function(){
+		$("#legend").animate(
+			{width:"toggle"}, 
+			500, 
+			function(){
+				$(this).children().hide();
+				$("#pinShow").show();
+				$(this).animate({width:"toggle"}, 500);
+			}
+		);
+	});
+	
+	$("#pinShow").click(function(){
+		$("#legend").animate(
+			{width:"toggle"}, 
+			500, 
+			function(){
+				$(this).children().show();
+				$("#pinShow").hide();
+				$(this).animate({width:"toggle"}, 500);
+			}
+		);
+	});
+});
+
 // onSuccess Geolocation
 //
 function onSuccess(position) {

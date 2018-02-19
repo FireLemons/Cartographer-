@@ -7,19 +7,19 @@ if(!firebase){
 	
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user){
-			$("#login-button").hide();
-			$("#logout-button").show();
+			$(".login-button").hide();
+			$(".logout-button").show();
 		} else {
 			displayAnonymous();
 		}
 	});
 	
 	
-	$("#login-button").click(function(){
+	$(".login-button").click(function(){
 		firebase.auth().signInWithRedirect(provider);
 	});
 	
-	$("#logout-button").click(function(){
+	$(".logout-button").click(function(){
 		firebase.auth().signOut().then(function() {
 			location.reload();
 		}).catch(function(error) {

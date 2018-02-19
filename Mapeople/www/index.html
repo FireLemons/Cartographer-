@@ -14,60 +14,55 @@
             <!-- CSS  -->
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+			
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 			<script 
 				src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
 				integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
 				crossorigin="anonymous">
 			</script>
+			<script src="js/materialize.min.js"></script>
+			<script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     </head>
     <body>
         <nav class="green lighten-1" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Mapeople</a>
-            <ul class="right hide-on-med-and-down">
-            </ul>
+			<div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Mapeople</a>
+				<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
 
-            <ul id="nav-mobile" class="side-nav">
-                <li><a href="#">Navbar Link</a></li>
-            </ul>
-            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+				<ul id="nav-mobile-list" class="right hide-on-med-and-down">
+					<li class="login-button">
+						<a href="#">Sign in with Google</a>
+					</li>
+					<li class="logout-button" style="display: none;">
+						<a href="#">Sign Out</a>
+					</li>
+				</ul>
 
-            <ul id="nav-mobile-list" class="right hide-on-med-and-down">
-				<li id="login-button">
-					<a href="#">Sign in with Google</a>
-				</li>
-				<li id="logout-button" style="display: none;">
-					<a href="#">Sign Out</a>
-				</li>
-			</ul>
-
-            <ul class="side-nav" id="mobile-demo">
-            </ul>
-        </div>
+				<ul class="side-nav" id="mobile-menu">
+					<li class="login-button">
+						<a href="#">Sign in with Google</a>
+					</li>
+					<li class="logout-button" style="display: none;">
+						<a href="#">Sign Out</a>
+					</li>
+				</ul>
+			</div>
         </nav>
         
         <div id="map"></div>
         <div id="legend">
-            <h4>Pins</h3>
-            <!--
-            <h6><a id="basic-pin" onclick="selectPin('basicPin')" class="">Basic</a></h6>
-            <h6><a id="text-pin" onclick="selectPin('textPin')" class="">Text</a></h6>
-            <h6><a id="meeting-pin" onclick="selectPin('meetingPin')" class="">Meeting</a></h6>
-            <h6><a id="landmark-pin" onclick="selectPin('landmarkPin')" class="">Landmark</a></h6>
-            <h6><a id="line-pin" onclick="selectPin('linePin')" class="">Line</a></h6>
-            <h6><a id="picture-pin" onclick="selectPin('picturePin')" class="">Picture</a></h6>
-            <h6><a id="poll-pin" onclick="selectPin('pollPin')" class="">Poll</a></h6>
-            -->
+            <p id="pinHide" class="pinToggleButton"><i class="material-icons left">chevron_left</i> Pins</p>
+            <p id="pinShow" class="pinToggleButton" style="display:none;"><i class="medium material-icons">chevron_right</i></p>
         </div>
         <div id="text-pin-dialog" title="New Text Pin">
             <textarea id="text-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What do you want to say?" value=""></textarea>
         </div>
 		<div>
-		 <h6 id="geolocation">Location</h6>
+			<h6 id="geolocation">Location</h6>
 		</div>
-        <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 		<script type="text/javascript" src="js/config.js"></script>
 		<script type="text/javascript" src="js/login.js"></script>
+		<script type="text/javascript" src="js/menu.js"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap">
         </script>
 		<script type="text/javascript" src="js/map.js"></script>

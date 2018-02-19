@@ -24,25 +24,8 @@ ul.firebaseui-idp-list {
 }
 
 ul.firebaseui-idp-list > .firebaseui-list-item {
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
-
-#legend {
-	/*font-family: Arial, sans-serif;*/
-	font-family: 'Comfortaa';
-	background: #fff;
-	padding: 10px;
-	margin: 10px;
-	border: 3px solid #000;
-}
-#legend h4 {
-	margin-top: 0;
-}
-
-#text-pin-dialog-textarea {
-	resize: none;
-}
-
 
 .textPinContent p {
 	font-family: 'Comfortaa';
@@ -51,11 +34,54 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	white-space: pre-wrap;
 }
 
-#nav-mobile-list a{
-	font-weight: bold;
-    font-size: 14pt;
+.pinToggleButton {
+	margin: 0;
+	padding: 10%;
+	font-size: 16pt;
+	cursor: pointer;
+}
+
+#legend {
+	/*font-family: Arial, sans-serif;*/
+	font-family: 'Comfortaa';
+	background: #fff;
+	margin: 10px;
+	border: 3px solid #000;
+	opacity: .5;
+}
+
+#legend:hover, #legend:active, #legend:focus {
+	opacity: 1;
+}
+
+#legend>div>a{
+	display: flex;
+	overflow: visible;
 }
 
 #map {
 	height: 90%;
+}
+
+#nav-mobile-list a {
+	font-weight: bold;
+    font-size: 14pt;
+}
+
+#pinHide {
+	border-bottom: 3px solid #000;
+	overflow: visible;
+	display: flex;
+}
+
+#pinHide:hover, #pinHide:focus {
+	background-color: #eee;
+}
+
+#pinShow .material-icons{
+	font-size: 24pt;
+}
+
+#text-pin-dialog-textarea {
+	resize: none;
 }
