@@ -33,6 +33,15 @@ $(function(){
 			}
 		);
 	});
+
+	$('#text-pin-dialog').dialog();
+	$('#text-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#text-pin-dialog').dialog('close');
+
+
+	$('#meeting-pin-dialog').dialog();
+	$('#meeting-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#meeting-pin-dialog').dialog('close');
 });
 
 // onSuccess Geolocation
@@ -155,11 +164,15 @@ function initMap() {
 				*/
 				break;
 			case "meetingPin":
+				newMeetingPin(event.latLng.lat(), event.latLng.lng());
+				
+				/*
 				firebase.database().ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"meetingPin"
 				});
+				*/
 				break;
 			case "landmarkPin":
 				firebase.database().ref('Maps/public/map2/pins').push().set({
@@ -330,16 +343,13 @@ function selectPin(selectedPin) {
 	console.dir(selectedPin);
 
 	$('#' + currentPinSelection).css('font-weight', 'normal');
-	console.dir($('#' + currentPinSelection).css);
-
 	$('#' + selectedPin).css('font-weight', 'bold');
-	console.dir($('#' + selectedPin));
 
 	currentPinSelection = selectedPin;
 } //End function selectPin(selectedPin)
 
 function initTextPinWindow(user, userText) {
-	var contentString = '<div id="content">'+
+	var contentString = '<div id="content"'+
 	'<div id="siteNotice">'+
 	'</div>'+
 	'<h6 id="" class="firstHeading">' + 
@@ -350,18 +360,29 @@ function initTextPinWindow(user, userText) {
 	'<p>' + userText + '</p>' +
 	'</div>' +
 	'</div>';
-	return new google.maps.InfoWindow({
+
+	var textInfoWindow = new google.maps.InfoWindow({
 		content: contentString
 	});
+
+	return textInfoWindow;
 } //End function initTextPinWindow(user, userText)
 
 function newTextPin(lat, lng) {
 	$('#text-pin-dialog-textarea').each(function () {
-		this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		if (this.scrollHeight > 48) {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		} //End if (this.scrollHeight > 48)
+		else {
+			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
+		} //End else
 	}).on('input', function () {
 		this.style.height = 'auto';
 		this.style.height = (this.scrollHeight) + 'px';
 	});
+
+	
+	
 
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
@@ -390,5 +411,71 @@ function newTextPin(lat, lng) {
 
 	$('#text-pin-dialog').dialog('open');
 } //End function newTextPin(lat, lng)
+
+function initMeetingPin(user, meetingText, meetingDate) {
+	var contentString = '<div id="content"'+
+	'<div id="siteNotice">'+
+	'</div>'+
+	'<h6 id="" class="firstHeading">' + 
+	'<b>' + meetingDate + ':' + '</b>' + 
+	'</h6>'+
+	'<div id="bodyContent" class="textPinContent">' +
+	//'<pre>' + userText + '</pre>' +
+	'<p>' + meetingText + '</p>' +
+	'</div>' +
+	'</div>';
+
+	var meetingInfoWindow = new google.maps.InfoWindow({
+		content: contentString
+	});
+
+	return meetingInfoWindow;
+
+} //End function initMeetingPin(user, meetingDate, meetingText) {
+
+function newMeetingPin(lat, lng) {
+	$('#meeting-pin-dialog-textarea').each(function () {
+		if (this.scrollHeight > 48) {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		} //End if (this.scrollHeight > 48)
+		else {
+			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
+		} //End else
+	}).on('input', function () {
+		this.style.height = 'auto';
+		this.style.height = (this.scrollHeight) + 'px';
+	});
+
+	$('#meeting-pin-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		draggable: false,
+		buttons: {
+			"Post": function() {
+				console.log("Attempting to create a new text pin.");
+				console.log("lat: " + lat + " lng: " + lng);
+				firebase.database().ref('Maps/public/map2/pins').push().set({
+					"lat": lat,
+					"long": lng,
+					"meetingDate": $('#meetingPinDatePicker').val(),
+					"meetingText": $('#meeting-pin-dialog-textarea').val(),
+					"type":"meetingPin"
+				});
+
+				$('#meeting-pin-dialog').dialog('close');
+			}
+			
+		},
+		open: function() {
+			$("#meetingPinDatePicker").datepicker();		
+		},
+		close: function() {
+			$('#meetingPinDatePicker').val("");
+			$('#text-pin-dialog-textarea').val("");
+		}
+	});
+	
+	$('#meeting-pin-dialog').dialog('open');
+} //End function newMeetingPin(lat, lng) {
 
 function addUser() {}

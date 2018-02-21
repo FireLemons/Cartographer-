@@ -54,8 +54,12 @@
             <p id="pinHide" class="pinToggleButton"><i class="material-icons left">chevron_left</i> Pins</p>
             <p id="pinShow" class="pinToggleButton" style="display:none;"><i class="medium material-icons">chevron_right</i></p>
         </div>
-        <div id="text-pin-dialog" title="New Text Pin">
+        <div id="text-pin-dialog" class="" title="New Text Pin">
             <textarea id="text-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What do you want to say?" value=""></textarea>
+		</div>
+		<div id="meeting-pin-dialog" class="" title="New Meeting Pin">
+            <textarea id="meeting-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the meeting for?" value=""></textarea>
+			<p>Date: <input type="text" id="meetingPinDatePicker"></p>
         </div>
 		<div>
 			<h6 id="geolocation">Location</h6>

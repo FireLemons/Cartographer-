@@ -59,7 +59,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	text-decoration: underline;
 }
 
-#legend>div>a{
+#legend > div > a{
 	display: flex;
 	overflow: visible;
 }
@@ -87,6 +87,11 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	font-size: 24pt;
 }
 
-#text-pin-dialog-textarea {
+#text-pin-dialog-textarea, #meeting-pin-dialog-textarea {
 	resize: none;
+}
+
+.ui-dialog > .ui-widget-header {
+	background: #66BB6A;
+	color: #fff;
 }
