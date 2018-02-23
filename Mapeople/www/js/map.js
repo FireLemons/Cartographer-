@@ -251,12 +251,31 @@ function initMap() {
 				break;
 			case "meetingPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
-				var marker = new google.maps.Marker({
-					position: myLatLng,
-					map: map,
-					title: 'meetingPin',
-					icon: pinIcons['meetingPin'].icon
-				});
+				var today = new Date();
+
+				if (data.val().day >= today.getDate() && data.val().month >= today.getMonth() && data.val().year >= today.getFullYear())
+				{
+					var meetingPinWindow = initMeetingPin('Mapeople', data.val().meetingText, data.val().day, data.val().month, data.val().year);
+					var maxWidth = 200;
+					
+					var marker = new google.maps.Marker({
+						position: myLatLng,
+						map: map,
+						title: 'meetingPin',
+						icon: pinIcons['meetingPin'].icon
+					});
+
+					marker.addListener('click', function() {
+						meetingPinWindow.setOptions({maxWidth:maxWidth}); 
+						meetingPinWindow.open(map, marker);
+					});
+				} //End if (data.day >= today.getDate() && data.month >= today.getMonth() && data.year >= today.getFullYear())
+				else {
+					//Remove the meeting marker, it is past the meeting date
+					console.log('Attempting to remove an old meeting pin');
+					console.dir(data.key);
+					firebase.database().ref('Maps/public/map2/pins').child(data.key).remove();
+				} //End else
 				break;
 			case "landmarkPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
@@ -381,9 +400,6 @@ function newTextPin(lat, lng) {
 		this.style.height = (this.scrollHeight) + 'px';
 	});
 
-	
-	
-
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
 		modal: true,
@@ -407,21 +423,20 @@ function newTextPin(lat, lng) {
 			$('#text-pin-dialog-textarea').val("");
 		}
 	});
-	//*/
 
 	$('#text-pin-dialog').dialog('open');
 } //End function newTextPin(lat, lng)
 
-function initMeetingPin(user, meetingText, meetingDate) {
+function initMeetingPin(user, meetingText, day, month, year) {
 	var contentString = '<div id="content"'+
 	'<div id="siteNotice">'+
 	'</div>'+
-	'<h6 id="" class="firstHeading">' + 
-	'<b>' + meetingDate + ':' + '</b>' + 
-	'</h6>'+
+	'<p id="" class="firstHeading">' + 
+	'<b>Meeting Date:</b> ' + (month + 1).toString() + '/' + (day + 1).toString() + '/' + year + 
+	'</p>'+
 	'<div id="bodyContent" class="textPinContent">' +
 	//'<pre>' + userText + '</pre>' +
-	'<p>' + meetingText + '</p>' +
+	'<p><b>Purpose:</b> ' + meetingText + '</p>' +
 	'</div>' +
 	'</div>';
 
@@ -452,27 +467,45 @@ function newMeetingPin(lat, lng) {
 		draggable: false,
 		buttons: {
 			"Post": function() {
-				console.log("Attempting to create a new text pin.");
-				console.log("lat: " + lat + " lng: " + lng);
-				firebase.database().ref('Maps/public/map2/pins').push().set({
-					"lat": lat,
-					"long": lng,
-					"meetingDate": $('#meetingPinDatePicker').val(),
-					"meetingText": $('#meeting-pin-dialog-textarea').val(),
-					"type":"meetingPin"
-				});
+				//Check for a valid date, ie. needs to be in the future, not the past
+				var date = $("#meetingPinDatePicker").datepicker('getDate');
+				var today = new Date();
 
-				$('#meeting-pin-dialog').dialog('close');
-			}
-			
-		},
+				console.log("Attempting to create a new meeting pin.");
+				console.log("lat: " + lat + " lng: " + lng);
+
+				if (date != null) {
+					if (date.getDate() >= today.getDate() && date.getMonth() >= today.getMonth() && date.getFullYear() >= today.getFullYear())
+					{
+						firebase.database().ref('Maps/public/map2/pins').push().set({
+							"lat": lat,
+							"long": lng,
+							"day": date.getDate(),
+							"month": date.getMonth(),
+							"year": date.getFullYear(),
+							"meetingText": $('#meeting-pin-dialog-textarea').val(),
+							"type":"meetingPin"
+						});
+						$('#meeting-pin-dialog').dialog('close');
+					} //End if (function () { if (date.getDate() < today.getDate()) { return false; } //End if (date.getDate() < today.getDate()) if (date.getMonth() < today.getMonth()) { return false; } //End if (date.getMonth() < today.getMonth()) if (date.getFullYear() < today.getFullYear()) { return false; } //End if (date.getFullYear() < today.getFullYear()) } return true;)
+					else {
+						//Need a date that is in the future
+						alert('The date for the meeting cannot be in the past.');
+					} //End else
+				} //End 
+				else {
+					//Need a date to create a meeting pin
+					alert('Please select a date.');
+				} //End else
+			} //End "Post": function()
+		}, //End buttons:
 		open: function() {
 			$("#meetingPinDatePicker").datepicker();		
-		},
+		}, //End open: function()
 		close: function() {
 			$('#meetingPinDatePicker').val("");
 			$('#text-pin-dialog-textarea').val("");
-		}
+		} //End close: function()
 	});
 	
 	$('#meeting-pin-dialog').dialog('open');
