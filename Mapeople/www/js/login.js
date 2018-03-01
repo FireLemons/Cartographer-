@@ -9,6 +9,16 @@ if(!firebase){
 		if(user){
 			$(".login-button").hide();
 			$(".logout-button").show();
+			
+			var DBUsers = db.ref('/Users/' + user.uid);
+			
+			DBUsers.once('value').then(function(snapshot){
+				if(!snapshot.val()){
+					DBUsers.set({
+						email : user.email
+					});
+				}
+			});
 		} else {
 			displayAnonymous();
 		}

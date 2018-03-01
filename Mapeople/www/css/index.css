@@ -41,6 +41,11 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	cursor: pointer;
 }
 
+.ui-dialog > .ui-widget-header {
+	background: #66BB6A;
+	color: #fff;
+}
+
 #legend {
 	/*font-family: Arial, sans-serif;*/
 	font-family: 'Comfortaa';
@@ -89,9 +94,4 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 
 #text-pin-dialog-textarea, #meeting-pin-dialog-textarea {
 	resize: none;
-}
-
-.ui-dialog > .ui-widget-header {
-	background: #66BB6A;
-	color: #fff;
 }

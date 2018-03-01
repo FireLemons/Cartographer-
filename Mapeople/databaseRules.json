@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "$pin": {
+      ".read": true,
+      ".write": true
+    },
+    "Maps": {
+      ".read": true,
+			".write": true
+    },
+    "Users": {
+      "$uid": {
+        
+        // only an authenticated user can see their own data
+        ".read": "$uid === auth.uid",
+				
+        // new user accounts must have an email sting
+        ".validate": "newData.hasChildren(['email']) && newData.child('email').isString()",
+        ".write": true
+      }
+    }
+  }
+}

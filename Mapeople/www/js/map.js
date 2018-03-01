@@ -141,7 +141,7 @@ function initMap() {
 		switch (currentPinSelection)
 		{
 			case "basicPin":
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"basicPin"
@@ -151,7 +151,7 @@ function initMap() {
 				newTextPin(event.latLng.lat(), event.latLng.lng());
 				/*
 				if (textPinText != null) {
-					firebase.database().ref('Maps/public/map2/pins').push().set({
+					db.ref('Maps/public/map2/pins').push().set({
 						"lat": event.latLng.lat(),
 						"long": event.latLng.lng(),
 						"text": "PLACE HOLDER",
@@ -167,7 +167,7 @@ function initMap() {
 				newMeetingPin(event.latLng.lat(), event.latLng.lng());
 				
 				/*
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"meetingPin"
@@ -175,35 +175,35 @@ function initMap() {
 				*/
 				break;
 			case "landmarkPin":
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"landmarkPin"
 				});
 				break;
 			case "linePin":
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"linePin"
 				});
 				break;
 			case "picturePin":
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"picturePin"
 				});
 				break;
 			case "pollPin":
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"pollPin"
 				});
 				break;
 			default:
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"basicPin"
@@ -214,7 +214,7 @@ function initMap() {
 	});
 	
 	// load from firebase
-	var commentsRef = firebase.database().ref('Maps/public/map2/pins');
+	var commentsRef = db.ref('Maps/public/map2/pins');
 	commentsRef.on('child_added', function(data) {
 
 		switch (data.val().type)
@@ -274,7 +274,7 @@ function initMap() {
 					//Remove the meeting marker, it is past the meeting date
 					console.log('Attempting to remove an old meeting pin');
 					console.dir(data.key);
-					firebase.database().ref('Maps/public/map2/pins').child(data.key).remove();
+					db.ref('Maps/public/map2/pins').child(data.key).remove();
 				} //End else
 				break;
 			case "landmarkPin":
@@ -408,7 +408,7 @@ function newTextPin(lat, lng) {
 			"Post": function() {
 				console.log("Attempting to create a new text pin.");
 				console.log("lat: " + lat + " lng: " + lng);
-				firebase.database().ref('Maps/public/map2/pins').push().set({
+				db.ref('Maps/public/map2/pins').push().set({
 					"lat": lat,
 					"long": lng,
 					"text": $('#text-pin-dialog-textarea').val(),
@@ -477,7 +477,7 @@ function newMeetingPin(lat, lng) {
 				if (date != null) {
 					if (date.getDate() >= today.getDate() && date.getMonth() >= today.getMonth() && date.getFullYear() >= today.getFullYear())
 					{
-						firebase.database().ref('Maps/public/map2/pins').push().set({
+						db.ref('Maps/public/map2/pins').push().set({
 							"lat": lat,
 							"long": lng,
 							"day": date.getDate(),
