@@ -24,7 +24,6 @@ if(!firebase){
 		}
 	});
 	
-	
 	$(".login-button").click(function(){
 		firebase.auth().signInWithRedirect(provider);
 	});

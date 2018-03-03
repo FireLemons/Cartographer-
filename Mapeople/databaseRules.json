@@ -6,7 +6,7 @@
     },
     "Maps": {
       ".read": true,
-			".write": true
+	  ".write": true
     },
     "Users": {
       "$uid": {
