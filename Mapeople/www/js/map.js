@@ -4,7 +4,8 @@ var currentPinSelection = "basicPin";
 // Cordova is ready
 //
 function onDeviceReady() {
-	navigator.geolocation.getCurrentPosition(onSuccess, onError);
+	var options = { timeout: 30000 };
+    watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 
 // DOM has loaded
@@ -55,8 +56,16 @@ function onSuccess(position) {
 						'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +
 						'Heading: '            + position.coords.heading               + '<br />' +
 						'Speed: '              + position.coords.speed                 + '<br />' +
-						'Timestamp: '          +                                   position.timestamp          + '<br />';
-}
+						'Timestamp: '          + position.timestamp                    + '<br />';
+
+	//Write to firebase.					
+	user = firebase.auth().currentUser;
+	if(user)
+		db.ref('Users/'+user.uid+'/locs/').push().set({
+					"lat": position.coords.latitude,
+					"lng": position.coords.longitude
+				});
+	}
 
 // onError Callback receives a PositionError object
 //

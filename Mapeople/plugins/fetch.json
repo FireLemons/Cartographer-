@@ -114,7 +114,7 @@
   "cordova-plugin-buildinfo": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-buildinfo@2.0.1"
+      "id": "cordova-plugin-buildinfo@^2.0.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -122,9 +122,19 @@
   "cordova-plugin-browsertab": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-browsertab"
+      "id": "cordova-plugin-browsertab@^0.2.0"
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-customurlscheme": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-customurlscheme"
+    },
+    "is_top_level": true,
+    "variables": {
+      "URL_SCHEME": "com.firebase.cordova"
+    }
   }
 }
