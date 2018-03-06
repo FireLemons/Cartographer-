@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "cordova-android": "^6.3.0",
-    "cordova-ios": "^4.5.4",
+    "cordova-ios": "4.5.4",
     "cordova-plugin-battery-status": "~1.2.4",
     "cordova-plugin-browsertab": "^0.2.0",
     "cordova-plugin-buildinfo": "^2.0.1",
@@ -48,7 +48,7 @@
     "cordova-plugin-media-capture": "~1.4.3",
     "cordova-plugin-network-information": "~1.3.3",
     "cordova-plugin-vibration": "~2.1.5",
-    "cordova-plugin-whitelist": "1",
+    "cordova-plugin-whitelist": "^1.3.3",
     "cordova-universal-links-plugin": "^1.2.1"
   }
 }

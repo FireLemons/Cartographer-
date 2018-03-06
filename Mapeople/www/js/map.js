@@ -1,5 +1,7 @@
 var map;
 var currentPinSelection = "basicPin";
+var globLineCoord = [];
+var globShapeCoord = [];
 
 // Cordova is ready
 //
@@ -162,8 +164,37 @@ function initMap() {
 			htmlID: 'pollPin',
 			name: 'Poll',
 			icon: 'oPin3.png'
-		}
+        },
+        shapePin: {
+            htmlID: 'shape-pin',
+            name: 'Shape',
+            icon: 'oPin3.png'
+        }
 	};
+    
+    var lineCoordinates = [];
+    var lineWrite = new google.maps.Polyline({
+        path: globLineCoord,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        draggable: true,
+        geodesic: true,
+        editable: true
+    });
+    var shapeCoords = [];
+    var shape = new google.maps.Polygon({
+        map: map,
+        paths: globShapeCoord,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        draggable: true,
+        geodesic: true,
+        editable: true
+    });
 
 	map.mapTypes.set(customMapTypeId, customMapType);
 	map.setMapTypeId(customMapTypeId);
@@ -214,11 +245,21 @@ function initMap() {
 				});
 				break;
 			case "linePin":
-				db.ref('Maps/public/map2/pins').push().set({
-					"lat": event.latLng.lat(),
-					"long": event.latLng.lng(),
-					"type":"linePin"
-				});
+                globLineCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
+                globLineCoord = lineCoordinates;
+
+                lineWrite.setMap(null);
+                lineWrite = new google.maps.Polyline({
+                    path: globLineCoord,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                    // draggable: true,
+                    geodesic: true
+                    //editable: true
+                });
+
+                lineWrite.setMap(map);
 				break;
 			case "picturePin":
 				db.ref('Maps/public/map2/pins').push().set({
@@ -234,6 +275,20 @@ function initMap() {
 					"type":"pollPin"
 				});
 				break;
+            case "shapePin":
+                globShapeCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
+                globShapeCoord = shapeCoords;
+                shape.setMap(null);
+                shape = new google.maps.Polygon({
+                    map: map,
+                    paths: globShapeCoord,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35
+                });
+            break;
 			default:
 				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
@@ -319,14 +374,40 @@ function initMap() {
 				});
 				break;
 			case "linePin":
-				var myLatLng = {lat: data.val().lat, lng: data.val().long};
-				var marker = new google.maps.Marker({
-					position: myLatLng,
-					map: map,
-					title: 'linePin',
-					icon: pinIcons['linePin'].icon
-				});
+                var coorids = data.val().latLongs;
+                var myLatLng = [];
+                myLatLng.push({lat: coorids[0].lat, lng: coorids[0].lng});
+                myLatLng.push({lat: coorids[1].lat, lng: coorids[1].lng});
+
+
+                var lineDraw = new google.maps.Polyline({
+                    path: coorids,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                });
+
+                lineDraw.setMap(map);
 				break;
+            case "shapePin":
+                var coorids = data.val().latLongs;
+
+                var shapeDraw = new google.maps.Polygon({
+                    map: map,
+                    paths: coorids,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    //draggable: true,
+                    geodesic: true
+                    //editable: true
+                });
+
+                shapeDraw.setMap(map);
+            break;
 			case "picturePin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var marker = new google.maps.Marker({
@@ -542,5 +623,21 @@ function newMeetingPin(lat, lng) {
 	
 	$('#meeting-pin-dialog').dialog('open');
 } //End function newMeetingPin(lat, lng) {
+
+function writeLine() {
+    firebase.database().ref('Maps/public/map2/pins').push().set({
+        "latLongs": globLineCoord,
+        "type":"linePin"
+    });
+    globLineCoord = [];
+}
+
+function writeShape() {
+    firebase.database().ref('Maps/public/map2/pins').push().set({
+        "latLongs": globShapeCoord,
+        "type":"shapePin"
+    });
+    globShapeCoord = [];
+}
 
 function addUser() {}
