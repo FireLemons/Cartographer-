@@ -61,11 +61,34 @@ function onSuccess(position) {
 	//Write to firebase.					
 	user = firebase.auth().currentUser;
 	if(user)
+	{
 		db.ref('Users/'+user.uid+'/locs/').push().set({
 					"lat": position.coords.latitude,
 					"lng": position.coords.longitude
 				});
+				
+		console.log('Test');
+		ref=db.ref('Users/'+user.uid+'/locs/');
+		ref.once("value", function(data) {
+		  // do some stuff once
+		  locs=data.toJSON();
+		  keys=Object.keys(data.toJSON());
+		  console.log(locs[keys[0]]);
+		  points=[];
+		  for (i = 0; i < keys.length; i++) { 
+				points.push(  new google.maps.LatLng(locs[keys[i]]['lat'], locs[keys[i]]['lng'])  );
+			}
+		  // Create a heatmap.
+			var heatmap = new google.maps.visualization.HeatmapLayer({
+			  data: points
+			});
+			heatmap.setMap(map);
+		});
+		
+		
+		
 	}
+}
 
 // onError Callback receives a PositionError object
 //
