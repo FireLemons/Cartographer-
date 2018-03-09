@@ -50,6 +50,7 @@ $(function(){
 	$('#poll-pin-dialog-textarea').css('style', 'height: 10px');
 	$('#poll-pin-dialog').dialog('close');
 
+	/*
 	user = firebase.auth().currentUser;
 	if(user)
 	{			
@@ -58,6 +59,7 @@ $(function(){
 			console.log("email: " + data.val().email);
 		});
 	}
+	*/
 });
 
 // onSuccess Geolocation
@@ -662,6 +664,10 @@ function addPollPinToFirebase() {
 
 } //End 
 
+function addNewPollChoice() {
+	$('#poll-new-choices')
+} //End 
+
 function pollStartingChoice(choice) {
 	if (choice == "new") {
 		$('#poll-starting-choice').hide();
@@ -680,7 +686,7 @@ function pollStartingChoice(choice) {
 		$('#poll-pin-dialog').dialog('option', 'title', 'Add to Existing Poll');
 	} //End 
 	else {
-		console.log('pollStartingChoice(choice = ' + choice + '): How did the happen?');
+		console.log('pollStartingChoice(choice = ' + choice + '): How did this happen?');
 	} //End else
 
 	$('#poll-pin-dialog').dialog('option', 'buttons', {
