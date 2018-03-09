@@ -68,7 +68,29 @@
 		<div id="meeting-pin-dialog" class="" title="New Meeting Pin">
             <textarea id="meeting-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the meeting for?" value=""></textarea>
 			<p>Date: <input type="text" id="meetingPinDatePicker"></p>
-        </div>
+		</div>
+		<div id="poll-pin-dialog-container">
+			<div id="poll-pin-dialog" class="" title="">
+				<div id="poll-pin-lat" hidden></div>
+				<div id="poll-pin-lng" hidden></div>
+				<div id="poll-starting-choice">
+					<button id="poll-new-poll-btn" class="ui-button" type="button" onclick="pollStartingChoice('new')">New Poll</button>
+					<br><br>
+					<button id="poll-add-to-poll-btn" class="ui-button" type="button" onclick="pollStartingChoice('add')">Add to Poll</button>
+				</div>
+				<div id="poll-after-choice-made" class="">
+					<div id="poll-new-poll" class="">
+						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?" value=""></textarea>
+					</div>
+					<div id="poll-add-to-poll" class="">
+						<div id="poll-list" class="">
+								
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<div>
 			<h6 id="geolocation">Location</h6>
 		</div>

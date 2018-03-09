@@ -78,6 +78,6 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	font-size: 24pt;
 }
 
-#text-pin-dialog-textarea, #meeting-pin-dialog-textarea {
+#text-pin-dialog-textarea, #meeting-pin-dialog-textarea, #poll-pin-dialog-textarea {
 	resize: none;
 }

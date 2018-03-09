@@ -45,6 +45,19 @@ $(function(){
 	$('#meeting-pin-dialog').dialog();
 	$('#meeting-pin-dialog-textarea').css('style', 'height: 10px');
 	$('#meeting-pin-dialog').dialog('close');
+
+	$('#poll-pin-dialog').dialog();
+	$('#poll-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#poll-pin-dialog').dialog('close');
+
+	user = firebase.auth().currentUser;
+	if(user)
+	{			
+		ref=db.ref('Users/'+user.uid+'/');
+		ref.once("value", function(data) {
+			console.log("email: " + data.val().email);
+		});
+	}
 });
 
 // onSuccess Geolocation
@@ -86,9 +99,6 @@ function onSuccess(position) {
 			});
 			heatmap.setMap(map);
 		});
-		
-		
-		
 	}
 }
 
@@ -212,30 +222,9 @@ function initMap() {
 				break;
 			case "textPin":
 				newTextPin(event.latLng.lat(), event.latLng.lng());
-				/*
-				if (textPinText != null) {
-					db.ref('Maps/public/map2/pins').push().set({
-						"lat": event.latLng.lat(),
-						"long": event.latLng.lng(),
-						"text": "PLACE HOLDER",
-						"type":"textPin"
-					});
-				} //End 
-				else {
-
-				} //End else
-				*/
 				break;
 			case "meetingPin":
 				newMeetingPin(event.latLng.lat(), event.latLng.lng());
-				
-				/*
-				db.ref('Maps/public/map2/pins').push().set({
-					"lat": event.latLng.lat(),
-					"long": event.latLng.lng(),
-					"type":"meetingPin"
-				});
-				*/
 				break;
 			case "landmarkPin":
 				db.ref('Maps/public/map2/pins').push().set({
@@ -269,11 +258,15 @@ function initMap() {
 				});
 				break;
 			case "pollPin":
+				newPollPin(event.latLng.lat(), event.latLng.lng());
+			
+				/*
 				db.ref('Maps/public/map2/pins').push().set({
 					"lat": event.latLng.lat(),
 					"long": event.latLng.lng(),
 					"type":"pollPin"
 				});
+				*/
 				break;
             case "shapePin":
                 globShapeCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
@@ -407,7 +400,7 @@ function initMap() {
                 });
 
                 shapeDraw.setMap(map);
-            break;
+            	break;
 			case "picturePin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
 				var marker = new google.maps.Marker({
@@ -623,6 +616,81 @@ function newMeetingPin(lat, lng) {
 	
 	$('#meeting-pin-dialog').dialog('open');
 } //End function newMeetingPin(lat, lng) {
+
+function initPollPin() {
+	
+} //End 
+
+function newPollPin(lat, lng) {
+	$('#poll-pin-dialog-textarea').each(function () {
+		if (this.scrollHeight > 48) {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		} //End if (this.scrollHeight > 48)
+		else {
+			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
+		} //End else
+	}).on('input', function () {
+		this.style.height = 'auto';
+		this.style.height = (this.scrollHeight) + 'px';
+	});
+
+	$('#poll-pin-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		draggable: false,
+		buttons: {},
+		open: function() {
+			$('#poll-starting-choice').show();
+			$('#poll-after-choice-made').hide();
+			$('#poll-pin-lat').val(lat);
+			$('#poll-pin-lng').val(lng);
+		}, //End open: function()
+		close: function() {
+			$('#poll-starting-choice').css('visibility', 'visible');
+			$('#poll-after-choice-made').css('display', 'none');
+			$('#poll-pin-dialog-textarea').val("");
+			$('#poll-pin-dialog').dialog('option', 'title', '');
+			$('#poll-pin-lat').val('');
+			$('#poll-pin-lng').val('');
+		} //End close: function()
+	});
+	
+	$('#poll-pin-dialog').dialog('open');
+} //End 
+
+function addPollPinToFirebase() {
+
+} //End 
+
+function pollStartingChoice(choice) {
+	if (choice == "new") {
+		$('#poll-starting-choice').hide();
+		$('#poll-after-choice-made').show();
+		$('#poll-new-poll').show();
+		$('#poll-add-to-poll').hide();
+
+		$('#poll-pin-dialog').dialog('option', 'title', 'New Poll Pin');
+	} //End 
+	else if (choice == "add") {
+		$('#poll-starting-choice').hide();
+		$('#poll-after-choice-made').show();
+		$('#poll-new-poll').hide();
+		$('#poll-add-to-poll').show();
+
+		$('#poll-pin-dialog').dialog('option', 'title', 'Add to Existing Poll');
+	} //End 
+	else {
+		console.log('pollStartingChoice(choice = ' + choice + '): How did the happen?');
+	} //End else
+
+	$('#poll-pin-dialog').dialog('option', 'buttons', {
+		"Post": function () {
+			//Get the lattitude and longitude
+			$('#poll-pin-lat').val();
+			$('#poll-pin-lng').val();
+		} //End "Post": function ()
+	});
+} //End 
 
 function writeLine() {
     firebase.database().ref('Maps/public/map2/pins').push().set({
