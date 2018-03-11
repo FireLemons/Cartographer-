@@ -50,6 +50,13 @@ $(function(){
 	$('#poll-pin-dialog-textarea').css('style', 'height: 10px');
 	$('#poll-pin-dialog').dialog('close');
 
+	$("ul#poll-new-choices").on("click", "button", function(e) {
+		e.preventDefault();
+		$(this).parent().remove();
+		
+		$('#poll-new-add-choice-btn').show();
+	});
+
 	/*
 	user = firebase.auth().currentUser;
 	if(user)
@@ -519,6 +526,7 @@ function newTextPin(lat, lng) {
 				db.ref('Maps/public/map2/pins').push().set({
 					"lat": lat,
 					"long": lng,
+					"user": firebase.auth().currentUser.uid,
 					"text": $('#text-pin-dialog-textarea').val(),
 					"type":"textPin"
 				});
@@ -654,6 +662,8 @@ function newPollPin(lat, lng) {
 			$('#poll-pin-dialog').dialog('option', 'title', '');
 			$('#poll-pin-lat').val('');
 			$('#poll-pin-lng').val('');
+			$('#poll-new-choices').empty();
+			$('#poll-new-add-choice-btn').show();
 		} //End close: function()
 	});
 	
@@ -665,7 +675,18 @@ function addPollPinToFirebase() {
 } //End 
 
 function addNewPollChoice() {
-	$('#poll-new-choices')
+	$('#poll-new-choices').append(
+		'<li>' +
+			'<input id="" class="poll-option-input" type="text" name="" value="">' +
+			'<button id="" class="poll-option-remove ui-button ui-widget ui-button-icon-only" type="button">' +
+				'<span class="ui-button-icon ui-icon ui-icon-closethick"></span>' +
+				'<span class="ui-button-icon-space"> </span>' +
+			'</button>' +
+		'</li>'
+	);
+
+	$('#poll-new-add-choice-btn').hide();
+
 } //End 
 
 function pollStartingChoice(choice) {
@@ -694,6 +715,29 @@ function pollStartingChoice(choice) {
 			//Get the lattitude and longitude
 			$('#poll-pin-lat').val();
 			$('#poll-pin-lng').val();
+
+			console.log('Poll name: ' + $('poll-pin-dialog-textarea').val());
+
+			var ref = db.ref('Maps/public/map2/polls').push();
+			ref.set({
+				"pollName": $('#poll-pin-dialog-textarea').val()
+			});
+
+			console.log('ID maybe?: ' + ref.key);
+
+			db.ref('Maps/public/map2/polls/' + ref.key + '/options/').push().set({
+				"pollOption": $('ul#poll-new-choices > li > input.poll-option-input').val()
+			});
+
+			/*
+			db.ref('Maps/public/map2/pins').push().set({
+				"lat": $('#poll-pin-lat').val(),
+				"long": $('#poll-pin-lng').val(),
+				"pollID":,
+				"type":"pollPin"
+			});
+			*/
+
 		} //End "Post": function ()
 	});
 } //End 

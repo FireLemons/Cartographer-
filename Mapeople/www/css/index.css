@@ -81,3 +81,13 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 #text-pin-dialog-textarea, #meeting-pin-dialog-textarea, #poll-pin-dialog-textarea {
 	resize: none;
 }
+
+input.poll-option-input {
+	width: 85% !important;
+}
+
+.poll-option-remove {
+	width: 20px;
+	height: 20px;
+	padding: 15px;
+}
