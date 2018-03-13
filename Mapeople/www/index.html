@@ -81,15 +81,13 @@
 				<div id="poll-after-choice-made" class="">
 					<div id="poll-new-poll" class="">
 						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?" value=""></textarea>
-						<button id="poll-new-add-choice-btn" class="ui-button" type="button" onclick="addNewPollChoice()">Add Poll Option</button>
-						<ul id="poll-new-choices" class="">
-
-						</ul>
+						<button id="poll-new-add-choice-btn" class="ui-button" type="button" onclick="addNewPollChoice('new')">Add Poll Option</button>
+						<ul id="poll-new-choices" class=""></ul>
 					</div>
 					<div id="poll-add-to-poll" class="">
-						<div id="poll-list" class="">
-								
-						</div>
+						<ul id="poll-list" class=""></ul>
+						<button id="poll-add-add-choice-btn" class="ui-button" type="button" onclick="addNewPollChoice('add')">Add Poll Option</button>
+						<ul id="poll-add-choices" class=""></ul>
 					</div>
 				</div>
 			</div>
