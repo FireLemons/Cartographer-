@@ -670,22 +670,30 @@ function initPollPin(pollID, myLatLng, map, pinIcon) {
 		pollOptionsRef = db.ref('Maps/public/map2/polls/' + pollID + '/options/');
 		
 		pollOptionsRef.once("value", function(data) {
-			contentString += '<fieldset>';
+			contentString += 
+				'<legend>Options</legend>' +
+				'<fieldset>';
 	
 			var i = 1;
 			for (var key in data.val()) {
-				var optionID = pollName.split(' ').join('-') + '-' + i + '-' + 'radio-' + i;
+				var optionID = pollName.split(' ').join('-') + '-' + 'radio-' + i;
 				console.log('optionID: ' + optionID);
 				contentString += 
 					'<label for="' + optionID + '">' + data.val()[key].pollOption + '</label>' +
-					'<input type="radio" name="' + optionID + '" id="'+ optionID + '" class="poll-pin-option">';// +
-					//'<br>';
+					'<input type="radio" name="' + pollName.split(' ').join('-') + '-' + 'radio" id="'+ optionID + '" class="poll-pin-option">' +
+					'<br>';
 	
 				console.log('option: ' + data.val()[key].pollOption);
 	
 				i++;
 			} //End 
 	
+			//<label for="Test-Name-3-radio-1" class="ui-checkboxradio-label ui-corner-all ui-button ui-widget ui-checkboxradio-radio-label">a</label>
+			//<input type="radio" name="Test-Name-3-radio-1" id="Test-Name-3-radio-1" class="poll-pin-option ui-checkboxradio ui-helper-hidden-accessible">
+
+			//<label for="Test-Name-3-radio-2" class="ui-checkboxradio-label ui-corner-all ui-button ui-widget ui-checkboxradio-radio-label">b</label>
+			//<input type="radio" name="Test-Name-3-radio-2" id="Test-Name-3-radio-2" class="poll-pin-option ui-checkboxradio ui-helper-hidden-accessible">
+
 			contentString += 
 					'</fieldset>' +
 				'</div>' +
@@ -699,10 +707,10 @@ function initPollPin(pollID, myLatLng, map, pinIcon) {
 			});
 		
 			/*
-			$( "#poll-pin-option" ).checkboxradio({
+			$( ".poll-pin-option" ).checkboxradio({
 				icon: false
 			});
-			*/
+			//*/
 
 			//var maxWidth = 200;
 			
@@ -717,7 +725,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon) {
 				//meetingInfoWindow.setOptions({maxWidth:maxWidth}); 
 				meetingInfoWindow.open(map, marker);
 				//*
-				$( "#poll-pin-option" ).checkboxradio({
+				$( ".poll-pin-option" ).checkboxradio({
 					icon: false
 				});
 				//*/
