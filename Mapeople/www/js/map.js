@@ -53,27 +53,14 @@ $(function(){
 	$("ul#poll-new-choices").on("click", "button", function(e) {
 		e.preventDefault();
 		$(this).parent().remove();
-		
-		$('#poll-new-add-choice-btn').show();
+		//$('#poll-new-add-choice-btn').show();
 	});
 
 	$("ul#poll-add-choices").on("click", "button", function(e) {
 		e.preventDefault();
 		$(this).parent().remove();
-		
-		$('#poll-new-add-choice-btn').show();
+		//$('#poll-new-add-choice-btn').show();
 	});
-
-	/*
-	user = firebase.auth().currentUser;
-	if(user)
-	{			
-		ref=db.ref('Users/'+user.uid+'/');
-		ref.once("value", function(data) {
-			console.log("email: " + data.val().email);
-		});
-	}
-	*/
 });
 
 // onSuccess Geolocation
@@ -301,6 +288,8 @@ function initMap() {
 		
 	});
 	
+	var pollInfoWindows = [];
+
 	// load from firebase
 	var commentsRef = db.ref('Maps/public/map2/pins');
 	commentsRef.on('child_added', function(data) {
@@ -375,7 +364,6 @@ function initMap() {
 				});
 				break;
 			case "linePin":
-				/*
 				var coorids = data.val().latLongs;
                 var myLatLng = [];
                 myLatLng.push({lat: coorids[0].lat, lng: coorids[0].lng});
@@ -391,7 +379,6 @@ function initMap() {
                 });
 
 				lineDraw.setMap(map);
-				*/
 				break;
             case "shapePin":
                 var coorids = data.val().latLongs;
@@ -422,7 +409,7 @@ function initMap() {
 				break;
 			case "pollPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
-				initPollPin(data.val().pollID, myLatLng, map, pinIcons['pollPin'].icon);
+				initPollPin(data.val().pollID, myLatLng,map, pinIcons['pollPin'].icon, pollInfoWindows);
 				break;
 			default:
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
@@ -434,18 +421,6 @@ function initMap() {
 				});
 				break;
 		} //End switch (data.val().type)
-
-		/*
-		if(data.val().type == "basicPin"){
-			var myLatLng = {lat: data.val().lat, lng: data.val().long};
-			var marker = new google.maps.Marker({
-				position: myLatLng,
-				map: map,
-				title: 'Hello World!',
-				icon: 'oPin3.png'
-			});
-		}
-		*/
 	});
 
 	var legend = document.getElementById('legend');
@@ -621,11 +596,11 @@ function newMeetingPin(lat, lng) {
 	});
 	
 	$('#meeting-pin-dialog').dialog('open');
-} //End function newMeetingPin(lat, lng) {
+} //End function newMeetingPin(lat, lng)
 
-function initPollPin(pollID, myLatLng, map, pinIcon) {
+function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows) {
 	var pollName = '';
-
+	
 	pollRef = db.ref('Maps/public/map2/polls/' + pollID);
 	
 	var contentString = '';
@@ -640,7 +615,6 @@ function initPollPin(pollID, myLatLng, map, pinIcon) {
 				'<b>' + pollName + ':' + '</b>' + 
 			'</h6>'+
 			'<div id="bodyContent" class="pollPinContent">';
-
 	}).then(function() {
 		pollOptionsRef = db.ref('Maps/public/map2/polls/' + pollID + '/options/');
 		
@@ -667,30 +641,45 @@ function initPollPin(pollID, myLatLng, map, pinIcon) {
 				'</div>' +
 			'</div>';
 		}).then(function() {
-			
-			var meetingInfoWindow = new google.maps.InfoWindow({
-				content: contentString
-			});
 
-			//var maxWidth = 200;
-			
+			//Add the new poll if it does not already exist to the list
+			if (!pollInfoWindows.some(function(poll) {return poll.pollID == pollID})) {
+				var temp = new google.maps.InfoWindow({
+					content: ''
+				});
+
+				pollInfoWindows.push({
+					"pollID": pollID,
+					"infoWindow": temp,
+					"infoWindowContent": contentString
+				})
+			} //End if (!pollInfoWindows.some(function(poll) {return poll.pollID == pollID}))
+			else {
+				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
+				poll.infoWindowContent = contentString;
+			} //End else
+
 			var marker = new google.maps.Marker({
 				position: myLatLng,
 				map: map,
 				title: 'pollPin',
-				icon: pinIcon
+				icon: pinIcon,
+				"pollID": pollID
 			});
 
 			marker.addListener('click', function() {
-				//meetingInfoWindow.setOptions({maxWidth:maxWidth}); 
-				meetingInfoWindow.open(map, marker);
+				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
+				poll.infoWindow.close();
+				poll.infoWindow.setContent(poll.infoWindowContent);
+				poll.infoWindow.open(map, marker);
+
 				$( ".poll-pin-option" ).checkboxradio({
 					icon: false
 				});
 			});
 		});
 	});
-} //End function initPollPin(pollID, myLatLng, map, pinIcon)
+} //End function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows)
 
 function newPollPin(lat, lng) {
 	$('#poll-pin-dialog-textarea').each(function () {
@@ -734,49 +723,43 @@ function newPollPin(lat, lng) {
 } //End function newPollPin(lat, lng)
 
 function addPollPinToFirebase() {
-	//Get the lattitude and longitude
-	$('#poll-pin-lat').val();
-	$('#poll-pin-lng').val();
+	var pinRef = db.ref('Maps/public/map2/pins').push();
+	var pollRef;
 
 	if ($('#poll-new-poll').is(':visible')) {
-		var ref = db.ref('Maps/public/map2/polls').push();
-		ref.set({
+		pollRef = db.ref('Maps/public/map2/polls').push();
+		pollRef.set({
 			"pollName": $('#poll-pin-dialog-textarea').val()
 		});
 
-		$('poll-add-to-poll').each(function() {
-			db.ref('Maps/public/map2/polls/' + ref.key + '/options/').push().set({
+		$('ul#poll-new-choices > li > input.poll-option-input').each(function() {
+			db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push().set({
 				"pollOption": this.value
 			});
 		});
-
-		db.ref('Maps/public/map2/pins').push().set({
-			"lat": parseFloat($('#poll-pin-lat').val()),
-			"long": parseFloat($('#poll-pin-lng').val()),
-			"pollID": ref.key,
-			"type":"pollPin"
-		});
-	} //End 
+	} //End if ($('#poll-new-poll').is(':visible'))
 	else if ($('#poll-add-to-poll').is(':visible')) {
 		var id = $('ul#poll-list > li > button:visible').attr('name');
 
-		console.log('id: ' + id);
-
-		var ref = db.ref('Maps/public/map2/polls/' + id);
+		pollRef = db.ref('Maps/public/map2/polls/' + id);
 
 		$('ul#poll-add-choices > li > input.poll-option-input').each(function() {
-			db.ref('Maps/public/map2/polls/' + ref.key + '/options/').push().set({
+			db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push().set({
 				"pollOption": this.value
 			});
 		});
+	} //End else if ($('#poll-add-to-poll').is(':visible'))
 
-		db.ref('Maps/public/map2/pins').push().set({
-			"lat": parseFloat($('#poll-pin-lat').val()),
-			"long": parseFloat($('#poll-pin-lng').val()),
-			"pollID": ref.key,
-			"type":"pollPin"
-		});
-	} //End 
+	pinRef.set({
+		"lat": parseFloat($('#poll-pin-lat').val()),
+		"long": parseFloat($('#poll-pin-lng').val()),
+		"pollID": pollRef.key,
+		"type":"pollPin"
+	});
+
+	db.ref('Maps/public/map2/polls/' + pollRef.key + '/associatedPins/').push().set({
+		"pinID": pinRef.key
+	});
 	
 	$('#poll-pin-dialog').dialog('close');
 } //End function addPollPinToFirebase()
@@ -802,7 +785,7 @@ function addNewPollChoice(choice) {
 	} //End else
 
 	//$('#poll-new-add-choice-btn').hide();
-} //End 
+} //End function addNewPollChoice(choice)
 
 function getExistingPolls() {
 	pollRef = db.ref('Maps/public/map2/polls/');
@@ -815,7 +798,7 @@ function getExistingPolls() {
 
 				$('#poll-list').append(
 					'<li>' +
-						'<button id="' + name +'" name="' + key + '" class="poll-option-name ui-button ui-widget" type="button" onclick=" addToExistingPoll(\'' + name + '\')">' +
+						'<button id="' + name +'" name="' + key + '" class="poll-option-name ui-button ui-widget" type="button" onclick=" hideOtherPollChoices(\'' + name + '\')">' +
 							data.val()[key].pollName +
 						'</button>' +
 					'</li>'
@@ -824,7 +807,7 @@ function getExistingPolls() {
 		});
 } //End function getExistingPolls()
 
-function addToExistingPoll(name) {
+function hideOtherPollChoices(name) {
 	$('#poll-list > li > button').each(function() {
 		if ($(this).attr('id') != name) {
 			$(this).hide();
@@ -832,7 +815,7 @@ function addToExistingPoll(name) {
 	});
 
 	$('#poll-add-add-choice-btn').show();
-} //End 
+} //End function hideOtherPollChoices(name)
 
 function pollStartingChoice(choice) {
 	if (choice == "new") {
