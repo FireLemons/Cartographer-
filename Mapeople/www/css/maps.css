@@ -30,3 +30,8 @@
 #createMap .modal-footer{
 	padding: 0 1em;
 }
+
+#optionPublic > a{
+	padding: 0 .5em;
+	margin-bottom: 3px;
+}
