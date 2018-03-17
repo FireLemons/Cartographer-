@@ -74,19 +74,18 @@
 				<div id="poll-pin-lat" hidden></div>
 				<div id="poll-pin-lng" hidden></div>
 				<div id="poll-starting-choice">
-					<button id="poll-new-poll-btn" class="ui-button" type="button" onclick="pollStartingChoice('new')">New Poll</button>
-					<br><br>
-					<button id="poll-add-to-poll-btn" class="ui-button" type="button" onclick="pollStartingChoice('add')">Add to Poll</button>
+					<button id="poll-new-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('new')">New Poll</button>
+					<button id="poll-add-to-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('add')">Add to Poll</button>
 				</div>
 				<div id="poll-after-choice-made" class="">
 					<div id="poll-new-poll" class="">
 						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?" value=""></textarea>
-						<button id="poll-new-add-choice-btn" class="ui-button" type="button" onclick="addNewPollChoice('new')">Add Poll Option</button>
+						<button id="poll-new-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('new')">Add Poll Option</button>
 						<ul id="poll-new-choices" class=""></ul>
 					</div>
 					<div id="poll-add-to-poll" class="">
 						<ul id="poll-list" class=""></ul>
-						<button id="poll-add-add-choice-btn" class="ui-button" type="button" onclick="addNewPollChoice('add')">Add Poll Option</button>
+						<button id="poll-add-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('add')">Add Poll Option</button>
 						<ul id="poll-add-choices" class=""></ul>
 					</div>
 				</div>
