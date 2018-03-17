@@ -2,6 +2,7 @@ var map;
 var currentPinSelection = "basicPin";
 var globLineCoord = [];
 var globShapeCoord = [];
+var pollPolylines = []
 
 // Cordova is ready
 //
@@ -409,7 +410,7 @@ function initMap() {
 				break;
 			case "pollPin":
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
-				initPollPin(data.val().pollID, myLatLng,map, pinIcons['pollPin'].icon, pollInfoWindows);
+				initPollPin(data.val().pollID, myLatLng,map, pinIcons['pollPin'].icon, pollInfoWindows, data.key);
 				break;
 			default:
 				var myLatLng = {lat: data.val().lat, lng: data.val().long};
@@ -598,7 +599,7 @@ function newMeetingPin(lat, lng) {
 	$('#meeting-pin-dialog').dialog('open');
 } //End function newMeetingPin(lat, lng)
 
-function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows) {
+function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) {
 	var pollName = '';
 	
 	pollRef = db.ref('Maps/public/map2/polls/' + pollID);
@@ -624,15 +625,9 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows) {
 				'<fieldset>';
 	
 			var i = 1;
-			var keys = [];
 			for (var key in data.val()) {
 				var radioGroupName = pollName.split(' ').join('-') + '-' + 'radio';
 				var optionID = radioGroupName + '-' + i;
-
-				keys.push({
-					'id': optionID,
-					'key': key
-				});
 
 				contentString += 
 					'<label for="' + key + '">' + data.val()[key].pollOption + '</label>' +
@@ -644,9 +639,24 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows) {
 
 			contentString += 
 					'</fieldset>' +
+					'<br>' +
+					'<button id="show-' + pollName.split(' ').join('-') +'" name="" class="show-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinShowOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID +'\',\'' + markerID + '\')">' +
+						'Show Poll Markers' +
+					'</button>' +
+					'<button id="hide-' + pollName.split(' ').join('-') +'" name="" class="hide-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinHideOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID +'\')">' +
+						'Hide Poll Markers' +
+					'</button>' +
 				'</div>' +
 			'</div>';
 		}).then(function() {
+			var marker = new google.maps.Marker({
+				position: myLatLng,
+				map: map,
+				title: 'pollPin',
+				icon: pinIcon,
+				"pollID": pollID
+			});
+
 			//Add the new poll if it does not already exist to the list
 			if (!pollInfoWindows.some(function(poll) {return poll.pollID == pollID})) {
 				var temp = new google.maps.InfoWindow({
@@ -657,27 +667,29 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows) {
 					"pollID": pollID,
 					"infoWindow": temp,
 					"infoWindowContent": contentString,
-					votes: []
+					markers: [marker]
 				})
 			} //End if (!pollInfoWindows.some(function(poll) {return poll.pollID == pollID}))
 			else {
 				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
 				poll.infoWindowContent = contentString;
+				poll.markers.push(marker);
 			} //End else
-
-			var marker = new google.maps.Marker({
-				position: myLatLng,
-				map: map,
-				title: 'pollPin',
-				icon: pinIcon,
-				"pollID": pollID
-			});
 
 			marker.addListener('click', function() {
 				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
 				poll.infoWindow.close();
 				poll.infoWindow.setContent(poll.infoWindowContent);
 				poll.infoWindow.open(map, marker);
+
+				if (pollPolylines.find(function(poll) {return poll.pollID == pollID})) {
+					$('#show-' + pollName.split(' ').join('-')).hide();
+					$('#hide-' + pollName.split(' ').join('-')).show();
+				} //End if (pollPolylines.find(function(poll) {return poll.pollID == pollID}))
+				else {
+					$('#show-' + pollName.split(' ').join('-')).show();
+					$('#hide-' + pollName.split(' ').join('-')).hide();
+				} //End else
 
 				$( ".poll-pin-option" ).checkboxradio({
 					icon: false
@@ -795,6 +807,60 @@ function addNewPollChoice(choice) {
 	//$('#poll-new-add-choice-btn').hide();
 } //End function addNewPollChoice(choice)
 
+function pollPinShowOtherMarkers(pollName, pollID, markerID) {
+	$('#show-' + pollName).hide();
+	$('#hide-' + pollName).show();
+
+	var pollRef = db.ref('Maps/public/map2/polls/' + pollID + '/associatedPins');
+
+	pollRef.once('value', function(data) {
+		var originMarkerRef = db.ref('Maps/public/map2/pins/' + markerID);
+		originMarkerRef.once('value', function(originMarker) {
+			for (var key in data.val()) {
+				if (data.val()[key].pinID != markerID)
+				{
+					var pinRef = db.ref('Maps/public/map2/pins/' + data.val()[key].pinID);
+					
+					pinRef.once('value', function(data) {
+
+						var polyline = new google.maps.Polyline({
+							path: [
+								{lat: parseFloat(originMarker.val().lat), lng: parseFloat(originMarker.val().long)},
+								{lat: parseFloat(data.val().lat), lng: parseFloat(data.val().long)}
+							],
+							geodesic: true,
+							strokeColor: '#FF0000',
+							strokeOpacity: 1.0,
+							strokeWeight: 2
+						})
+
+						polyline.setMap(map);
+
+						pollPolylines.push({
+							'id': key,
+							'pollID': pollID,
+							'polyline': polyline
+						});
+					});
+				} //End if (data.val()[key].pinID != markerID)
+			} //End for (var key in data.val())
+		});
+	});
+} //End function pollPinShowOtherMarkers(pollName, pollID, markerID)
+
+function pollPinHideOtherMarkers(pollName, pollID) {
+	$('#show-' + pollName).show();
+	$('#hide-' + pollName).hide();
+
+	pollPolylines.forEach(function(poll) {
+		if (poll.pollID == pollID) {
+			poll.polyline.setMap(null);
+		} //End if (poll.pollID == pollID)
+	});
+
+	pollPolylines = pollPolylines.filter(poll => poll.pollID != pollID);
+} //End function pollPinHideOtherMarkers(pollName, pollID)
+
 function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID) {
 	user = firebase.auth().currentUser;
 	if (user) {
@@ -857,7 +923,7 @@ function getExistingPolls() {
 	
 				$('#poll-list').append(
 					'<li>' +
-						'<button id="' + name +'" name="' + key + '" class="poll-option-name ui-button ui-widget rounded-corners" type="button" onclick=" hidePollChoices(\'' + name + '\')">' +
+						'<button id="' + name +'" name="' + key + '" class="poll-option-name ui-button ui-widget rounded-corners" type="button" onclick="hidePollChoices(\'' + name + '\')">' +
 							data.val()[key].pollName +
 						'</button>' +
 					'</li>'
