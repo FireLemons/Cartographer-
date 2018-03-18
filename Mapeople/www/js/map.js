@@ -121,6 +121,7 @@ function initMap() {
 		center: {lat: 38.940451750007945, lng: -92.32772827148438}
 	});
 
+	
 	var customMapTypeId = 'custom_style';
 	var customMapType = new google.maps.StyledMapType([
 	{
@@ -609,7 +610,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 	return pollRef.once("value", function(data) {
 		pollName = data.val().pollName;
 		contentString =
-		'<div id="content"'+
+		'<div id="poll-infoWindow-' + pollName.split(' ').join('-') + '">'+
 			'<div id="siteNotice">'+
 			'</div>'+
 			'<h6 id="" class="firstHeading">' + 
@@ -630,8 +631,10 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				var optionID = radioGroupName + '-' + i;
 
 				contentString += 
-					'<label for="' + key + '">' + data.val()[key].pollOption + '</label>' +
-					'<input type="radio" name="' + radioGroupName + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + optionID + '\',\'' + pollID + '\',\'' + key + '\')">' +
+					'<label for="' + key + '">' + data.val()[key].pollOption + 
+						'<input type="radio" name="' + radioGroupName + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
+					'</label>' +
+					'<label id="votes-' + key + '" class="votes-label" for=""> Votes: ' + '' + '0</label>' +
 					'<br>';
 	
 				i++;
@@ -640,15 +643,18 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 			contentString += 
 					'</fieldset>' +
 					'<br>' +
-					'<button id="show-' + pollName.split(' ').join('-') +'" name="" class="show-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinShowOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID + '\')">' +
-						'Show Poll Markers' +
-					'</button>' +
-					'<button id="hide-' + pollName.split(' ').join('-') +'" name="" class="hide-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinHideOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID +'\')">' +
-						'Hide Poll Markers' +
-					'</button>' +
+					'<div id="" class="poll-marker-display-buttons">' + 
+						'<button id="show-' + pollID +'" name="" class="poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinShowOtherMarkers(\'' + pollID + '\')">' +
+							'Show Poll Markers' +
+						'</button>' +
+						'<button id="hide-' + pollID +'" name="" class="poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinHideOtherMarkers(\'' + pollID +'\')">' +
+							'Hide Poll Markers' +
+						'</button>' +
+					'</div>' + 
 				'</div>' +
 			'</div>';
 		}).then(function() {
+			var maxWidth = 325;
 			var marker = new google.maps.Marker({
 				position: myLatLng,
 				map: map,
@@ -679,12 +685,15 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
 				poll.infoWindow.close();
 				poll.infoWindow.setContent(poll.infoWindowContent);
+				poll.infoWindow.setOptions({maxWidth:maxWidth}); 
 				poll.infoWindow.open(map, marker);
 
-				$('#show-' + pollName.split(' ').join('-')).attr('name', marker.pinID);
+				//$('#poll-infoWindow-' + pollName.split(' ').join('-')).css('width', '200px');
 
-				$('#show-' + pollName.split(' ').join('-')).show();
-				$('#hide-' + pollName.split(' ').join('-')).hide();
+				$('#show-' + pollID).attr('name', marker.pinID);
+
+				$('#show-' + pollID).show();
+				$('#hide-' + pollID).hide();
 
 				$( ".poll-pin-option" ).checkboxradio({
 					icon: false
@@ -783,7 +792,7 @@ function addPollPinToFirebase() {
 function addNewPollChoice(choice) {
 	var contentString =
 		'<li>' +
-			'<input id="" class="poll-option-input" type="text" name="" value="">' +
+			'<input id="" class="poll-option-input" maxlength="20" type="text" name="" value="">' +
 			'<button id="" class="poll-option-remove ui-button ui-widget ui-button-icon-only rounded-corners" type="button">' +
 				'<span class="ui-button-icon ui-icon ui-icon-closethick"></span>' +
 				'<span class="ui-button-icon-space"> </span>' +
@@ -803,13 +812,13 @@ function addNewPollChoice(choice) {
 	//$('#poll-new-add-choice-btn').hide();
 } //End function addNewPollChoice(choice)
 
-function pollPinShowOtherMarkers(pollName, pollID) {
-	pollPinHideOtherMarkers(pollName, pollID);
+function pollPinShowOtherMarkers(pollID) {
+	pollPinHideOtherMarkers(pollID);
 
-	$('#show-' + pollName).hide();
-	$('#hide-' + pollName).show();
+	$('#show-' + pollID).hide();
+	$('#hide-' + pollID).show();
 
-	var markerID = $('#show-' + pollName).attr('name')
+	var markerID = $('#show-' + pollID).attr('name')
 
 	var pollRef = db.ref('Maps/public/map2/polls/' + pollID + '/associatedPins');
 
@@ -846,11 +855,11 @@ function pollPinShowOtherMarkers(pollName, pollID) {
 			} //End for (var key in data.val())
 		});
 	});
-} //End function pollPinShowOtherMarkers(pollName, pollID, markerID)
+} //End function pollPinShowOtherMarkers(pollID, markerID)
 
-function pollPinHideOtherMarkers(pollName, pollID) {
-	$('#show-' + pollName).show();
-	$('#hide-' + pollName).hide();
+function pollPinHideOtherMarkers(pollID) {
+	$('#show-' + pollID).show();
+	$('#hide-' + pollID).hide();
 
 	pollPolylines.forEach(function(poll) {
 		if (poll.pollID == pollID) {
@@ -859,10 +868,45 @@ function pollPinHideOtherMarkers(pollName, pollID) {
 	});
 
 	pollPolylines = pollPolylines.filter(poll => poll.pollID != pollID);
-} //End function pollPinHideOtherMarkers(pollName, pollID)
+} //End function pollPinHideOtherMarkers(pollID)
 
-function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID) {
-	user = firebase.auth().currentUser;
+/*
+function pollPinDisplayVotes(pollID, optionID) {
+	var user = firebase.auth().currentUser;
+	if (user) {
+		var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
+		
+		pollVoteRef.once("value", function(data) {
+			var votes = []
+
+			for (var key in data.val()) {
+				if (votes.some(function(vote) { return vote.choice == data.val()[key].choice })) {
+					votes.find(function(vote) { return vote.choice == data.val()[key].choice }).voteCount += 1;
+				} //End 
+				else {
+					votes.push({
+						'voteCount': 1,
+						'choice': data.val()[key].choice
+					});
+				} //End else
+			} //End for (var key in data.val())
+
+			$('label.votes-label:visible').text(' Votes: 0');
+
+			votes.forEach(function(data) {
+				$('#votes-' + data.choice).text(' Votes: ' + data.voteCount);
+			});
+
+		});
+	} //End if (user)
+	else {
+		console.log('No user')
+	} //End else
+} //End 
+//*/
+
+function pollPinUserMadeChoice(pollID, optionID) {
+	var user = firebase.auth().currentUser;
 	if (user) {
 		var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
 		
@@ -874,6 +918,8 @@ function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID) {
 					db.ref('Maps/public/map2/polls/' + pollID + '/votes/' + key).set({
 						"user": user.uid,
 						"choice": optionID
+					}).then(function() {
+						//pollPinDisplayVotes(pollID, optionID);
 					});
 
 					userAlreadyVoted = true;
@@ -885,6 +931,8 @@ function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID) {
 				pollUserVoteRef.set({
 					"user": user.uid,
 					"choice": optionID
+				}).then(function() {
+					//pollPinDisplayVotes(pollID, optionID);
 				});
 			} //End if (!userAlreadyVoted)
 		});
@@ -892,11 +940,10 @@ function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID) {
 	else {
 		console.log('No user')
 	} //End else
-} //End function pollPinUserMadeChoice(optionRadioButtonID, pollID, optionID)
+} //End function pollPinUserMadeChoice(pollID, optionID)
 
 function pollPinDisplayUserChoice(pollID) {
 	var user = firebase.auth().currentUser;
-
 	if (user) {
 		var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
 		

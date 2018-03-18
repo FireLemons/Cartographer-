@@ -92,16 +92,12 @@ input.poll-option-input {
 	padding: 15px;
 }
 
-.ui-dialog .ui-dialog-buttonpane {
+.ui-dialog .ui-dialog-buttonpane, #poll-starting-choice, #poll-new-poll, #poll-list, #poll-add-to-poll, .poll-marker-display-buttons {
 	text-align: center;
 }
 
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
 	float: none;
-}
-
-#poll-starting-choice, #poll-list, #poll-add-to-poll {
-	text-align: center;
 }
 
 #poll-new-poll-btn, #poll-add-to-poll-btn, .poll-option-name {
