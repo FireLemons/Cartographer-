@@ -640,7 +640,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 			contentString += 
 					'</fieldset>' +
 					'<br>' +
-					'<button id="show-' + pollName.split(' ').join('-') +'" name="" class="show-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinShowOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID +'\',\'' + markerID + '\')">' +
+					'<button id="show-' + pollName.split(' ').join('-') +'" name="" class="show-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinShowOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID + '\')">' +
 						'Show Poll Markers' +
 					'</button>' +
 					'<button id="hide-' + pollName.split(' ').join('-') +'" name="" class="hide-markers poll-show-markers ui-button ui-widget rounded-corners" type="button" onclick="pollPinHideOtherMarkers(\'' + pollName.split(' ').join('-') + '\',\'' + pollID +'\')">' +
@@ -654,7 +654,8 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				map: map,
 				title: 'pollPin',
 				icon: pinIcon,
-				"pollID": pollID
+				"pollID": pollID,
+				"pinID": markerID
 			});
 
 			//Add the new poll if it does not already exist to the list
@@ -666,14 +667,12 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				pollInfoWindows.push({
 					"pollID": pollID,
 					"infoWindow": temp,
-					"infoWindowContent": contentString,
-					markers: [marker]
+					"infoWindowContent": contentString
 				})
 			} //End if (!pollInfoWindows.some(function(poll) {return poll.pollID == pollID}))
 			else {
 				var poll = pollInfoWindows.find(function(data) { return data.pollID == pollID});
 				poll.infoWindowContent = contentString;
-				poll.markers.push(marker);
 			} //End else
 
 			marker.addListener('click', function() {
@@ -682,14 +681,10 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				poll.infoWindow.setContent(poll.infoWindowContent);
 				poll.infoWindow.open(map, marker);
 
-				if (pollPolylines.find(function(poll) {return poll.pollID == pollID})) {
-					$('#show-' + pollName.split(' ').join('-')).hide();
-					$('#hide-' + pollName.split(' ').join('-')).show();
-				} //End if (pollPolylines.find(function(poll) {return poll.pollID == pollID}))
-				else {
-					$('#show-' + pollName.split(' ').join('-')).show();
-					$('#hide-' + pollName.split(' ').join('-')).hide();
-				} //End else
+				$('#show-' + pollName.split(' ').join('-')).attr('name', marker.pinID);
+
+				$('#show-' + pollName.split(' ').join('-')).show();
+				$('#hide-' + pollName.split(' ').join('-')).hide();
 
 				$( ".poll-pin-option" ).checkboxradio({
 					icon: false
@@ -808,9 +803,13 @@ function addNewPollChoice(choice) {
 	//$('#poll-new-add-choice-btn').hide();
 } //End function addNewPollChoice(choice)
 
-function pollPinShowOtherMarkers(pollName, pollID, markerID) {
+function pollPinShowOtherMarkers(pollName, pollID) {
+	pollPinHideOtherMarkers(pollName, pollID);
+
 	$('#show-' + pollName).hide();
 	$('#hide-' + pollName).show();
+
+	var markerID = $('#show-' + pollName).attr('name')
 
 	var pollRef = db.ref('Maps/public/map2/polls/' + pollID + '/associatedPins');
 
