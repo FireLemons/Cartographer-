@@ -734,6 +734,7 @@ function newPollPin(lat, lng) {
 			$('#poll-pin-lng').val('');
 			$('#poll-new-choices').empty();
 			$('#poll-list').empty();
+			$('#poll-list').show();
 			$('#poll-add-choices').empty();
 			$('#poll-new-add-choice-btn').show();
 		} //End close: function()
@@ -759,7 +760,7 @@ function addPollPinToFirebase() {
 		});
 	} //End if ($('#poll-new-poll').is(':visible'))
 	else if ($('#poll-add-to-poll').is(':visible')) {
-		var id = $('ul#poll-list > li > button:visible').attr('name');
+		var id = $('ul#poll-list > li > button#' + $('#poll-pin-dialog').dialog('option', 'title').split(' ').join('-')).attr('name');
 
 		pollRef = db.ref('Maps/public/map2/polls/' + id);
 
@@ -916,14 +917,12 @@ function getExistingPolls() {
 		pollRef = db.ref('Maps/public/map2/polls/');
 		
 		pollRef.once("value", function(data) {
-			pollName = data.val().pollName;
-	
 			for (var key in data.val()) {
-				name = data.val()[key].pollName.split(' ').join('-');
-	
+				var pollName = data.val()[key].pollName.split(' ').join('-');
+
 				$('#poll-list').append(
 					'<li>' +
-						'<button id="' + name +'" name="' + key + '" class="poll-option-name ui-button ui-widget rounded-corners" type="button" onclick="hidePollChoices(\'' + name + '\')">' +
+						'<button id="' + pollName +'" name="' + key + '" class="poll-option-name ui-button ui-widget rounded-corners" type="button" onclick="hidePollChoices(\'' + pollName + '\')">' +
 							data.val()[key].pollName +
 						'</button>' +
 					'</li>'
@@ -935,7 +934,7 @@ function getExistingPolls() {
 
 function hidePollChoices(name) {
 	$('#poll-list').hide();
-	$('#poll-pin-dialog').dialog('option', 'title', 'Poll: ' + name.split('-').join(' '));
+	$('#poll-pin-dialog').dialog('option', 'title', name.split('-').join(' '));
 	$('#poll-add-add-choice-btn').show();
 } //End function hideOtherPollChoices(name)
 
