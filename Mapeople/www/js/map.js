@@ -652,7 +652,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 
 				contentString += 
 					'<label for="' + key + '">' + data.val()[key].pollOption + 
-						'<input type="radio" name="' + radioGroupName + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
+						'<input type="radio" name="' + ''/*radioGroupName*/ + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
 					'</label>' +
 					'<label id="votes-' + key + '" class="votes-label ' + pollID  +'" for=""> Votes: ' + '' + '0</label>' +
 					'<br>';
@@ -790,8 +790,23 @@ function addPollPinToFirebase() {
 		pollRef = db.ref('Maps/public/map2/polls/' + id);
 
 		$('ul#poll-add-choices > li > input.poll-option-input').each(function() {
-			db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push().set({
+			optionRef = db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push();
+			optionRef.set({
 				"pollOption": this.value
+			});
+			
+			optionRef.on('child_added', function(data) {
+				$('div#poll-infoWindow-' + pollRef.key + ' > div.pollPinContent > fieldset').append(
+					'<label for="' + optionRef.key + '">' + data.val() + 
+					'<input type="radio" name="' + ''/*radioGroupName*/ + '" id="' + optionRef.key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollRef.key + '\',\'' + optionRef.key + '\')">' +
+				'</label>' +
+				'<label id="votes-' + optionRef.key + '" class="votes-label ' + pollRef.key  +'" for=""> Votes: ' + '' + '0</label>' +
+				'<br>'
+				);
+
+				$( ".poll-pin-option:visible" ).checkboxradio({
+					icon: false
+				});
 			});
 		});
 	} //End else if ($('#poll-add-to-poll').is(':visible'))
@@ -805,6 +820,18 @@ function addPollPinToFirebase() {
 
 	db.ref('Maps/public/map2/polls/' + pollRef.key + '/associatedPins/').push().set({
 		"pinID": pinRef.key
+	});
+
+	var voteRef = db.ref('Maps/public/map2/polls/' + pollRef.key + '/votes');
+	voteRef.on('child_added', function(data) {
+		var parentPollKey = data.ref.parent.ref.parent.key;
+
+		pollPinDisplayVotes(parentPollKey)
+		
+		var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
+		userVoteRef.on('value', function(data) {
+			pollPinDisplayVotes(data.ref.parent.ref.parent.key);
+		});
 	});
 	
 	$('#poll-pin-dialog').dialog('close');
