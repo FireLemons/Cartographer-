@@ -425,6 +425,26 @@ function initMap() {
 		} //End switch (data.val().type)
 	});
 
+	//listen for changes in votes in order to update a poll's results
+	var pollVotesRef = db.ref('Maps/public/map2/polls');
+	pollVotesRef.once('value', function(data) {
+		for (var pollKey in data.val()) {
+			var voteRef = db.ref('Maps/public/map2/polls/' + pollKey + '/votes');
+			voteRef.on('child_added', function(data) {
+				//data.ref.parent.ref.parent.key is the key to the poll that contains the specific voteRef
+				//For some reason using pollKey didn't work, it would just be the last pollKey in the loop for all of the event listeners
+				var parentPollKey = data.ref.parent.ref.parent.key;
+
+				pollPinDisplayVotes(parentPollKey)
+				
+				var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
+				userVoteRef.on('value', function(data) {
+					pollPinDisplayVotes(data.ref.parent.ref.parent.key);
+				});
+			});
+		} //End for (var key in data.val())
+	});
+
 	var legend = document.getElementById('legend');
 
 	//Put the icons and their names in the legend
@@ -610,7 +630,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 	return pollRef.once("value", function(data) {
 		pollName = data.val().pollName;
 		contentString =
-		'<div id="poll-infoWindow-' + pollName.split(' ').join('-') + '">'+
+		'<div id="poll-infoWindow-' + pollID + '">'+
 			'<div id="siteNotice">'+
 			'</div>'+
 			'<h6 id="" class="firstHeading">' + 
@@ -634,7 +654,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 					'<label for="' + key + '">' + data.val()[key].pollOption + 
 						'<input type="radio" name="' + radioGroupName + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
 					'</label>' +
-					'<label id="votes-' + key + '" class="votes-label" for=""> Votes: ' + '' + '0</label>' +
+					'<label id="votes-' + key + '" class="votes-label ' + pollID  +'" for=""> Votes: ' + '' + '0</label>' +
 					'<br>';
 	
 				i++;
@@ -700,6 +720,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				});
 
 				pollPinDisplayUserChoice(pollID, pollInfoWindows);
+				pollPinDisplayVotes(pollID);
 			});
 		});
 	});
@@ -870,8 +891,8 @@ function pollPinHideOtherMarkers(pollID) {
 	pollPolylines = pollPolylines.filter(poll => poll.pollID != pollID);
 } //End function pollPinHideOtherMarkers(pollID)
 
-/*
-function pollPinDisplayVotes(pollID, optionID) {
+//*
+function pollPinDisplayVotes(pollID) {
 	var user = firebase.auth().currentUser;
 	if (user) {
 		var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
@@ -891,7 +912,7 @@ function pollPinDisplayVotes(pollID, optionID) {
 				} //End else
 			} //End for (var key in data.val())
 
-			$('label.votes-label:visible').text(' Votes: 0');
+			$('label.votes-label.' + pollID +':visible').text(' Votes: 0');
 
 			votes.forEach(function(data) {
 				$('#votes-' + data.choice).text(' Votes: ' + data.voteCount);
@@ -919,7 +940,7 @@ function pollPinUserMadeChoice(pollID, optionID) {
 						"user": user.uid,
 						"choice": optionID
 					}).then(function() {
-						//pollPinDisplayVotes(pollID, optionID);
+						pollPinDisplayVotes(pollID);
 					});
 
 					userAlreadyVoted = true;
@@ -932,7 +953,7 @@ function pollPinUserMadeChoice(pollID, optionID) {
 					"user": user.uid,
 					"choice": optionID
 				}).then(function() {
-					//pollPinDisplayVotes(pollID, optionID);
+					pollPinDisplayVotes(pollID);
 				});
 			} //End if (!userAlreadyVoted)
 		});
