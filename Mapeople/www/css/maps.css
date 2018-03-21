@@ -31,7 +31,19 @@
 	padding: 0 1em;
 }
 
+#mapName.taken{
+	border-bottom: 3px solid red;
+}
+
+#mapName.approved{
+	border-bottom: 3px solid #85cd67;
+}
+
 #optionPublic > a{
 	padding: 0 .5em;
 	margin-bottom: 3px;
+}
+
+#takenHint{
+	color: red;
 }

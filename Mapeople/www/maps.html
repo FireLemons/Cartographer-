@@ -63,14 +63,15 @@
 					<form class="col s12" action="#">
 						<div class="row">
 							<div class="input-field col s12">
-								<input placeholder="Map Name" id="map_name" type="text" class="validate">
-								<label for="map_name">Map Name</label>
+								<input placeholder="Map Name" type="text" id="mapName" class="validate">
+								<label for="mapName">Map Name <span id='takenHint' style='display:none'> This name has already been taken in <span></span></span></label>
 							</div>
 						</div>
+						<p>This name is already taken for </p>
 						<p id="optionPublic">
 							Make map public?
 							<a class="btn-flat tooltipped" data-position="bottom" data-delay="50" data-tooltip="Public maps can be searched for and viewed by anyone"><i class="material-icons">info</i></a>
-							<input type="checkbox" class="filled-in" id="isPublic" />
+							<input type="checkbox" id="isPublic" class="filled-in" />
 							<label for="isPublic">Public</label>
 						</p>
 					</form>
