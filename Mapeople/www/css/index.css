@@ -91,3 +91,24 @@ input.poll-option-input {
 	height: 20px;
 	padding: 15px;
 }
+
+.ui-dialog .ui-dialog-buttonpane, #poll-starting-choice, #poll-new-poll, #poll-list, #poll-add-to-poll, .poll-marker-display-buttons {
+	text-align: center;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+	float: none;
+}
+
+#poll-new-poll-btn, #poll-add-to-poll-btn, .poll-option-name {
+	margin: 5px;
+	width: 65%;
+}
+
+#poll-list {
+	margin: 0px;
+}
+
+.rounded-corners {
+	border-radius: 3px;
+}
