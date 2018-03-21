@@ -62,31 +62,31 @@
             <p id="pinHide" class="pinToggleButton"><i class="material-icons left">chevron_left</i> Pins</p>
             <p id="pinShow" class="pinToggleButton" style="display:none;"><i class="medium material-icons">chevron_right</i></p>
         </div>
-        <div id="text-pin-dialog" class="" title="New Text Pin">
-            <textarea id="text-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What do you want to say?" value=""></textarea>
+        <div id="text-pin-dialog" title="New Text Pin">
+            <textarea id="text-pin-dialog-textarea" maxlength="240" warp="hard" placeholder="What do you want to say?"></textarea>
 		</div>
-		<div id="meeting-pin-dialog" class="" title="New Meeting Pin">
-            <textarea id="meeting-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the meeting for?" value=""></textarea>
+		<div id="meeting-pin-dialog" title="New Meeting Pin">
+            <textarea id="meeting-pin-dialog-textarea" maxlength="240" warp="hard" placeholder="What's the meeting for?"></textarea>
 			<p>Date: <input type="text" id="meetingPinDatePicker"></p>
 		</div>
 		<div id="poll-pin-dialog-container">
-			<div id="poll-pin-dialog" class="" title="">
+			<div id="poll-pin-dialog">
 				<div id="poll-pin-lat" hidden></div>
 				<div id="poll-pin-lng" hidden></div>
 				<div id="poll-starting-choice">
 					<button id="poll-new-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('new')">New Poll</button>
 					<button id="poll-add-to-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('add')">Add to Poll</button>
 				</div>
-				<div id="poll-after-choice-made" class="">
-					<div id="poll-new-poll" class="">
-						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?" value=""></textarea>
+				<div id="poll-after-choice-made">
+					<div id="poll-new-poll">
+						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?"></textarea>
 						<button id="poll-new-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('new')">Add Poll Option</button>
-						<ul id="poll-new-choices" class=""></ul>
+						<ul id="poll-new-choices"></ul>
 					</div>
-					<div id="poll-add-to-poll" class="">
-						<ul id="poll-list" class=""></ul>
+					<div id="poll-add-to-poll">
+						<ul id="poll-list"></ul>
 						<button id="poll-add-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('add')">Add Poll Option</button>
-						<ul id="poll-add-choices" class=""></ul>
+						<ul id="poll-add-choices"></ul>
 					</div>
 				</div>
 			</div>

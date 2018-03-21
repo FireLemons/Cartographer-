@@ -29,15 +29,15 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 
 .ui-dialog > .ui-widget-header {
 	background: #66BB6A;
-	color: #fff;
+	color: white;
 }
 
 #legend {
 	/*font-family: Arial, sans-serif;*/
 	font-family: 'Comfortaa';
-	background: #fff;
+	background: white;
 	margin: 10px;
-	border: 3px solid #000;
+	border: 3px solid black;
 	opacity: .5;
 }
 
@@ -65,7 +65,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 #pinHide {
-	border-bottom: 3px solid #000;
+	border-bottom: 3px solid black;
 	overflow: visible;
 	display: flex;
 }

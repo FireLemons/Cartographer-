@@ -123,24 +123,30 @@ function initMap() {
 
 	
 	var customMapTypeId = 'custom_style';
-	var customMapType = new google.maps.StyledMapType([
-	{
-		stylers: [
-			{hue: '#81F9FB'},
-			{visibility: 'simplified'},
-			{gamma: 0.3},
-			{weight: 0.20}
-		]
+	var customMapType = new google.maps.StyledMapType(
+	[
+		{
+			stylers: [
+				{hue: '#81F9FB'},
+				{visibility: 'simplified'},
+				{gamma: 0.3},
+				{weight: 0.20}
+			]
 		},
 		{
 			elementType: 'labels',
-			stylers: [{visibility: 'on'}]
+			stylers: [
+				{visibility: 'on'}
+			]
 		},
 		{
 			featureType: 'water',
-			stylers: [{color: '#346FFF'}]
+			stylers: [
+				{color: '#346FFF'}
+			]
 		}
-		], {
+	],
+	{
 		name: 'Trippy'
 	});
 
@@ -453,6 +459,7 @@ function initMap() {
 		var name = type.name;
 		var icon = type.icon;
 		var div = document.createElement('div');
+		
 		div.innerHTML = '<a id="' + 
 		type.htmlID + '" ' +
 		'onclick="selectPin(\'' + key.toString() + '\')" class="">' +
@@ -465,6 +472,24 @@ function initMap() {
 	map.controls[google.maps.ControlPosition.LEFT_TOP].push(legend);
 }
 
+/*****************************************************
+ * General Functions
+ *****************************************************/
+
+function correctPinSize(pin){
+	pin.each(function () {
+		if (this.scrollHeight > 48) {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		} //End if (this.scrollHeight > 48)
+		else {
+			this.setAttribute('style', 'height:48px; overflow-y:hidden;');
+		} //End else
+	}).on('input', function () {
+		this.style.height = 'auto';
+		this.style.height = (this.scrollHeight) + 'px';
+	});
+}
+
 function selectPin(selectedPin) {
 	console.log("selectPin(selectedPin) called")
 	console.dir(selectedPin);
@@ -474,6 +499,10 @@ function selectPin(selectedPin) {
 
 	currentPinSelection = selectedPin;
 } //End function selectPin(selectedPin)
+
+/*****************************************************
+ * Text Pin Functions
+ *****************************************************/
 
 function initTextPinWindow(user, userText) {
 	var contentString = '<div id="content"'+
@@ -496,17 +525,7 @@ function initTextPinWindow(user, userText) {
 } //End function initTextPinWindow(user, userText)
 
 function newTextPin(lat, lng) {
-	$('#text-pin-dialog-textarea').each(function () {
-		if (this.scrollHeight > 48) {
-			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-		} //End if (this.scrollHeight > 48)
-		else {
-			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
-		} //End else
-	}).on('input', function () {
-		this.style.height = 'auto';
-		this.style.height = (this.scrollHeight) + 'px';
-	});
+	correctPinSize($('#text-pin-dialog-textarea'));
 
 	$('#text-pin-dialog').dialog({
 		autoOpen: false,
@@ -536,6 +555,10 @@ function newTextPin(lat, lng) {
 	$('#text-pin-dialog').dialog('open');
 } //End function newTextPin(lat, lng)
 
+/*****************************************************
+ * Meeting Pin Functions
+ *****************************************************/
+
 function initMeetingPin(user, meetingText, day, month, year) {
 	var contentString = '<div id="content"'+
 	'<div id="siteNotice">'+
@@ -558,17 +581,7 @@ function initMeetingPin(user, meetingText, day, month, year) {
 } //End function initMeetingPin(user, meetingDate, meetingText) {
 
 function newMeetingPin(lat, lng) {
-	$('#meeting-pin-dialog-textarea').each(function () {
-		if (this.scrollHeight > 48) {
-			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-		} //End if (this.scrollHeight > 48)
-		else {
-			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
-		} //End else
-	}).on('input', function () {
-		this.style.height = 'auto';
-		this.style.height = (this.scrollHeight) + 'px';
-	});
+	correctPinSize($('#meeting-pin-dialog-textarea'));
 
 	$('#meeting-pin-dialog').dialog({
 		autoOpen: false,
@@ -619,6 +632,10 @@ function newMeetingPin(lat, lng) {
 	
 	$('#meeting-pin-dialog').dialog('open');
 } //End function newMeetingPin(lat, lng)
+
+/*****************************************************
+ * Poll Pin Functions
+ *****************************************************/
 
 function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) {
 	var pollName = '';
@@ -727,17 +744,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 } //End function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows)
 
 function newPollPin(lat, lng) {
-	$('#poll-pin-dialog-textarea').each(function () {
-		if (this.scrollHeight > 48) {
-			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-		} //End if (this.scrollHeight > 48)
-		else {
-			this.setAttribute('style', 'height:48px;overflow-y:hidden;');
-		} //End else
-	}).on('input', function () {
-		this.style.height = 'auto';
-		this.style.height = (this.scrollHeight) + 'px';
-	});
+	correctPinSize($('#poll-pin-dialog-textarea'));
 
 	$('#poll-pin-dialog').dialog({
 		autoOpen: false,
@@ -1007,14 +1014,16 @@ function pollPinDisplayUserChoice(pollID) {
 } //End function pollPinDisplayUserChoice(pollID)
 
 function getExistingPolls() {
-	if ($('#poll-list').children().length == 0) {
+	var pollList = $('#poll-list');
+	
+	if (pollList.children().length == 0) {
 		pollRef = db.ref('Maps/public/map2/polls/');
 		
 		pollRef.once("value", function(data) {
 			for (var key in data.val()) {
 				var pollName = data.val()[key].pollName.split(' ').join('-');
 
-				$('#poll-list').append(
+				pollList.append(
 					'<li>' +
 						'<button id="' + pollName +'" name="' + key + '" class="poll-option-name ui-button ui-widget rounded-corners" type="button" onclick="hidePollChoices(\'' + pollName + '\')">' +
 							data.val()[key].pollName +
@@ -1052,7 +1061,7 @@ function pollStartingChoice(choice) {
 		getExistingPolls();
 	} //End else if (choice == "add")
 	else {
-		console.log('pollStartingChoice(choice = ' + choice + '): How did this happen?');
+		console.error('pollStartingChoice(choice = ' + choice + '): How did this happen?');
 	} //End else
 
 	
@@ -1090,7 +1099,7 @@ function pollStartingChoice(choice) {
 } //End function pollStartingChoice(choice)
 
 function writeLine() {
-    firebase.database().ref('Maps/public/map2/pins').push().set({
+    db.ref('Maps/public/map2/pins').push().set({
         "latLongs": globLineCoord,
         "type":"linePin"
     });
@@ -1098,11 +1107,9 @@ function writeLine() {
 }
 
 function writeShape() {
-    firebase.database().ref('Maps/public/map2/pins').push().set({
+    db.ref('Maps/public/map2/pins').push().set({
         "latLongs": globShapeCoord,
         "type":"shapePin"
     });
     globShapeCoord = [];
 }
-
-function addUser() {}
