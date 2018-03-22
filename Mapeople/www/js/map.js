@@ -991,6 +991,9 @@ function pollPinUserMadeChoice(pollID, optionID) {
 				});
 			} //End if (!userAlreadyVoted)
 		});
+		
+		$('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input').prop('checked', false).change();
+		$('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input#' + optionID).prop('checked', true).change();
 	} //End if (user)
 	else {
 		console.log('No user')
