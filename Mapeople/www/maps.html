@@ -64,7 +64,7 @@
 						<div class="row">
 							<div class="input-field col s12">
 								<input placeholder="Map Name" type="text" id="mapName" class="validate">
-								<label for="mapName">Map Name <span id='takenHint' style='display:none'> This name has already been taken for <span></span></span></label>
+								<label for="mapName">Map Name</label>
 							</div>
 						</div>
 						<p id="optionPublic">
@@ -76,9 +76,16 @@
 					</form>
 				</div>
 			</div>
-			<div class="modal-footer flex">
-				<a href="#" id="buttonCreateMap" class="waves-effect waves-light btn"><i class="material-icons">add</i> Create</a>
-				<a href="#" class="modal-action modal-close waves-effect waves-light btn red">Cancel</a>
+			<div class="modal-footer">
+				<div class="flex">
+					<a href="#" id="buttonCreateMap" class="waves-effect waves-light btn">
+						<i class="material-icons">add</i>
+					Create</a>
+					<a href="#" class="modal-action modal-close waves-effect waves-light btn red">Cancel</a>
+				</div>
+				<div class="progress" style="display:none">
+					<div class="indeterminate"></div>
+				</div>
 			</div>
 		</div>
     </body>

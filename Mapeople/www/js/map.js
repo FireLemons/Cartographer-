@@ -14,6 +14,10 @@ function onDeviceReady() {
 // DOM has loaded
 //
 $(function(){
+	if(!(firebase || jQuery)){
+		document.getElementById('noInet').display = 'block'
+	}
+	
 	$("#pinHide").click(function(){
 		$("#legend").animate(
 			{width:"toggle"}, 
