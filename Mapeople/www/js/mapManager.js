@@ -18,6 +18,10 @@ $(document).ready(function(){
 	
 	$('#buttonCreateMap').click(function(){
 		loadBarNewMap.show();
+		
+		db.ref('Maps/' + $('').checked()).push().set({
+			
+		});
 		//write to db and hide loadbar
 	});
 });
