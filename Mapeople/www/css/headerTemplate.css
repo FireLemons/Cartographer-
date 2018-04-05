@@ -18,14 +18,16 @@
 	100%{}
 }
 
-
-
-.ellipses{
-	height: .75rem;
-	width: 1.5rem;
-	background-color: var(--mapeople-vibrant-blue);
-	border-radius: 50%;
-	display: inline-block;
+@keyframes drop{
+	0% {
+		bottom: 1rem;
+	}
+	
+	50% {
+		bottom: 0reml
+	}
+	
+	100%{}
 }
 
 #load{
@@ -54,17 +56,31 @@
 #load i{
 	position: relative;
 	bottom: 10px;
-}
-
-#load span{
-	margin-left: -2.74rem;
-	animation-name: shadow;
+	animation-name: drop;
     animation-duration: 2s;
 	animation-iteration-count: infinite;
 }
 
+#load span{
+	height: .75rem;
+	width: 1.5rem;
+	animation-name: shadow;
+    animation-duration: 2s;
+	animation-iteration-count: infinite;
+	background-color: var(--mapeople-vibrant-blue);
+	border-radius: 50%;
+	display: inline-block;
+	margin-left: -2.74rem;
+}
+
+#nav-mobile-list a {
+	font-weight: bold;
+    font-size: 14pt;
+}
+
 #siteNav{
-	background-color: var(--mapeople-vibrant-green);
+	background-color: var(--mapeople-pastel-green);
+	color: var(--mapeople-vibrant-green);
 }
 
 @media only screen and (max-width: 700px) {
