@@ -433,6 +433,7 @@ function initMap() {
 				});
 				break;
 		} //End switch (data.val().type)
+		$('#load').fadeOut();
 	});
 
 	//listen for changes in votes in order to update a poll's results
