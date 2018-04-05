@@ -25,68 +25,11 @@
 			<script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     </head>
     <body>
-		<!--Template Begin-->	
-			<div id="load">
-				<h1>Mapeople</h1>
-				<h2>is Loading <i class="medium material-icons">place</i><span class="ellipses"></span></h2>
-			</div>
-			<nav id="siteNav" role="navigation">
-				<div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Mapeople</a>
-					<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-
-					<ul id="nav-mobile-list" class="right hide-on-med-and-down">
-						<li class="login-button">
-							<a href="#">Sign in with Google</a>
-						</li>
-						<li class="logout-button" style="display: none;">
-							<a href="#">Sign Out</a>
-						</li>
-						<li>
-							<a href="maps.html">Manage Maps</a>
-						</li>
-					</ul>
-
-					<ul class="side-nav" id="mobile-menu">
-						<li class="login-button">
-							<a href="#">Sign in with Google</a>
-						</li>
-						<li class="logout-button" style="display: none;">
-							<a href="#">Sign Out</a>
-						</li>
-						<li>
-							<a href="maps.html">Manage Maps</a>
-						</li>
-					</ul>
-				</div>
-			</nav>
-			
-			<!--Error Message: Javascript Disabled-->
-			<noscript>
-				<div class="row">
-					<div class="col s12 m12">
-						<div class="card red darken-4">
-							<div class="card-content white-text">
-								<span class="card-title">Error:This app relies on javascript to work. Enable javascript to use our app.</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</noscript>
-			
-			<!--Error Message: No Internet -->
-			<div id="noInet" hidden>
-				<div class="row">
-					<div class="col s12 m12">
-						<div class="card red darken-4">
-							<div class="card-content white-text">
-								<span class="card-title">Error:This app has lost internet connection.</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-            <link rel="stylesheet" type="text/css" href="css/headerTemplate.css">
-		<!--Template End-->
+		<div id="load">
+			<h1>Mapeople</h1>
+			<h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
+		</div>
+		<div id="nav"></div>
         <div id="map"></div>
         <button type="button" onclick="writeLine()" hidden>Done Line</button>
         <button type="button" onclick="writeShape()" hidden>Done Shape</button>
@@ -128,7 +71,6 @@
 			<h6 id="geolocation">Location</h6>
 		</div>
 		<script type="text/javascript" src="js/config.js"></script>
-		<script type="text/javascript" src="js/login.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap">
         </script>

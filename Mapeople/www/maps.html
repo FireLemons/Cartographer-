@@ -26,31 +26,14 @@
 			<script type="text/javascript" src="js/mapManager.js"></script>
     </head>
     <body>
-        <nav class="green lighten-1" role="navigation">
-			<div class="nav-wrapper container"><a id="logo-container" href="index.html" class="brand-logo">Mapeople</a>
-				<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-
-				<ul id="nav-mobile-list" class="right hide-on-med-and-down">
-					<li class="login-button">
-						<a href="#">Sign in with Google</a>
-					</li>
-					<li class="logout-button" style="display: none;">
-						<a href="#">Sign Out</a>
-					</li>
-				</ul>
-
-				<ul class="side-nav" id="mobile-menu">
-					<li class="login-button">
-						<a href="#">Sign in with Google</a>
-					</li>
-					<li class="logout-button" style="display: none;">
-						<a href="#">Sign Out</a>
-					</li>
-				</ul>
-			</div>
-        </nav>
+		<div id="load">
+			<h1>Mapeople</h1>
+			<h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
+		</div>
+        <div id="nav"></div>
 		
 		<div id="container" class="container">
+			<ul class="collection" id="mainList"></ul>
 			<!-- Opens modal form -->
 			<a id="buttonNewMap" class="waves-effect waves-light btn modal-trigger" href="#createMap"><i class="material-icons">add</i> Create Map</a>
 		</div>
@@ -66,6 +49,9 @@
 								<input placeholder="Map Name" type="text" id="mapName" class="validate">
 								<label for="mapName">Map Name</label>
 							</div>
+						</div> 
+						<div class="row">
+							<div id="map"></div>
 						</div>
 						<p id="optionPublic">
 							Make map public?
@@ -78,7 +64,7 @@
 			</div>
 			<div class="modal-footer">
 				<div class="flex">
-					<a href="#" id="buttonCreateMap" class="waves-effect waves-light btn">
+					<a href="#" id="buttonCreateMap" onclick="createMap()" class="waves-effect waves-light btn">
 						<i class="material-icons">add</i>
 					Create</a>
 					<a href="#" class="modal-action modal-close waves-effect waves-light btn red">Cancel</a>
@@ -88,5 +74,6 @@
 				</div>
 			</div>
 		</div>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap"></script>
     </body>
 </html>

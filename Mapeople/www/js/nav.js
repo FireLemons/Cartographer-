@@ -1,7 +1,16 @@
-if(!firebase){
-	console.error("Firebase has failed to load on this page.");
-} else if(!jQuery){
-	console.error("JQuery failed to load on this page.");
+var jQueryLoadErr = typeof jQuery === 'undefined';
+var firebaseLoadErr = typeof firebase === 'undefined';
+
+if(jQueryLoadErr && firebaseLoadErr){
+	document.getElementById('noInet').removeAttribute('hidden');
+	
+	if(firebaseLoadErr){
+		console.error("Firebase has failed to load on this page.");
+	}
+	
+	if(jQueryLoadErr){
+		console.error("JQuery failed to load on this page.");
+	}
 } else {
 	var provider = new firebase.auth.GoogleAuthProvider();
 	
@@ -19,11 +28,11 @@ if(!firebase){
 					});
 				}
 			});
-		} else {
-			displayAnonymous();
 		}
 	});
 	
+	$('.button-collapse').sideNav();
+		
 	$(".login-button").click(function(){
 		firebase.auth().signInWithRedirect(provider);
 	});
@@ -35,9 +44,4 @@ if(!firebase){
 			// An error happened.
 		});
 	});
-}
-
-function displayAnonymous(){
-	
-	
 }

@@ -59,11 +59,6 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	height: 90%;
 }
 
-#nav-mobile-list a {
-	font-weight: bold;
-    font-size: 14pt;
-}
-
 #pinHide {
 	border-bottom: 3px solid black;
 	overflow: visible;
