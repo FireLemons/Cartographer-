@@ -8,71 +8,75 @@ var pollPolylines = []
 //
 function onDeviceReady() {
     $('#load').fadeOut();
-    var options = { timeout: 30000 };
-    watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+	var options = {
+		timeout: 30000
+	};
+	watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 
 // DOM has loaded
 //
 $(function(){
-  if(!(firebase || jQuery)){
-         document.getElementById('noInet').display = 'block'
-  }
-  $("#pinHide").click(function(){
-                      $("#legend").animate(
-                                           {width:"toggle"},
-                                           500,
-                                           function(){
-                                           $(this).children().hide();
-                                           $("#pinShow").show();
-                                           $(this).animate({width:"toggle"}, 500);
-                                           }
-                                           );
-                      });
+	if(!(firebase || jQuery)){
+		document.getElementById('noInet').display = 'block'
+	}
+	
+	/*
+	 *Hiding/showing the pin selection menu
+	 */
+	$("#pinHide").click(function(){
+		$("#legend").animate({
+			width:"toggle"
+		}, 500, function(){
+			$(this).children().hide();
+			$("#pinShow").show();
+			$(this).animate({width:"toggle"}, 500);
+		});
+	});
   
-  $("#pinShow").click(function(){
-                      $("#legend").animate(
-                                           {width:"toggle"},
-                                           500,
-                                           function(){
-                                           $(this).children().show();
-                                           $("#pinShow").hide();
-                                           $(this).animate({width:"toggle"}, 500);
-                                           }
-                                           );
-                      });
+	$("#pinShow").click(function(){
+		$("#legend").animate({
+			width:"toggle"
+		}, 500, function(){
+			$(this).children().show();
+			$("#pinShow").hide();
+			$(this).animate({
+				width:"toggle"
+			}, 500);
+		});
+	});
   
-  $('#text-pin-dialog').dialog();
-  $('#text-pin-dialog-textarea').css('style', 'height: 10px');
-  $('#text-pin-dialog').dialog('close');
+	$('#text-pin-dialog').dialog();
+	$('#text-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#text-pin-dialog').dialog('close');
   
+	$('#meeting-pin-dialog').dialog();
+	$('#meeting-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#meeting-pin-dialog').dialog('close');
   
-  $('#meeting-pin-dialog').dialog();
-  $('#meeting-pin-dialog-textarea').css('style', 'height: 10px');
-  $('#meeting-pin-dialog').dialog('close');
+	$('#poll-pin-dialog').dialog();
+	$('#poll-pin-dialog-textarea').css('style', 'height: 10px');
+	$('#poll-pin-dialog').dialog('close');
   
-  $('#poll-pin-dialog').dialog();
-  $('#poll-pin-dialog-textarea').css('style', 'height: 10px');
-  $('#poll-pin-dialog').dialog('close');
+	$("ul#poll-new-choices").on("click", "button", function(e) {
+		e.preventDefault();
+		$(this).parent().remove();
+		//$('#poll-new-add-choice-btn').show();
+	});
   
-  $("ul#poll-new-choices").on("click", "button", function(e) {
-                              e.preventDefault();
-                              $(this).parent().remove();
-                              //$('#poll-new-add-choice-btn').show();
-                              });
-  
-  $("ul#poll-add-choices").on("click", "button", function(e) {
-                              e.preventDefault();
-                              $(this).parent().remove();
-                              //$('#poll-new-add-choice-btn').show();
-                              });
-  });
+	$("ul#poll-add-choices").on("click", "button", function(e) {
+		e.preventDefault();
+		$(this).parent().remove();
+		//$('#poll-new-add-choice-btn').show();
+	});
+});
 
 // onSuccess Geolocation
 //
 function onSuccess(position) {
     var element = document.getElementById('geolocation');
-    element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
+    element.innerHTML = 
+	'Latitude: '           + position.coords.latitude              + '<br />' +
     'Longitude: '          + position.coords.longitude             + '<br />' +
     'Altitude: '           + position.coords.altitude              + '<br />' +
     'Accuracy: '           + position.coords.accuracy              + '<br />' +
@@ -82,9 +86,8 @@ function onSuccess(position) {
     'Timestamp: '          + position.timestamp                    + '<br />';
     
     //Write to firebase.
-    user = firebase.auth().currentUser;
-    if(user)
-    {
+	user = firebase.auth().currentUser;
+	if(user){
         db.ref('Users/'+user.uid+'/locs/').push().set({
                                                       "lat": position.coords.latitude,
                                                       "lng": position.coords.longitude
@@ -126,16 +129,16 @@ function initMap() {
     mapRef.once("value", function(data) {
                 //alert("~"+data.val().name);
                 map = new google.maps.Map(document.getElementById('map'), {
-                                          zoom: data.val().zoom,
-                                          center: data.val().center
-                                          });
+					zoom: data.val().zoom,
+					center: data.val().center
+				});
                 
                 var customMapTypeId = 'custom_style';
                 var customMapType = new google.maps.StyledMapType(
                                                                   [
                                                                    {
                                                                    stylers: [
-                                                                             {hue: '#81F9FB'},
+                                                                             {hue: '#92c27c'},
                                                                              {visibility: 'simplified'},
                                                                              {gamma: 0.3},
                                                                              {weight: 0.20}
@@ -150,7 +153,7 @@ function initMap() {
                                                                    {
                                                                    featureType: 'water',
                                                                    stylers: [
-                                                                             {color: '#346FFF'}
+                                                                             {color: '#5294ff'}
                                                                              ]
                                                                    }
                                                                    ],
@@ -159,46 +162,46 @@ function initMap() {
                                                                   });
                 
                 var pinIcons = {
-                basicPin: {
-                htmlID: 'basicPin',
-                name: 'Basic',
-                icon: 'oPin3.png'
-                },
-                textPin: {
-                htmlID: 'textPin',
-                name: 'Text',
-                icon: 'oPin3.png'
-                },
-                meetingPin: {
-                htmlID: 'meetingPin',
-                name: 'Meeting',
-                icon: 'oPin3.png'
-                },
-                landmarkPin: {
-                htmlID: 'landmarkPin',
-                name: 'Landmark',
-                icon: 'oPin3.png'
-                },
-                linePin: {
-                htmlID: 'linePin',
-                name: 'Line',
-                icon: 'oPin3.png'
-                },
-                picturePin: {
-                htmlID: 'picturePin',
-                name: 'Picture',
-                icon: 'oPin3.png'
-                },
-                pollPin: {
-                htmlID: 'pollPin',
-                name: 'Poll',
-                icon: 'oPin3.png'
-                },
-                shapePin: {
-                htmlID: 'shape-pin',
-                name: 'Shape',
-                icon: 'oPin3.png'
-                }
+					basicPin: {
+						htmlID: 'basicPin',
+						name: 'Basic',
+						icon: 'oPin3.png'
+					},
+					textPin: {
+						htmlID: 'textPin',
+						name: 'Text',
+						icon: 'oPin3.png'
+					},
+					meetingPin: {
+						htmlID: 'meetingPin',
+						name: 'Meeting',
+						icon: 'oPin3.png'
+					},
+					landmarkPin: {
+						htmlID: 'landmarkPin',
+						name: 'Landmark',
+						icon: 'oPin3.png'
+					},
+					linePin: {
+						htmlID: 'linePin',
+						name: 'Line',
+						icon: 'oPin3.png'
+					},
+					picturePin: {
+						htmlID: 'picturePin',
+						name: 'Picture',
+						icon: 'oPin3.png'
+					},
+					pollPin: {
+						htmlID: 'pollPin',
+						name: 'Poll',
+						icon: 'oPin3.png'
+					},
+					shapePin: {
+						htmlID: 'shape-pin',
+						name: 'Shape',
+						icon: 'oPin3.png'
+					}
                 };
                 
                 var lineCoordinates = [];
@@ -228,82 +231,83 @@ function initMap() {
                 map.mapTypes.set(customMapTypeId, customMapType);
                 map.setMapTypeId(customMapTypeId);
                 
-                // tap to add pin to fb
+                // tap to add pin to firebase
                 google.maps.event.addListener(map, 'click', function( event ){
-                                              switch (currentPinSelection)
-                                              {
-                                              case "basicPin"://mapRef
-                                              //db.ref('Maps/public/map2/pins').push().set({
-                                              mapRef.child('pins').push().set({
-                                                                              "lat": event.latLng.lat(),
-                                                                              "long": event.latLng.lng(),
-                                                                              "type":"basicPin"
-                                                                              });
-                                              break;
-                                              case "textPin":
-                                              newTextPin(event.latLng.lat(), event.latLng.lng());
-                                              break;
-                                              case "meetingPin":
-                                              newMeetingPin(event.latLng.lat(), event.latLng.lng());
-                                              break;
-                                              case "landmarkPin":
-                                              mapRef.child('pins').push().set({
-                                                                              "lat": event.latLng.lat(),
-                                                                              "long": event.latLng.lng(),
-                                                                              "type":"landmarkPin"
-                                                                              });
-                                              break;
-                                              case "linePin":
-                                              globLineCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
-                                              globLineCoord = lineCoordinates;
+					switch (currentPinSelection){
+						case "basicPin"://mapRef
+							//db.ref('Maps/public/map2/pins').push().set({
+							mapRef.child('pins').push().set({
+								"lat": event.latLng.lat(),
+								"long": event.latLng.lng(),
+								"type":"basicPin"
+							});
+							break;
+						case "textPin":
+							newTextPin(event.latLng.lat(), event.latLng.lng());
+							break;
+						case "meetingPin":
+							newMeetingPin(event.latLng.lat(), event.latLng.lng());
+							break;
+						case "landmarkPin":
+							mapRef.child('pins').push().set({
+								"lat": event.latLng.lat(),
+								"long": event.latLng.lng(),
+								"type":"landmarkPin"
+							});
+							break;
+						case "linePin":
+							globLineCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
+							globLineCoord = lineCoordinates;
                                               
-                                              lineWrite.setMap(null);
-                                              lineWrite = new google.maps.Polyline({
-                                                                                   path: globLineCoord,
-                                                                                   strokeColor: '#FF0000',
-                                                                                   strokeOpacity: 1.0,
-                                                                                   strokeWeight: 2,
-                                                                                   // draggable: true,
-                                                                                   geodesic: true
-                                                                                   //editable: true
-                                                                                   });
+							lineWrite.setMap(null);
+							lineWrite = new google.maps.Polyline({
+								"path": globLineCoord,
+								"strokeColor": '#FF0000',
+								"strokeOpacity": 1.0,
+								"strokeWeight": 2,
+								// draggable: true,
+								"geodesic": true
+								//editable: true
+							});
                                               
-                                              lineWrite.setMap(map);
-                                              break;
-                                              case "picturePin":
-                                              mapRef.child('pins').push().set({
-                                                                              "lat": event.latLng.lat(),
-                                                                              "long": event.latLng.lng(),
-                                                                              "type":"picturePin"
-                                                                              });
-                                              break;
-                                              case "pollPin":
-                                              newPollPin(event.latLng.lat(), event.latLng.lng());
-                                              break;
-                                              case "shapePin":
-                                              globShapeCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
-                                              globShapeCoord = shapeCoords;
-                                              shape.setMap(null);
-                                              shape = new google.maps.Polygon({
-                                                                              map: map,
-                                                                              paths: globShapeCoord,
-                                                                              strokeColor: '#FF0000',
-                                                                              strokeOpacity: 0.8,
-                                                                              strokeWeight: 2,
-                                                                              fillColor: '#FF0000',
-                                                                              fillOpacity: 0.35
-                                                                              });
-                                              break;
-                                              default:
-                                              mapRef.child('pins').push().set({
-                                                                              "lat": event.latLng.lat(),
-                                                                              "long": event.latLng.lng(),
-                                                                              "type":"basicPin"
-                                                                              });
-                                              break;
-                                              } //End switch (currentPinSelection)
-                                              
-                                              });
+							lineWrite.setMap(map);
+							break;
+						case "picturePin":
+							mapRef.child('pins').push().set({
+								"lat": event.latLng.lat(),
+								"long": event.latLng.lng(),
+								"type":"picturePin"
+							  });
+							break;
+						case "pollPin":
+							newPollPin(event.latLng.lat(), event.latLng.lng());
+							break;
+						case "shapePin":
+							globShapeCoord.push({
+								lat: event.latLng.lat(), 
+								lng: event.latLng.lng()
+							});
+							globShapeCoord = shapeCoords;
+							shape.setMap(null);
+							shape = new google.maps.Polygon({
+								map: map,
+								paths: globShapeCoord,
+								strokeColor: '#FF0000',
+								strokeOpacity: 0.8,
+								strokeWeight: 2,
+								fillColor: '#FF0000',
+								fillOpacity: 0.35
+							});
+						  break;
+						default:
+							mapRef.child('pins').push().set({
+								"lat": event.latLng.lat(),
+								"long": event.latLng.lng(),
+								"type":"basicPin"
+							});
+							break;
+					} //End switch (currentPinSelection)                              
+				});
                 
                 var pollInfoWindows = [];
                 

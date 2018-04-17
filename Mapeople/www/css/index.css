@@ -32,6 +32,24 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	color: white;
 }
 
+#cancelMarker{
+	background-color: var(--mapeople-pastel-brown);
+}
+
+#confirmMarker{
+	background-color: var(--mapeople-pastel-blue);
+}
+
+#editFinish{
+	background-color: var(--mapeople-pastel-green);
+	width: 100%;
+}
+
+#editFinish a{
+	flex-grow: 1;
+	margin: 1rem;
+}
+
 #legend {
 	/*font-family: Arial, sans-serif;*/
 	font-family: 'Comfortaa';
@@ -56,7 +74,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 #map {
-	height: 90%;
+	height: 100%;
 }
 
 #pinHide {
