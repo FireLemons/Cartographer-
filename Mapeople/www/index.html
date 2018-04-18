@@ -32,11 +32,35 @@
 		<div id="nav"></div>
 		<div id="content">
 			<div id="map"></div>
-			<button type="button" onclick="writeLine()" hidden>Done Line</button>
-			<button type="button" onclick="writeShape()" hidden>Done Shape</button>
+			<!--<button type="button" onclick="writeLine()" hidden>Done Line</button>
+			<button type="button" onclick="writeShape()" hidden>Done Shape</button>-->
 			<div id="legend">
-				<p id="pinHide" class="pinToggleButton"><i class="material-icons left">chevron_left</i> Pins</p>
-				<p id="pinShow" class="pinToggleButton" style="display:none;"><i class="medium material-icons">chevron_right</i></p>
+				<p id="pinHide" class="flex pinToggleButton"><i class="material-icons left">chevron_left</i> Hide</br>Pins</p>
+				<p id="pinShow" class="pinToggleButton" style="display:none;"><i class="material-icons">chevron_right</i></p>
+				<div class="flex">
+					<a class="pin" onclick="selectPin('basicPin')">
+						<img alt='Point' src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('textPin')">
+						<img alt="Sign" src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('meetingPin')">
+						<img alt='Event' src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('linePin')">
+						<img alt="Line" src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('picturePin')">
+						<img alt="Picture" src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('pollPin')">
+						<img alt="Poll" src="oPin3.png">
+					</a>
+					<a class="pin" onclick="selectPin('shapePin')">
+						<img alt="Area" src="oPin3.png">
+					</a>
+				</div>
+			</div>
 			</div>
 			<div class="flex" id="editFinish" hidden>
 				<a id="confirmMarker" class="btn col s5">Confirm</a>

@@ -23,7 +23,7 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 .pinToggleButton {
 	margin: 0;
 	padding: 10%;
-	font-size: 16pt;
+	font-size: 12pt;
 	cursor: pointer;
 }
 
@@ -68,9 +68,17 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	text-decoration: underline;
 }
 
+#legend > p{
+	padding: 0.5rem;
+}
+
 #legend > div > a{
 	display: flex;
 	overflow: visible;
+}
+
+#legend > div.flex{
+	flex-direction: column;
 }
 
 #map {
@@ -80,15 +88,19 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 #pinHide {
 	border-bottom: 3px solid black;
 	overflow: visible;
-	display: flex;
+	padding: 1rem;
+}
+
+#pinHide i{
+	margin: 0;
 }
 
 #pinHide:hover, #pinHide:active, #pinHide:focus {
 	background-color: #eee;
 }
 
-#pinShow .material-icons{
-	font-size: 24pt;
+#pinShow i{
+	font-weight: bolder;
 }
 
 #text-pin-dialog-textarea, #meeting-pin-dialog-textarea, #poll-pin-dialog-textarea {

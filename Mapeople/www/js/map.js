@@ -121,375 +121,349 @@ function onError(error) {
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
-var mapRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID"));
+var mapRef = db.ref('Maps/public/' + window.localStorage.getItem("mapID"));
 
-function initMap() {
-    //alert("*"+window.localStorage.getItem("mapID"));
-    
-    mapRef.once("value", function(data) {
-                //alert("~"+data.val().name);
-                map = new google.maps.Map(document.getElementById('map'), {
-					zoom: data.val().zoom,
-					center: data.val().center
-				});
+function initMap(){
+	//load markers from DB
+	mapRef.once("value", function(data) {
+		map = new google.maps.Map(document.getElementById('map'), {
+			zoom: data.val().zoom,
+			center: data.val().center
+		});
                 
-                var customMapTypeId = 'custom_style';
-                var customMapType = new google.maps.StyledMapType(
-                                                                  [
-                                                                   {
-                                                                   stylers: [
-                                                                             {hue: '#92c27c'},
-                                                                             {visibility: 'simplified'},
-                                                                             {gamma: 0.3},
-                                                                             {weight: 0.20}
-                                                                             ]
-                                                                   },
-                                                                   {
-                                                                   elementType: 'labels',
-                                                                   stylers: [
-                                                                             {visibility: 'on'}
-                                                                             ]
-                                                                   },
-                                                                   {
-                                                                   featureType: 'water',
-                                                                   stylers: [
-                                                                             {color: '#5294ff'}
-                                                                             ]
-                                                                   }
-                                                                   ],
-                                                                  {
-                                                                  name: 'Trippy'
-                                                                  });
-                
-                var pinIcons = {
-					basicPin: {
-						htmlID: 'basicPin',
-						name: 'Basic',
-						icon: 'oPin3.png'
+		var customMapTypeId = 'custom_style';
+		var customMapType = new google.maps.StyledMapType([
+			{
+				stylers: [
+					{
+						hue: '#92c27c'
 					},
-					textPin: {
-						htmlID: 'textPin',
-						name: 'Text',
-						icon: 'oPin3.png'
+					{
+						visibility: 'simplified'
 					},
-					meetingPin: {
-						htmlID: 'meetingPin',
-						name: 'Meeting',
-						icon: 'oPin3.png'
+					{
+						gamma: 0.3
 					},
-					landmarkPin: {
-						htmlID: 'landmarkPin',
-						name: 'Landmark',
-						icon: 'oPin3.png'
-					},
-					linePin: {
-						htmlID: 'linePin',
-						name: 'Line',
-						icon: 'oPin3.png'
-					},
-					picturePin: {
-						htmlID: 'picturePin',
-						name: 'Picture',
-						icon: 'oPin3.png'
-					},
-					pollPin: {
-						htmlID: 'pollPin',
-						name: 'Poll',
-						icon: 'oPin3.png'
-					},
-					shapePin: {
-						htmlID: 'shape-pin',
-						name: 'Shape',
-						icon: 'oPin3.png'
+					{
+						weight: 0.20
 					}
-                };
+				]
+			},
+			{
+				elementType: 'labels',
+				stylers: [
+					{
+						visibility: 'on'
+					}
+				]
+			},
+			{
+				featureType: 'water',
+				stylers: [
+					{
+						color: '#5294ff'
+					}
+				]
+			}
+		], {
+			name: 'Trippy'
+		});
                 
-                var lineCoordinates = [];
-                var lineWrite = new google.maps.Polyline({
-                                                         path: globLineCoord,
-                                                         strokeColor: '#FF0000',
-                                                         strokeOpacity: 1.0,
-                                                         strokeWeight: 2,
-                                                         draggable: true,
-                                                         geodesic: true,
-                                                         editable: true
-                                                         });
-                var shapeCoords = [];
-                var shape = new google.maps.Polygon({
-                                                    map: map,
-                                                    paths: globShapeCoord,
-                                                    strokeColor: '#FF0000',
-                                                    strokeOpacity: 0.8,
-                                                    strokeWeight: 2,
-                                                    fillColor: '#FF0000',
-                                                    fillOpacity: 0.35,
-                                                    draggable: true,
-                                                    geodesic: true,
-                                                    editable: true
-                                                    });
+		var pinIcons = {
+			basicPin: {
+				htmlID: 'basicPin',
+				name: 'Basic',
+				icon: 'oPin3.png'
+			},
+			textPin: {
+				htmlID: 'textPin',
+				name: 'Text',
+				icon: 'oPin3.png'
+			},
+			meetingPin: {
+				htmlID: 'meetingPin',
+				name: 'Meeting',
+				icon: 'oPin3.png'
+			},
+			linePin: {
+				htmlID: 'linePin',
+				name: 'Line',
+				icon: 'oPin3.png'
+			},
+			picturePin: {
+				htmlID: 'picturePin',
+				name: 'Picture',
+				icon: 'oPin3.png'
+			},
+			pollPin: {
+				htmlID: 'pollPin',
+				name: 'Poll',
+				icon: 'oPin3.png'
+			},
+			shapePin: {
+				htmlID: 'shape-pin',
+				name: 'Shape',
+				icon: 'oPin3.png'
+			}
+		};
                 
-                map.mapTypes.set(customMapTypeId, customMapType);
-                map.setMapTypeId(customMapTypeId);
+		var lineCoordinates = [];
+		var lineWrite = new google.maps.Polyline({
+			path: globLineCoord,
+			strokeColor: '#FF0000',
+			strokeOpacity: 1.0,
+			strokeWeight: 2,
+			draggable: true,
+			geodesic: true,
+			editable: true
+		});
+		
+		var shapeCoords = [];
+		var shape = new google.maps.Polygon({
+			map: map,
+			paths: globShapeCoord,
+			strokeColor: '#FF0000',
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: '#FF0000',
+			fillOpacity: 0.35,
+			draggable: true,
+			geodesic: true,
+			editable: true
+		});
+		
+		map.mapTypes.set(customMapTypeId, customMapType);
+		map.setMapTypeId(customMapTypeId);
                 
-                // tap to add pin to firebase
-                google.maps.event.addListener(map, 'click', function( event ){
-					switch (currentPinSelection){
-						case "basicPin"://mapRef
-							//db.ref('Maps/public/map2/pins').push().set({
-							mapRef.child('pins').push().set({
-								"lat": event.latLng.lat(),
-								"long": event.latLng.lng(),
-								"type":"basicPin"
-							});
-							break;
-						case "textPin":
-							newTextPin(event.latLng.lat(), event.latLng.lng());
-							break;
-						case "meetingPin":
-							newMeetingPin(event.latLng.lat(), event.latLng.lng());
-							break;
-						case "landmarkPin":
-							mapRef.child('pins').push().set({
-								"lat": event.latLng.lat(),
-								"long": event.latLng.lng(),
-								"type":"landmarkPin"
-							});
-							break;
-						case "linePin":
-							globLineCoord.push({lat: event.latLng.lat(), lng: event.latLng.lng()});
-							globLineCoord = lineCoordinates;
-                                              
-							lineWrite.setMap(null);
-							lineWrite = new google.maps.Polyline({
-								"path": globLineCoord,
-								"strokeColor": '#FF0000',
-								"strokeOpacity": 1.0,
-								"strokeWeight": 2,
-								// draggable: true,
-								"geodesic": true
-								//editable: true
-							});
-                                              
-							lineWrite.setMap(map);
-							break;
-						case "picturePin":
-							mapRef.child('pins').push().set({
-								"lat": event.latLng.lat(),
-								"long": event.latLng.lng(),
-								"type":"picturePin"
-							  });
-							break;
-						case "pollPin":
-							newPollPin(event.latLng.lat(), event.latLng.lng());
-							break;
-						case "shapePin":
-							globShapeCoord.push({
-								lat: event.latLng.lat(), 
-								lng: event.latLng.lng()
-							});
-							globShapeCoord = shapeCoords;
-							shape.setMap(null);
-							shape = new google.maps.Polygon({
-								map: map,
-								paths: globShapeCoord,
-								strokeColor: '#FF0000',
-								strokeOpacity: 0.8,
-								strokeWeight: 2,
-								fillColor: '#FF0000',
-								fillOpacity: 0.35
-							});
-						  break;
-						default:
-							mapRef.child('pins').push().set({
-								"lat": event.latLng.lat(),
-								"long": event.latLng.lng(),
-								"type":"basicPin"
-							});
-							break;
-					} //End switch (currentPinSelection)                              
-				});
-                
-                var pollInfoWindows = [];
-                
-                // load from firebase
-                var commentsRef = mapRef.child('pins');//db.ref('Maps/public/map2/pins');
-                commentsRef.on('child_added', function(data) {
-                               
-                               switch (data.val().type)
-                               {
-                               case "basicPin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'basicPin',
-                                                                   icon: pinIcons['basicPin'].icon
-                                                                   //icon: 'oPin3.png'
-                                                                   });
-                               break;
-                               case "textPin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
-                               var maxWidth = 200;
-                               
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'textPin',
-                                                                   user: 'Mapeople', //Need to connect it to actual users when management is figured out.
-                                                                   icon: pinIcons['textPin'].icon,
-                                                                   maxWidth: maxWidth
-                                                                   });
-                               
-                               marker.addListener('click', function() {
-                                                  textPinWindow.setOptions({maxWidth:maxWidth});
-                                                  textPinWindow.open(map, marker);
-                                                  });
-                               
-                               break;
-                               case "meetingPin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var today = new Date();
-                               
-                               if (data.val().day >= today.getDate() && data.val().month >= today.getMonth() && data.val().year >= today.getFullYear())
-                               {
-                               var meetingPinWindow = initMeetingPin('Mapeople', data.val().meetingText, data.val().day, data.val().month, data.val().year);
-                               var maxWidth = 200;
-                               
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'meetingPin',
-                                                                   icon: pinIcons['meetingPin'].icon
-                                                                   });
-                               
-                               marker.addListener('click', function() {
-                                                  meetingPinWindow.setOptions({maxWidth:maxWidth});
-                                                  meetingPinWindow.open(map, marker);
-                                                  });
-                               } //End if (data.day >= today.getDate() && data.month >= today.getMonth() && data.year >= today.getFullYear())
-                               else {
-                               //Remove the meeting marker, it is past the meeting date
-                               console.log('Attempting to remove an old meeting pin');
-                               console.dir(data.key);
-                               mapRef.child('pins').child(data.key).remove();
-                               } //End else
-                               break;
-                               case "landmarkPin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'landmarkPin',
-                                                                   icon: pinIcons['landmarkPin'].icon
-                                                                   });
-                               break;
-                               case "linePin":
-                               var coorids = data.val().latLongs;
-                               var myLatLng = [];
-                               myLatLng.push({lat: coorids[0].lat, lng: coorids[0].lng});
-                               myLatLng.push({lat: coorids[1].lat, lng: coorids[1].lng});
-                               
-                               
-                               var lineDraw = new google.maps.Polyline({
-                                                                       path: coorids,
-                                                                       geodesic: true,
-                                                                       strokeColor: '#FF0000',
-                                                                       strokeOpacity: 1.0,
-                                                                       strokeWeight: 2,
-                                                                       });
-                               
-                               lineDraw.setMap(map);
-                               break;
-                               case "shapePin":
-                               var coorids = data.val().latLongs;
-                               
-                               var shapeDraw = new google.maps.Polygon({
-                                                                       map: map,
-                                                                       paths: coorids,
-                                                                       strokeColor: '#FF0000',
-                                                                       strokeOpacity: 0.8,
-                                                                       strokeWeight: 2,
-                                                                       fillColor: '#FF0000',
-                                                                       fillOpacity: 0.35,
-                                                                       //draggable: true,
-                                                                       geodesic: true
-                                                                       //editable: true
-                                                                       });
-                               
-                               shapeDraw.setMap(map);
-                               break;
-                               case "picturePin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'picturePin',
-                                                                   icon: pinIcons['picturePin'].icon
-                                                                   });
-                               break;
-                               case "pollPin":
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               initPollPin(data.val().pollID, myLatLng,map, pinIcons['pollPin'].icon, pollInfoWindows, data.key);
-                               break;
-                               default:
-                               var myLatLng = {lat: data.val().lat, lng: data.val().long};
-                               var marker = new google.maps.Marker({
-                                                                   position: myLatLng,
-                                                                   map: map,
-                                                                   title: 'basicPin',
-                                                                   icon: pinIcons['basicPin'].icon
-                                                                   });
-                               break;
-                               } //End switch (data.val().type)
-                              // $('#load').fadeOut();
-                               });
-                
-                //listen for changes in votes in order to update a poll's results
-                var pollVotesRef = db.ref('Maps/public/map2/polls');
-                pollVotesRef.once('value', function(data) {
-                                  for (var pollKey in data.val()) {
-                                  var voteRef = db.ref('Maps/public/map2/polls/' + pollKey + '/votes');
-                                  voteRef.on('child_added', function(data) {
-                                             //data.ref.parent.ref.parent.key is the key to the poll that contains the specific voteRef
-                                             //For some reason using pollKey didn't work, it would just be the last pollKey in the loop for all of the event listeners
-                                             var parentPollKey = data.ref.parent.ref.parent.key;
-                                             
-                                             pollPinDisplayVotes(parentPollKey)
-                                             
-                                             var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
-                                             userVoteRef.on('value', function(data) {
-                                                            pollPinDisplayVotes(data.ref.parent.ref.parent.key);
-                                                            });
-                                             });
-                                  } //End for (var key in data.val())
-                                  });
-                
-                var legend = document.getElementById('legend');
-                
-                //Put the icons and their names in the legend
-                for (var key in pinIcons) {
-                var type = pinIcons[key];
-                var name = type.name;
-                var icon = type.icon;
-                var div = document.createElement('div');
-                
-                div.innerHTML = '<a id="' +
-                type.htmlID + '" ' +
-                'onclick="selectPin(\'' + key.toString() + '\')" class="">' +
-                '<img src="' + icon + '"> ' +
-                name +
-                '</a>';
-                legend.appendChild(div);
-                }
-                
-                map.controls[google.maps.ControlPosition.LEFT_TOP].push(legend);
-                });
-    /*map = new google.maps.Map(document.getElementById('map'), {
-     zoom: 16,
-     center: {lat: 38.940451750007945, lng: -92.32772827148438}
-     });*/
-    
+		//Tapping/clicking on map triggers marker creation
+		google.maps.event.addListener(map, 'click', function( event ){
+			switch (currentPinSelection){
+				case 'basicPin':
+					mapRef.child('pins').push().set({
+						lat: event.latLng.lat(),
+						'long': event.latLng.lng(),
+						type: 'basicPin'
+					});
+					break;
+				case 'textPin':
+					newTextPin(event.latLng.lat(), event.latLng.lng());
+					break;
+				case 'meetingPin':
+					newMeetingPin(event.latLng.lat(), event.latLng.lng());
+					break;
+				case 'linePin':
+					globLineCoord.push({
+						lat: event.latLng.lat(),
+						lng: event.latLng.lng()
+					});
+					globLineCoord = lineCoordinates;
+									  
+					lineWrite.setMap(null);
+					lineWrite = new google.maps.Polyline({
+						path: globLineCoord,
+						strokeColor: '#FF0000',
+						strokeOpacity: 1.0,
+						strokeWeight: 2,
+						geodesic: true
+					});
+									  
+					lineWrite.setMap(map);
+					break;
+				case 'picturePin':
+					mapRef.child('pins').push().set({
+						lat: event.latLng.lat(),
+						'long': event.latLng.lng(),
+						type: 'picturePin'
+					  });
+					break;
+				case 'pollPin':
+					newPollPin(event.latLng.lat(), event.latLng.lng());
+					break;
+				case 'shapePin':
+					globShapeCoord.push({
+						lat: event.latLng.lat(), 
+						lng: event.latLng.lng()
+					});
+					globShapeCoord = shapeCoords;
+					shape.setMap(null);
+					shape = new google.maps.Polygon({
+						map: map,
+						paths: globShapeCoord,
+						strokeColor: '#FF0000',
+						strokeOpacity: 0.8,
+						strokeWeight: 2,
+						fillColor: '#FF0000',
+						fillOpacity: 0.35
+					});
+					break;
+				default:
+					console.error('Attempted to create undefined pin.');
+					break;
+			} //End switch (currentPinSelection)                              
+		});
+		var pollInfoWindows = [];
+		
+		//listen for new pins being created
+		var commentsRef = mapRef.child('pins');
+		commentsRef.on('child_added', function(data) {
+			switch (data.val().type) {
+				case 'basicPin':
+					var myLatLng = {
+						lat: data.val().lat,
+						lng: data.val().long
+					};
+					var marker = new google.maps.Marker({
+						position: myLatLng,
+						map: map,
+						title: 'basicPin',
+						icon: pinIcons['basicPin'].icon
+					});
+					break;
+				case 'textPin':
+					var myLatLng = {
+						lat: data.val().lat,
+						lng: data.val().long
+					};
+					var textPinWindow = initTextPinWindow('Mapeople', data.val().text);
+					var maxWidth = 200;
+						   
+					var marker = new google.maps.Marker({
+						position: myLatLng,
+						map: map,
+						title: 'textPin',
+						user: 'Mapeople', //Need to connect it to actual users when management is figured out.
+						icon: pinIcons['textPin'].icon,
+						maxWidth: maxWidth
+					});
+						   
+					marker.addListener('click', function() {
+						textPinWindow.setOptions({
+							maxWidth: maxWidth
+						});
+						textPinWindow.open(map, marker);
+					});
+					break;
+				case 'meetingPin':
+					var myLatLng = {lat: data.val().lat, lng: data.val().long};
+					var today = new Date();
+				   
+					if (data.val().day >= today.getDate() && 
+						data.val().month >= today.getMonth() && 
+						data.val().year >= today.getFullYear()){
+				   
+						var meetingPinWindow = initMeetingPin('Mapeople', data.val().meetingText, data.val().day, data.val().month, data.val().year);
+						var maxWidth = 200;
+				   
+						var marker = new google.maps.Marker({
+							position: myLatLng,
+							map: map,
+							title: 'meetingPin',
+							icon: pinIcons['meetingPin'].icon
+						});
+				   
+						marker.addListener('click', function() {
+							meetingPinWindow.setOptions({maxWidth:maxWidth});
+							meetingPinWindow.open(map, marker);
+						});
+					} //End if (data.day >= today.getDate() && data.month >= today.getMonth() && data.year >= today.getFullYear())
+					else {
+						/*
+						 * MAKE IT REDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+						 */
+						//Remove the meeting marker, it is past the meeting date
+						console.log('Attempting to remove an old meeting pin');
+						console.dir(data.key);
+						mapRef.child('pins').child(data.key).remove();
+					} //End else
+					break;
+				case 'linePin':
+					var coorids = data.val().latLongs;
+					var myLatLng = [];
+					myLatLng.push({
+						lat: coorids[0].lat,
+						lng: coorids[0].lng
+					});
+					myLatLng.push({
+						lat: coorids[1].lat,
+						lng: coorids[1].lng
+					});       
+
+					var lineDraw = new google.maps.Polyline({
+						path: coorids,
+						geodesic: true,
+						strokeColor: '#FF0000',
+						strokeOpacity: 1.0,
+						strokeWeight: 2,
+					});
+						   
+					lineDraw.setMap(map);
+					break;
+				case 'shapePin':
+					var coorids = data.val().latLongs;
+				   
+					var shapeDraw = new google.maps.Polygon({
+						map: map,
+						paths: coorids,
+						strokeColor: '#FF0000',
+						strokeOpacity: 0.8,
+						strokeWeight: 2,
+						fillColor: '#FF0000',
+						fillOpacity: 0.35,
+						geodesic: true
+					});
+						   
+					shapeDraw.setMap(map);
+					break;
+				case 'picturePin':
+					var myLatLng = {
+						lat: data.val().lat,
+						lng: data.val().long
+					};
+					var marker = new google.maps.Marker({
+						position: myLatLng,
+						map: map,
+						title: 'picturePin',
+						icon: pinIcons['picturePin'].icon
+					});
+					break;
+				case 'pollPin':
+					var myLatLng = {
+						lat: data.val().lat,
+						lng: data.val().long
+					};
+					
+					initPollPin(data.val().pollID, myLatLng,map, pinIcons['pollPin'].icon, pollInfoWindows, data.key);
+					break;
+				default:
+					console.error('Unknown marker type from database');
+					break;
+			} //End switch (data.val().type)
+			//$('#load').fadeOut();
+		});
+			
+		//listen for changes in votes in order to update a poll's results
+		var pollVotesRef = db.ref('Maps/public/map2/polls');
+		pollVotesRef.once('value', function(data) {
+			for (var pollKey in data.val()) {
+				var voteRef = db.ref('Maps/public/map2/polls/' + pollKey + '/votes');
+				voteRef.on('child_added', function(data) {
+					//data.ref.parent.ref.parent.key is the key to the poll that contains the specific voteRef
+					//For some reason using pollKey didn't work, it would just be the last pollKey in the loop for all of the event listeners
+					var parentPollKey = data.ref.parent.ref.parent.key;
+										 
+					pollPinDisplayVotes(parentPollKey);
+
+					var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
+					userVoteRef.on('value', function(data) {
+						pollPinDisplayVotes(data.ref.parent.ref.parent.key);
+					});
+				 });
+			} //End for (var key in data.val())
+		});
+		
+		var legend = document.getElementById('legend');
+		map.controls[google.maps.ControlPosition.LEFT_TOP].push(legend);
+	});
 }
 
 /*****************************************************
@@ -497,22 +471,22 @@ function initMap() {
  *****************************************************/
 
 function correctPinSize(pin){
-    pin.each(function () {
-             if (this.scrollHeight > 48) {
-             this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-             } //End if (this.scrollHeight > 48)
-             else {
-             this.setAttribute('style', 'height:48px; overflow-y:hidden;');
-             } //End else
-             }).on('input', function () {
-                   this.style.height = 'auto';
-                   this.style.height = (this.scrollHeight) + 'px';
-                   });
+	pin.each(function () {
+		if (this.scrollHeight > 48) {
+			this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+		} //End if (this.scrollHeight > 48)
+		else {
+			this.setAttribute('style', 'height:48px; overflow-y:hidden;');
+		} //End else
+	}).on('input', function () {
+		this.style.height = 'auto';
+		this.style.height = (this.scrollHeight) + 'px';
+	});
 }
 
 function selectPin(selectedPin) {
-    console.log("selectPin(selectedPin) called")
-    console.dir(selectedPin);
+	console.log('selectPin(selectedPin) called');
+	console.dir(selectedPin);
     
     $('#' + currentPinSelection).css('font-weight', 'normal');
     $('#' + selectedPin).css('font-weight', 'bold');
@@ -525,54 +499,53 @@ function selectPin(selectedPin) {
  *****************************************************/
 
 function initTextPinWindow(user, userText) {
-    var contentString = '<div id="content"'+
-    '<div id="siteNotice">'+
-    '</div>'+
+    var contentString = '<div id="content"' +
+    '<div id="siteNotice">' +
+	'</div>' +
     '<h6 id="" class="firstHeading">' +
     '<b>' + user + ':' + '</b>' +
-    '</h6>'+
+    '</h6>' +
     '<div id="bodyContent" class="textPinContent">' +
     //'<pre>' + userText + '</pre>' +
     '<p>' + userText + '</p>' +
     '</div>' +
     '</div>';
-    
-    var textInfoWindow = new google.maps.InfoWindow({
-                                                    content: contentString
-                                                    });
-    
-    return textInfoWindow;
+	
+	var textInfoWindow = new google.maps.InfoWindow({
+		content: contentString
+	});
+	
+	return textInfoWindow;
 } //End function initTextPinWindow(user, userText)
 
 function newTextPin(lat, lng) {
-    correctPinSize($('#text-pin-dialog-textarea'));
-    
-    $('#text-pin-dialog').dialog({
-                                 autoOpen: false,
-                                 modal: true,
-                                 draggable: false,
-                                 buttons: {
-                                 "Post": function() {
-                                 console.log("Attempting to create a new text pin.");
-                                 console.log("lat: " + lat + " lng: " + lng);
-                                 mapRef.child('pins').push().set({
-                                                                 "lat": lat,
-                                                                 "long": lng,
-                                                                 "user": firebase.auth().currentUser.uid,
-                                                                 "text": $('#text-pin-dialog-textarea').val(),
-                                                                 "type":"textPin"
-                                                                 });
+	correctPinSize($('#text-pin-dialog-textarea'));
+	
+	$('#text-pin-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		draggable: false,
+		buttons: {
+			Post: function() {
+				console.log("Attempting to create a new text pin.");
+				console.log('lat: ' + lat + ' lng: ' + lng);
+				mapRef.child('pins').push().set({
+					lat: lat,
+					'long': lng,
+					user: firebase.auth().currentUser.uid,
+					text: $('#text-pin-dialog-textarea').val(),
+					type: 'textPin'
+				});
                                  
-                                 $('#text-pin-dialog').dialog('close');
-                                 }
-                                 
-                                 },
-                                 close: function() {
-                                 $('#text-pin-dialog-textarea').val("");
-                                 }
-                                 });
-    
-    $('#text-pin-dialog').dialog('open');
+				$('#text-pin-dialog').dialog('close');
+			}
+		},
+		close: function() {
+			$('#text-pin-dialog-textarea').val('');
+		}
+	});
+	
+	$('#text-pin-dialog').dialog('open');
 } //End function newTextPin(lat, lng)
 
 /*****************************************************
