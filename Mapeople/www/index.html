@@ -25,10 +25,12 @@
 			<script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     </head>
     <body>
-        <div id="load">
+        <!-- 
+<div id="load">
             <h1>Mapeople</h1>
             <h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
         </div>
+ -->
 		<div id="nav"></div>
 		<div id="content">
 			<div id="map"></div>
@@ -39,25 +41,25 @@
 				<p id="pinShow" class="pinToggleButton" style="display:none;"><i class="material-icons">chevron_right</i></p>
 				<div class="flex">
 					<a class="pin" onclick="selectPin('basicPin')">
-						<img alt='Point' src="oPin3.png">
+						<img alt='Point' src="oPin3.png">Basic Pin
 					</a>
 					<a class="pin" onclick="selectPin('textPin')">
-						<img alt="Sign" src="oPin3.png">
+						<img alt="Sign" src="oPin3.png">Text Pin
 					</a>
 					<a class="pin" onclick="selectPin('meetingPin')">
-						<img alt='Event' src="oPin3.png">
+						<img alt='Event' src="oPin3.png">Meeting Pin
 					</a>
 					<a class="pin" onclick="selectPin('linePin')">
-						<img alt="Line" src="oPin3.png">
+						<img alt="Line" src="oPin3.png">Line Pin
 					</a>
 					<a class="pin" onclick="selectPin('picturePin')">
-						<img alt="Picture" src="oPin3.png">
+						<img alt="Picture" src="oPin3.png">Picture Pin
 					</a>
 					<a class="pin" onclick="selectPin('pollPin')">
-						<img alt="Poll" src="oPin3.png">
+						<img alt="Poll" src="oPin3.png">Poll Pin
 					</a>
 					<a class="pin" onclick="selectPin('shapePin')">
-						<img alt="Area" src="oPin3.png">
+						<img alt="Area" src="oPin3.png">Shape Pin
 					</a>
 				</div>
 			</div>
@@ -101,6 +103,8 @@
 		<div hidden>
 			<h6 id="geolocation">Location</h6>
 		</div>
+		<button onclick="writeLine()">Line Write</button>
+		<button onclick="writeShape()">Shape Write</button>
 		<script type="text/javascript" src="js/config.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDveZT0Eamgm2WQB9PKrg36JcDZh1R3J4Q&libraries=visualization&callback=initMap">

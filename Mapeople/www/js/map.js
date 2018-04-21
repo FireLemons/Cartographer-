@@ -442,10 +442,10 @@ function initMap(){
 		});
 			
 		//listen for changes in votes in order to update a poll's results
-		var pollVotesRef = db.ref('Maps/public/map2/polls');
+		var pollVotesRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls');
 		pollVotesRef.once('value', function(data) {
 			for (var pollKey in data.val()) {
-				var voteRef = db.ref('Maps/public/map2/polls/' + pollKey + '/votes');
+				var voteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollKey + '/votes');
 				voteRef.on('child_added', function(data) {
 					//data.ref.parent.ref.parent.key is the key to the poll that contains the specific voteRef
 					//For some reason using pollKey didn't work, it would just be the last pollKey in the loop for all of the event listeners
@@ -453,7 +453,7 @@ function initMap(){
 										 
 					pollPinDisplayVotes(parentPollKey);
 
-					var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
+					var userVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + parentPollKey + '/votes/' + data.key);
 					userVoteRef.on('value', function(data) {
 						pollPinDisplayVotes(data.ref.parent.ref.parent.key);
 					});
@@ -633,7 +633,7 @@ function newMeetingPin(lat, lng) {
 function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) {
     var pollName = '';
     
-    pollRef = db.ref('Maps/public/map2/polls/' + pollID);
+    pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID);
     
     var contentString = '';
     
@@ -648,7 +648,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
                         '</h6>'+
                         '<div id="bodyContent" class="pollPinContent">';
                         }).then(function() {
-                                pollOptionsRef = db.ref('Maps/public/map2/polls/' + pollID + '/options/');
+                                pollOptionsRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/options/');
                                 
                                 pollOptionsRef.once("value", function(data) {
                                                     contentString +=
@@ -773,13 +773,13 @@ function addPollPinToFirebase() {
     var pollRef;
     
     if ($('#poll-new-poll').is(':visible')) {
-        pollRef = db.ref('Maps/public/map2/polls').push();
+        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls').push();
         pollRef.set({
                     "pollName": $('#poll-pin-dialog-textarea').val()
                     });
         
         $('ul#poll-new-choices > li > input.poll-option-input').each(function() {
-                                                                     db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push().set({
+                                                                     db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/options/').push().set({
                                                                                                                                               "pollOption": this.value
                                                                                                                                               });
                                                                      });
@@ -787,10 +787,10 @@ function addPollPinToFirebase() {
     else if ($('#poll-add-to-poll').is(':visible')) {
         var id = $('ul#poll-list > li > button#' + $('#poll-pin-dialog').dialog('option', 'title').split(' ').join('-')).attr('name');
         
-        pollRef = db.ref('Maps/public/map2/polls/' + id);
+        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + id);
         
         $('ul#poll-add-choices > li > input.poll-option-input').each(function() {
-                                                                     optionRef = db.ref('Maps/public/map2/polls/' + pollRef.key + '/options/').push();
+                                                                     optionRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/options/').push();
                                                                      optionRef.set({
                                                                                    "pollOption": this.value
                                                                                    });
@@ -818,17 +818,17 @@ function addPollPinToFirebase() {
                "type":"pollPin"
                });
     
-    db.ref('Maps/public/map2/polls/' + pollRef.key + '/associatedPins/').push().set({
+    db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/associatedPins/').push().set({
                                                                                     "pinID": pinRef.key
                                                                                     });
     
-    var voteRef = db.ref('Maps/public/map2/polls/' + pollRef.key + '/votes');
+    var voteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/votes');
     voteRef.on('child_added', function(data) {
                var parentPollKey = data.ref.parent.ref.parent.key;
                
                pollPinDisplayVotes(parentPollKey)
                
-               var userVoteRef = db.ref('Maps/public/map2/polls/' + parentPollKey + '/votes/' + data.key);
+               var userVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + parentPollKey + '/votes/' + data.key);
                userVoteRef.on('value', function(data) {
                               pollPinDisplayVotes(data.ref.parent.ref.parent.key);
                               });
@@ -868,7 +868,7 @@ function pollPinShowOtherMarkers(pollID) {
     
     var markerID = $('#show-' + pollID).attr('name')
     
-    var pollRef = db.ref('Maps/public/map2/polls/' + pollID + '/associatedPins');
+    var pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/associatedPins');
     
     pollRef.once('value', function(data) {
                  var originMarkerRef = mapRef.child('pins').child(markerID);
@@ -922,7 +922,7 @@ function pollPinHideOtherMarkers(pollID) {
 function pollPinDisplayVotes(pollID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
         
         pollVoteRef.once("value", function(data) {
                          var votes = []
@@ -958,14 +958,14 @@ function pollPinDisplayVotes(pollID) {
 function pollPinUserMadeChoice(pollID, optionID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
         
         pollVoteRef.once("value", function(data) {
                          
                          var userAlreadyVoted = false;
                          for (var key in data.val()) {
                          if (data.val()[key].user == user.uid) {
-                         db.ref('Maps/public/map2/polls/' + pollID + '/votes/' + key).set({
+                         db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes/' + key).set({
                                                                                           "user": user.uid,
                                                                                           "choice": optionID
                                                                                           }).then(function() {
@@ -977,7 +977,7 @@ function pollPinUserMadeChoice(pollID, optionID) {
                          } //End for (var key in data.val())
                          
                          if (!userAlreadyVoted) {
-                         var pollUserVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes').push();
+                         var pollUserVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes').push();
                          pollUserVoteRef.set({
                                              "user": user.uid,
                                              "choice": optionID
@@ -998,7 +998,7 @@ function pollPinUserMadeChoice(pollID, optionID) {
 function pollPinDisplayUserChoice(pollID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/map2/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
         
         pollVoteRef.once("value", function(data) {
                          
@@ -1015,7 +1015,7 @@ function getExistingPolls() {
     var pollList = $('#poll-list');
     
     if (pollList.children().length == 0) {
-        pollRef = db.ref('Maps/public/map2/polls/');
+        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/');
         
         pollRef.once("value", function(data) {
                      for (var key in data.val()) {
