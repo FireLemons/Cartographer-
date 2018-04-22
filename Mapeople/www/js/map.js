@@ -7,7 +7,7 @@ var pollPolylines = []
 // Cordova is ready
 //
 function onDeviceReady() {
-    $('#load').fadeOut();
+    //$('#load').fadeOut();
 	var options = {
 		timeout: 30000
 	};
@@ -472,7 +472,7 @@ function initMap(){
 					console.error('Unknown marker type from database');
 					break;
 			} //End switch (data.val().type)
-			//$('#load').fadeOut();
+			$('#load').fadeOut();
 		});
 			
 		//listen for changes in votes in order to update a poll's results
