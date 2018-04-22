@@ -7,7 +7,7 @@ $(function(){
 	var commentsRef = db.ref('Maps/public');
 	var i = 0;
 	commentsRef.on('child_added', function(data) {
-		$('#mainList').append("<li class='collection-item' onclick='publicMapJump("+i+")'>"+data.val().name+"</li>");
+		$('#mainList').append('<li class="collection-item" onclick="publicMapJump(' + i + ')">' + data.val().name + '</li>');
 		ids.push(data.key);
 		i++;
 	});
@@ -28,25 +28,7 @@ $(function(){
 	$('#buttonNewMap').click(function(){
 		loadBarNewMap.hide();
 	});
-	
-	//create new group if input valid
-//    $('#buttonCreateMap').click(function(){
-//        var mapName = $('#mapName').val();
-//        var publicPrivate = $('#isPublic').is(":checked") ? 'public' : 'private';
-//
-//        if(mapName && firebase.auth().currentUser){
-//            //create object with key uid
-//            var members = {};
-//            members[firebase.auth().currentUser.uid] = owner;
-//
-//            db.ref('Maps/' + publicPrivate).push().set({
-//                'name':mapName,
-//                'members': members
-//            });
-//        }
-//        //write to db and hide loadbar
-//    });
-	
+
 	$("#load").fadeOut();
 });
 

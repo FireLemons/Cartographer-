@@ -1,5 +1,5 @@
 var map;
-var currentPinSelection = "basicPin";
+var currentPinSelection = 'none';
 var globLineCoord = [];
 var globShapeCoord = [];
 var pollPolylines = []
@@ -18,22 +18,22 @@ function onDeviceReady() {
 //
 $(function(){
 	if(!(firebase || jQuery)){
-		document.getElementById('noInet').display = 'block'
+		document.getElementById('noInet').display = 'block';
 	}
 	
 	/*
 	 *Hiding/showing the pin selection menu
 	 */
-	$("#pinHide").click(function(){
-		$("#legend").animate({
-			width:"toggle"
+	$('#pinHide').click(function(){
+		$('#legend').animate({
+			width: 'toggle'
 		}, 500, function(){
 			$(this).children().hide();
-			$("#pinShow").show();
-			$(this).animate({width:"toggle"}, 500);
+			$('#pinShow').show();
+			$(this).animate({width:'toggle'}, 500);
 		});
 	});
-  
+	
 	$("#pinShow").click(function(){
 		$("#legend").animate({
 			width:"toggle"
@@ -45,7 +45,15 @@ $(function(){
 			}, 500);
 		});
 	});
-  
+
+	$('.pin').click(function(){
+		$('.pin').removeClass('selected');
+		$(this).addClass('selected');
+	});
+	
+	/*
+	 * Init pin modals
+	 */
 	$('#text-pin-dialog').dialog();
 	$('#text-pin-dialog-textarea').css('style', 'height: 10px');
 	$('#text-pin-dialog').dialog('close');
@@ -87,29 +95,31 @@ function onSuccess(position) {
     
     //Write to firebase.
 	user = firebase.auth().currentUser;
+
 	if(user){
-        db.ref('Users/'+user.uid+'/locs/').push().set({
-                                                      "lat": position.coords.latitude,
-                                                      "lng": position.coords.longitude
-                                                      });
+		db.ref('Users/' + user.uid + '/locs/').push().set({
+			lat: position.coords.latitude,
+			lng: position.coords.longitude
+		});
         
-        console.log('Test');
-        ref=db.ref('Users/'+user.uid+'/locs/');
+        var ref = db.ref('Users/' + user.uid + '/locs/');
         ref.once("value", function(data) {
-                 // do some stuff once
-                 locs=data.toJSON();
-                 keys=Object.keys(data.toJSON());
-                 console.log(locs[keys[0]]);
-                 points=[];
-                 for (i = 0; i < keys.length; i++) {
-                 points.push(  new google.maps.LatLng(locs[keys[i]]['lat'], locs[keys[i]]['lng'])  );
-                 }
-                 // Create a heatmap.
-                 var heatmap = new google.maps.visualization.HeatmapLayer({
-                                                                          data: points
-                                                                          });
-                 heatmap.setMap(map);
-                 });
+			// do some stuff once
+			locs = data.toJSON();
+			keys = Object.keys(data.toJSON());
+			points = [];
+			
+			for (i = 0; i < keys.length; i++) {
+				points.push(  new google.maps.LatLng(locs[keys[i]]['lat'], locs[keys[i]]['lng'])  );
+			}
+			
+			// Create a heatmap.
+			var heatmap = new google.maps.visualization.HeatmapLayer({
+				data: points
+			});
+			
+			heatmap.setMap(map);
+		});
     }
 }
 
@@ -120,12 +130,12 @@ function onError(error) {
     element.innerHTML = 'FAIL';
 }
 
-document.addEventListener("deviceready", onDeviceReady, false);
-var mapRef = db.ref('Maps/public/' + window.localStorage.getItem("mapID"));
+document.addEventListener('deviceready', onDeviceReady, false);
+var mapRef = db.ref('Maps/public/' + window.localStorage.getItem('mapID'));
 
 function initMap(){
 	//load markers from DB
-	mapRef.once("value", function(data) {
+	mapRef.once('value', function(data) {
 		map = new google.maps.Map(document.getElementById('map'), {
 			zoom: data.val().zoom,
 			center: data.val().center
@@ -173,37 +183,58 @@ function initMap(){
 			basicPin: {
 				htmlID: 'basicPin',
 				name: 'Basic',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/point.png',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			textPin: {
 				htmlID: 'textPin',
 				name: 'Text',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/text.png',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			meetingPin: {
 				htmlID: 'meetingPin',
 				name: 'Meeting',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/event.svg',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			linePin: {
 				htmlID: 'linePin',
 				name: 'Line',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/line.svg',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			picturePin: {
 				htmlID: 'picturePin',
 				name: 'Picture',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/picture.png',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			pollPin: {
 				htmlID: 'pollPin',
 				name: 'Poll',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/poll.png',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			},
 			shapePin: {
 				htmlID: 'shape-pin',
 				name: 'Shape',
-				icon: 'oPin3.png'
+				icon: {
+					url: 'img/icons/area.png',
+					scaledSize: new google.maps.Size(40, 40)
+				}
 			}
 		};
                 
@@ -238,6 +269,9 @@ function initMap(){
 		//Tapping/clicking on map triggers marker creation
 		google.maps.event.addListener(map, 'click', function( event ){
 			switch (currentPinSelection){
+				case 'none':
+					//do nothing
+					break;
 				case 'basicPin':
 					mapRef.child('pins').push().set({
 						lat: event.latLng.lat(),
@@ -1097,18 +1131,20 @@ function pollStartingChoice(choice) {
 } //End function pollStartingChoice(choice)
 
 function writeLine() {
-    mapRef.child('pins').push().set({
-                                    "latLongs": globLineCoord,
-                                    "type":"linePin"
-                                    });
-    globLineCoord = [];
+	mapRef.child('pins').push().set({
+		latLongs: globLineCoord,
+		type: 'linePin'
+	});
+	
+	globLineCoord = [];
 }
 
 function writeShape() {
     mapRef.child('pins').push().set({
-                                    "latLongs": globShapeCoord,
-                                    "type":"shapePin"
-                                    });
+		latLongs: globShapeCoord,
+		type: 'shapePin'
+	});
+	
     globShapeCoord = [];
 }
 
