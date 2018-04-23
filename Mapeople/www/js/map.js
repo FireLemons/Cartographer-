@@ -54,9 +54,9 @@ $(function(){
 	$('.pin').click(function(){
 		$('.pin').removeClass('selected');
 		$(this).addClass('selected');
+		
+		Materialize.toast($(this).attr('data-toast') + ' Selected', 1400);
 	});
-	
-	$('.tooltipped').tooltip();
 	
 	//Enable editing mode for multinode markers
 	$('#linePin, #areaPin').click(function(){
