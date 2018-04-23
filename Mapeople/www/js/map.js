@@ -54,6 +54,8 @@ $(function(){
 		$(this).addClass('selected');
 	});
 	
+	$('.tooltipped').tooltip();
+	
 	//Enable editing mode for multinode markers
 	$('#linePin, #areaPin').click(function(){
 		map.setOptions({draggableCursor: 'url(img/icons/editing.png), pointer', draggingCursor: 'url(img/icons/editing.png), pointer'});
