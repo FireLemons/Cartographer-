@@ -2,7 +2,7 @@ var map;
 var currentPinSelection = 'none';
 var globLineCoord = [];
 var globShapeCoord = [];
-var pollPolylines = []
+var pollPolylines = [];
 
 // Cordova is ready
 //
@@ -10,6 +10,7 @@ function onDeviceReady() {
 	var options = {
 		timeout: 30000
 	};
+	
 	watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 
@@ -35,14 +36,14 @@ $(function(){
 		});
 	});
 	
-	$("#pinShow").click(function(){
+	$('#pinShow').click(function(){
 		$("#legend").animate({
-			width:"toggle"
+			width: 'toggle'
 		}, 500, function(){
 			$(this).children().show();
-			$("#pinShow").hide();
+			$('#pinShow').hide();
 			$(this).animate({
-				width:"toggle"
+				width: 'toggle'
 			}, 500);
 		});
 	});
@@ -97,13 +98,13 @@ $(function(){
 	$('#poll-pin-dialog-textarea').css('style', 'height: 10px');
 	$('#poll-pin-dialog').dialog('close');
   
-	$("ul#poll-new-choices").on("click", "button", function(e) {
+	$('ul#poll-new-choices').on('click', 'button', function(e) {
 		e.preventDefault();
 		$(this).parent().remove();
 		//$('#poll-new-add-choice-btn').show();
 	});
   
-	$("ul#poll-add-choices").on("click", "button", function(e) {
+	$('ul#poll-add-choices').on('click', 'button', function(e) {
 		e.preventDefault();
 		$(this).parent().remove();
 		//$('#poll-new-add-choice-btn').show();
@@ -568,17 +569,16 @@ function selectPin(selectedPin) {
  *****************************************************/
 
 function initTextPinWindow(user, userText) {
-    var contentString = '<div id="content"' +
-    '<div id="siteNotice">' +
-	'</div>' +
-    '<h6 id="" class="firstHeading">' +
-    '<b>' + user + ':' + '</b>' +
-    '</h6>' +
-    '<div id="bodyContent" class="textPinContent">' +
-    //'<pre>' + userText + '</pre>' +
-    '<p>' + userText + '</p>' +
-    '</div>' +
-    '</div>';
+	var contentString = 
+	'<div id="content">' +
+		'<div id="siteNotice"></div>' +
+		'<h6 id="" class="firstHeading">' +
+			'<b>' + user + ':' + '</b>' +
+		'</h6>' +
+		'<div id="bodyContent" class="textPinContent">' +
+			'<p>' + userText + '</p>' +
+		'</div>' +
+	'</div>';
 	
 	var textInfoWindow = new google.maps.InfoWindow({
 		content: contentString
@@ -622,77 +622,73 @@ function newTextPin(lat, lng) {
  *****************************************************/
 
 function initMeetingPin(user, meetingText, day, month, year) {
-    var contentString = '<div id="content"'+
-    '<div id="siteNotice">'+
-    '</div>'+
-    '<p id="" class="firstHeading">' +
-    '<b>Meeting Date:</b> ' + (month + 1).toString() + '/' + (day + 1).toString() + '/' + year +
-    '</p>'+
-    '<div id="bodyContent" class="textPinContent">' +
-    //'<pre>' + userText + '</pre>' +
-    '<p><b>Purpose:</b> ' + meetingText + '</p>' +
-    '</div>' +
-    '</div>';
-    
-    var meetingInfoWindow = new google.maps.InfoWindow({
-                                                       content: contentString
-                                                       });
-    
-    return meetingInfoWindow;
-    
+	var contentString = 
+	'<div id="content">'+
+		'<div id="siteNotice"></div>'+
+		'<p id="" class="firstHeading">' +
+			'<b>Meeting Date:</b> ' + (month + 1).toString() + '/' + (day + 1).toString() + '/' + year +
+		'</p>'+
+		'<div id="bodyContent" class="textPinContent">' +
+			'<p><b>Purpose:</b> ' + meetingText + '</p>' +
+		'</div>' +
+	'</div>';
+	
+	var meetingInfoWindow = new google.maps.InfoWindow({
+		content: contentString
+	});
+	
+	return meetingInfoWindow;
+	
 } //End function initMeetingPin(user, meetingDate, meetingText) {
 
 function newMeetingPin(lat, lng) {
-    correctPinSize($('#meeting-pin-dialog-textarea'));
+	correctPinSize($('#meeting-pin-dialog-textarea'));
     
-    $('#meeting-pin-dialog').dialog({
-                                    autoOpen: false,
-                                    modal: true,
-                                    draggable: false,
-                                    buttons: {
-                                    "Post": function() {
-                                    //Check for a valid date, ie. needs to be in the future, not the past
-                                    var date = $("#meetingPinDatePicker").datepicker('getDate');
-                                    var today = new Date();
+	$('#meeting-pin-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		draggable: false,
+		buttons: {
+			Post: function() {
+				//Check for a valid date, ie. needs to be in the future, not the past
+				var date = $("#meetingPinDatePicker").datepicker('getDate');
+				var today = new Date();
                                     
-                                    console.log("Attempting to create a new meeting pin.");
-                                    console.log("lat: " + lat + " lng: " + lng);
-                                    
-                                    if (date != null) {
-                                    if (date.getDate() >= today.getDate() && date.getMonth() >= today.getMonth() && date.getFullYear() >= today.getFullYear())
-                                    {
-                                    mapRef.child('pins').push().set({
-                                                                    "lat": lat,
-                                                                    "long": lng,
-                                                                    "day": date.getDate(),
-                                                                    "month": date.getMonth(),
-                                                                    "year": date.getFullYear(),
-                                                                    "meetingText": $('#meeting-pin-dialog-textarea').val(),
-                                                                    "type":"meetingPin"
-                                                                    });
-                                    $('#meeting-pin-dialog').dialog('close');
-                                    } //End if (function () { if (date.getDate() < today.getDate()) { return false; } //End if (date.getDate() < today.getDate()) if (date.getMonth() < today.getMonth()) { return false; } //End if (date.getMonth() < today.getMonth()) if (date.getFullYear() < today.getFullYear()) { return false; } //End if (date.getFullYear() < today.getFullYear()) } return true;)
-                                    else {
-                                    //Need a date that is in the future
-                                    alert('The date for the meeting cannot be in the past.');
-                                    } //End else
-                                    } //End
-                                    else {
-                                    //Need a date to create a meeting pin
-                                    alert('Please select a date.');
-                                    } //End else
-                                    } //End "Post": function()
-                                    }, //End buttons:
-                                    open: function() {
-                                    $("#meetingPinDatePicker").datepicker();
-                                    }, //End open: function()
-                                    close: function() {
-                                    $('#meetingPinDatePicker').val("");
-                                    $('#text-pin-dialog-textarea').val("");
-                                    } //End close: function()
-                                    });
-    
-    $('#meeting-pin-dialog').dialog('open');
+				if (date != null) {
+					if (date.getDate() >= today.getDate() && date.getMonth() >= today.getMonth() && date.getFullYear() >= today.getFullYear()){
+						mapRef.child('pins').push().set({
+							lat: lat,
+							'long': lng,
+							day: date.getDate(),
+							month: date.getMonth(),
+							year: date.getFullYear(),
+							meetingText: $('#meeting-pin-dialog-textarea').val(),
+							type: 'meetingPin'
+						});
+						
+						$('#meeting-pin-dialog').dialog('close');
+					} //End if (function () { if (date.getDate() < today.getDate()) { return false; } //End if (date.getDate() < today.getDate()) if (date.getMonth() < today.getMonth()) { return false; } //End if (date.getMonth() < today.getMonth()) if (date.getFullYear() < today.getFullYear()) { return false; } //End if (date.getFullYear() < today.getFullYear()) } return true;)
+					else {
+						//Need a date that is in the future
+						alert('The date for the meeting cannot be in the past.');
+					} //End else
+				} //End
+				else {
+					//Need a date to create a meeting pin
+					alert('Please select a date.');
+				} //End else
+			} //End "Post": function()
+		}, //End buttons:
+		open: function() {
+			$("#meetingPinDatePicker").datepicker();
+		}, //End open: function()
+		close: function() {
+			$('#meetingPinDatePicker').val("");
+			$('#text-pin-dialog-textarea').val("");
+		} //End close: function()
+	});
+	
+	$('#meeting-pin-dialog').dialog('open');
 } //End function newMeetingPin(lat, lng)
 
 /*****************************************************
@@ -701,43 +697,42 @@ function newMeetingPin(lat, lng) {
 
 function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) {
     var pollName = '';
-    
-    pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID);
+	
+    pollRef = db.ref('Maps/public/' + window.localStorage.getItem('mapID') + '/polls/' + pollID);
     
     var contentString = '';
     
-    return pollRef.once("value", function(data) {
-                        pollName = data.val().pollName;
-                        contentString =
-                        '<div id="poll-infoWindow-' + pollID + '">'+
-                        '<div id="siteNotice">'+
-                        '</div>'+
-                        '<h6 id="" class="firstHeading">' +
-                        '<b>' + pollName + ':' + '</b>' +
-                        '</h6>'+
-                        '<div id="bodyContent" class="pollPinContent">';
-                        }).then(function() {
-                                pollOptionsRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/options/');
-                                
-                                pollOptionsRef.once("value", function(data) {
-                                                    contentString +=
-                                                    '<legend>Options</legend>' +
-                                                    '<fieldset>';
+    return pollRef.once('value', function(data) {
+		pollName = data.val().pollName;
+			contentString =
+			'<div id="poll-infoWindow-' + pollID + '">'+
+				'<div id="siteNotice"></div>'+
+				'<h6 id="" class="firstHeading">' +
+					'<b>' + pollName + ':' + '</b>' +
+				'</h6>'+
+				'<div id="bodyContent" class="pollPinContent">';
+		}).then(function() {
+			pollOptionsRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/options/');
+			
+			pollOptionsRef.once("value", function(data) {
+				contentString +=
+					'<legend>Options</legend>' +
+					'<fieldset>';
                                                     
-                                                    var i = 1;
-                                                    for (var key in data.val()) {
-                                                    var radioGroupName = pollName.split(' ').join('-') + '-' + 'radio';
-                                                    var optionID = radioGroupName + '-' + i;
+					var i = 1;
+					for (var key in data.val()) {
+						var radioGroupName = pollName.split(' ').join('-') + '-' + 'radio';
+						var optionID = radioGroupName + '-' + i;
                                                     
-                                                    contentString +=
-                                                    '<label for="' + key + '">' + data.val()[key].pollOption +
-                                                    '<input type="radio" name="' + ''/*radioGroupName*/ + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
-                                                    '</label>' +
-                                                    '<label id="votes-' + key + '" class="votes-label ' + pollID  +'" for=""> Votes: ' + '' + '0</label>' +
-                                                    '<br>';
+						contentString +=
+						'<label for="' + key + '">' + data.val()[key].pollOption +
+							'<input type="radio" name="' + ''/*radioGroupName*/ + '" id="' + key + '" class="poll-pin-option" onclick="pollPinUserMadeChoice(\'' + pollID + '\',\'' + key + '\')">' +
+						'</label>' +
+						'<label id="votes-' + key + '" class="votes-label ' + pollID  +'" for=""> Votes: ' + '' + '0</label>' +
+						'<br>';
                                                     
-                                                    i++;
-                                                    } //End for (var key in data.val())
+						i++;
+					} //End for (var key in data.val())
                                                     
                                                     contentString +=
                                                     '</fieldset>' +
