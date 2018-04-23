@@ -1,7 +1,13 @@
 var map;
 var currentPinSelection = 'none';
-var globLineCoord = [];
-var globShapeCoord = [];
+
+//globals to manage states of markers being edited before being saved
+var tempLineCoord = [];
+var tempShapeCoord = [];
+var tempLine;
+var tempShape;
+
+
 var pollPolylines = [];
 
 // Cordova is ready
@@ -60,6 +66,7 @@ $(function(){
 	
 	//Enable editing mode for multinode markers
 	$('#linePin, #areaPin').click(function(){
+		clearTempLineShape();
 		map.setOptions({draggableCursor: 'url(img/icons/editing.png), pointer', draggingCursor: 'url(img/icons/editing.png), pointer'});
 		$('#content').addClass('editing', function(){
 			sizeMap();
@@ -78,14 +85,7 @@ $(function(){
 	});
 	
 	//Exit editing mode for multinode markers
-	$('#cancelMarker').click(function(){
-		unsetPin();
-		map.setOptions({draggableCursor: '', draggingCursor: ''});
-		
-		$('#content').removeClass('editing', function(){
-			sizeMap();
-		});
-	});
+	$('#cancelMarker').click(clearTempLineShape);
 	
 	/*
 	 * Init pin modals
@@ -283,31 +283,6 @@ function initMap(){
 				}
 			}
 		};
-                
-		var lineCoordinates = [];
-		var lineWrite = new google.maps.Polyline({
-			path: globLineCoord,
-			strokeColor: '#FF0000',
-			strokeOpacity: 1.0,
-			strokeWeight: 2,
-			draggable: true,
-			geodesic: true,
-			editable: true
-		});
-		
-		var shapeCoords = [];
-		var shape = new google.maps.Polygon({
-			map: map,
-			paths: globShapeCoord,
-			strokeColor: '#FF0000',
-			strokeOpacity: 0.8,
-			strokeWeight: 2,
-			fillColor: '#FF0000',
-			fillOpacity: 0.35,
-			draggable: true,
-			geodesic: true,
-			editable: true
-		});
 		
 		map.mapTypes.set(customMapTypeId, customMapType);
 		map.setMapTypeId(customMapTypeId);
@@ -332,22 +307,23 @@ function initMap(){
 					newMeetingPin(event.latLng.lat(), event.latLng.lng());
 					break;
 				case 'linePin':
-					globLineCoord.push({
+					if(!tempLine){//init new google line object if not done already
+						tempLine = new google.maps.Polyline({
+							map: map,
+							path: tempLineCoord,
+							strokeColor: '#b35600',
+							strokeOpacity: 1.0,
+							strokeWeight: 2,
+						});
+					}
+				
+					tempLineCoord.push({
 						lat: event.latLng.lat(),
 						lng: event.latLng.lng()
 					});
-					globLineCoord = lineCoordinates;
-									  
-					lineWrite.setMap(null);
-					lineWrite = new google.maps.Polyline({
-						path: globLineCoord,
-						strokeColor: '#FF0000',
-						strokeOpacity: 1.0,
-						strokeWeight: 2,
-						geodesic: true
-					});
-									  
-					lineWrite.setMap(map);
+					
+					tempLine.setPath(tempLineCoord);
+					tempLine.setMap(map);
 					break;
 				case 'picturePin':
 					mapRef.child('pins').push().set({
@@ -360,21 +336,24 @@ function initMap(){
 					newPollPin(event.latLng.lat(), event.latLng.lng());
 					break;
 				case 'shapePin':
-					globShapeCoord.push({
+					if(!tempShape){
+						tempShape = new google.maps.Polygon({
+							map: map,
+							paths: tempShapeCoord,
+							fillColor: '#b35600',
+							fillOpacity: 0.35,
+							strokeColor: '#b35600',
+							strokeOpacity: 0.8,
+							strokeWeight: 2
+						});
+					}
+				
+					tempShapeCoord.push({
 						lat: event.latLng.lat(), 
 						lng: event.latLng.lng()
 					});
-					globShapeCoord = shapeCoords;
-					shape.setMap(null);
-					shape = new google.maps.Polygon({
-						map: map,
-						paths: globShapeCoord,
-						strokeColor: '#FF0000',
-						strokeOpacity: 0.8,
-						strokeWeight: 2,
-						fillColor: '#FF0000',
-						fillOpacity: 0.35
-					});
+					
+					tempShape.setPath(tempShapeCoord);
 					break;
 				default:
 					console.error('Attempted to create undefined pin.');
@@ -471,7 +450,7 @@ function initMap(){
 					var lineDraw = new google.maps.Polyline({
 						path: coorids,
 						geodesic: true,
-						strokeColor: '#FF0000',
+						strokeColor: '#b35600',
 						strokeOpacity: 1.0,
 						strokeWeight: 2,
 					});
@@ -484,10 +463,10 @@ function initMap(){
 					var shapeDraw = new google.maps.Polygon({
 						map: map,
 						paths: coorids,
-						strokeColor: '#FF0000',
+						strokeColor: '#b35600',
 						strokeOpacity: 0.8,
 						strokeWeight: 2,
-						fillColor: '#FF0000',
+						fillColor: '#b35600',
 						fillOpacity: 0.35,
 						geodesic: true
 					});
@@ -1175,19 +1154,46 @@ function pollStartingChoice(choice) {
 } //End function pollStartingChoice(choice)
 
 function writeLine() {
-	mapRef.child('pins').push().set({
-		latLongs: globLineCoord,
-		type: 'linePin'
-	});
+	if(tempLineCoord && tempLineCoord.length > 0){
+		mapRef.child('pins').push().set({
+			latLongs: tempLineCoord,
+			type: 'linePin'
+		});
+	}
 	
-	globLineCoord = [];
+	clearTempLineShape();
 }
 
 function writeShape() {
-    mapRef.child('pins').push().set({
-		latLongs: globShapeCoord,
-		type: 'shapePin'
-	});
+	if(tempShapeCoord && tempShapeCoord.length > 0){
+		mapRef.child('pins').push().set({
+			latLongs: tempShapeCoord,
+			type: 'shapePin'
+		});
+	}
 	
-    globShapeCoord = [];
+	clearTempLineShape();
+}
+
+function clearTempLineShape(){
+	unsetPin();
+	
+	tempLineCoord = [];
+	tempShapeCoord = [];
+	
+	if(tempLine){
+		tempLine.setMap(null);
+		tempLine = null;
+	}
+	
+	if(tempShape){
+		tempShape.setMap(null);
+		tempShape = null;
+	}
+	
+	map.setOptions({draggableCursor: '', draggingCursor: ''});
+		
+	$('#content').removeClass('editing', function(){
+		sizeMap();
+	});
 }
