@@ -7,7 +7,6 @@ var pollPolylines = []
 // Cordova is ready
 //
 function onDeviceReady() {
-    $('#load').fadeOut();
 	var options = {
 		timeout: 30000
 	};
@@ -21,9 +20,11 @@ $(function(){
 		document.getElementById('noInet').display = 'block';
 	}
 	
-	/*
-	 *Hiding/showing the pin selection menu
-	 */
+	$(window).resize(function(){
+		sizeMap();
+	});
+	
+	//Controls for hiding/showing the pin selection menu
 	$('#pinHide').click(function(){
 		$('#legend').animate({
 			width: 'toggle'
@@ -46,9 +47,39 @@ $(function(){
 		});
 	});
 
+	//Make selected pin in UI obvious
 	$('.pin').click(function(){
 		$('.pin').removeClass('selected');
 		$(this).addClass('selected');
+	});
+	
+	//Enable editing mode for multinode markers
+	$('#linePin, #areaPin').click(function(){
+		map.setOptions({draggableCursor: 'url(img/icons/editing.png), pointer', draggingCursor: 'url(img/icons/editing.png), pointer'});
+		$('#content').addClass('editing', function(){
+			sizeMap();
+		});
+		
+		var markerType = this.id;
+		var saveButton = $('#confirmMarker');
+		
+		saveButton.unbind('click');//remove previous click listeners
+		
+		if(markerType == 'linePin'){
+			saveButton.click(writeLine);
+		} else if(markerType == 'areaPin') {
+			saveButton.click(writeShape);
+		}
+	});
+	
+	//Exit editing mode for multinode markers
+	$('#cancelMarker').click(function(){
+		$('#noMarker').click();
+		map.setOptions({draggableCursor: '', draggingCursor: ''});
+		
+		$('#content').removeClass('editing', function(){
+			sizeMap();
+		});
 	});
 	
 	/*
@@ -134,25 +165,26 @@ document.addEventListener('deviceready', onDeviceReady, false);
 var mapRef = db.ref('Maps/public/' + window.localStorage.getItem('mapID'));
 
 function initMap(){
-	//load markers from DB
+	
+	//load map data from DB
 	mapRef.once('value', function(data) {
 		map = new google.maps.Map(document.getElementById('map'), {
-			zoom: data.val().zoom,
-			center: data.val().center
+			center: data.val().center,
+			zoom: data.val().zoom
 		});
-                
+		
 		var customMapTypeId = 'custom_style';
 		var customMapType = new google.maps.StyledMapType([
 			{
 				stylers: [
 					{
+						gamma: 0.4
+					},
+					{
 						hue: '#92c27c'
 					},
 					{
 						visibility: 'simplified'
-					},
-					{
-						gamma: 0.3
 					},
 					{
 						weight: 0.20
@@ -174,7 +206,16 @@ function initMap(){
 						color: '#5294ff'
 					}
 				]
-			}
+			},
+			{
+				featureType: 'poi',
+				elementType: 'labels.icon',
+				stylers: [
+					{
+						visibility: 'off'
+					}
+				]
+			},
 		], {
 			name: 'Trippy'
 		});
@@ -337,7 +378,7 @@ function initMap(){
 		});
 		var pollInfoWindows = [];
 		
-		//listen for new pins being created
+		//load all pins
 		var commentsRef = mapRef.child('pins');
 		commentsRef.on('child_added', function(data) {
 			switch (data.val().type) {
@@ -472,7 +513,7 @@ function initMap(){
 					console.error('Unknown marker type from database');
 					break;
 			} //End switch (data.val().type)
-			//$('#load').fadeOut();
+			$('#load').fadeOut();
 		});
 			
 		//listen for changes in votes in order to update a poll's results
@@ -519,14 +560,8 @@ function correctPinSize(pin){
 }
 
 function selectPin(selectedPin) {
-	console.log('selectPin(selectedPin) called');
-	console.dir(selectedPin);
-    
-    $('#' + currentPinSelection).css('font-weight', 'normal');
-    $('#' + selectedPin).css('font-weight', 'bold');
-    
     currentPinSelection = selectedPin;
-} //End function selectPin(selectedPin)
+}
 
 /*****************************************************
  * Text Pin Functions
@@ -1148,3 +1183,6 @@ function writeShape() {
     globShapeCoord = [];
 }
 
+function sizeMap(){
+	$('#map').height($('#content').height() - $('#editFinish').height());
+}

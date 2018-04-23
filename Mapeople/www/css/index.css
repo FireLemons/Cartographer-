@@ -5,6 +5,10 @@ html, body {
 	padding: 0;
 }
 
+input.poll-option-input {
+	width: 85% !important;
+}
+
 ul.firebaseui-idp-list {
 	margin: 0;
 }
@@ -57,8 +61,19 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	background-color: var(--mapeople-pastel-blue);
 }
 
+#content {
+	flex-direction: column;
+}
+
+#content.editing #editFinish{
+	display: flex;
+	height: auto;
+}
+
 #editFinish {
+	display: none;
 	background-color: var(--mapeople-pastel-green);
+	height: 0;
 	width: 100%;
 }
 
@@ -118,10 +133,6 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 
 #text-pin-dialog-textarea, #meeting-pin-dialog-textarea, #poll-pin-dialog-textarea {
 	resize: none;
-}
-
-input.poll-option-input {
-	width: 85% !important;
 }
 
 .poll-option-remove {
