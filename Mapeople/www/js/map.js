@@ -27,6 +27,8 @@ $(function(){
 	
 	//Controls for hiding/showing the pin selection menu
 	$('#pinHide').click(function(){
+		unsetPin();
+		
 		$('#legend').animate({
 			width: 'toggle'
 		}, 500, function(){
@@ -77,7 +79,7 @@ $(function(){
 	
 	//Exit editing mode for multinode markers
 	$('#cancelMarker').click(function(){
-		$('#noMarker').click();
+		unsetPin();
 		map.setOptions({draggableCursor: '', draggingCursor: ''});
 		
 		$('#content').removeClass('editing', function(){
@@ -566,6 +568,16 @@ function selectPin(selectedPin) {
     currentPinSelection = selectedPin;
 }
 
+function unsetPin(){
+	currentPinSelection = 'none';
+	
+	$('.pin').removeClass('selected');
+	$('#noMarker').addClass('selected');
+}
+
+function sizeMap(){
+	$('#map').height($('#content').height() - $('#editFinish').height());
+}
 /*****************************************************
  * Text Pin Functions
  *****************************************************/
@@ -1178,8 +1190,4 @@ function writeShape() {
 	});
 	
     globShapeCoord = [];
-}
-
-function sizeMap(){
-	$('#map').height($('#content').height() - $('#editFinish').height());
 }

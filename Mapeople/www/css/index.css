@@ -25,21 +25,16 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 .pin{
-	border-bottom: 3px solid black;
+	border: 3px solid black;
+	border-top: 0;
 }
 
 .pin img {
 	height: 2.5rem;
 }
 
-.pin:last-child {
-	border-bottom: 0;
-}
-
 .pin.selected {
-	border: 2px solid black;
-	border-bottom: 5px solid black;
-	padding: 16%;
+	background-color:var(--mapeople-pastel-blue);
 }
 
 .pinToggleButton {
@@ -65,12 +60,14 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	flex-direction: column;
 }
 
-#content.editing #editFinish{
+#content.editing #editFinish {
+	display: flex;
 	height: auto;
 }
 
 #editFinish {
 	background-color: var(--mapeople-pastel-green);
+	display: none;
 	height: 0;
 	width: 100%;
 }
@@ -85,7 +82,6 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	font-family: 'Comfortaa';
 	background: white;
 	margin: 10px;
-	border: 3px solid black;
 	opacity: .5;
 }
 
@@ -93,14 +89,22 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 	opacity: 1;
 }
 
+#legend > p {
+	border: 3px solid black;
+}
+
 #legend a:hover {
 	cursor: pointer;
 	text-decoration: underline;
 }
 
-#legend > div.flex{
+#legend > div > div.flex{
 	flex-direction: column;
 	text-align: center;
+}
+
+#legend > div > div.flex:first-child > .pin{
+	border-right: 0;
 }
 
 #map {
@@ -108,8 +112,6 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 #pinHide {
-	border-bottom: 3px solid black;
-	overflow: visible;
 	padding: 0.5rem;
 }
 
