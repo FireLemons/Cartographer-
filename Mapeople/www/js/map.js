@@ -33,8 +33,6 @@ $(function(){
 	
 	//Controls for hiding/showing the pin selection menu
 	$('#pinHide').click(function(){
-		unsetPin();
-		
 		$('#legend').animate({
 			width: 'toggle'
 		}, 500, function(){
@@ -65,8 +63,17 @@ $(function(){
 	});
 	
 	//Enable editing mode for multinode markers
-	$('#linePin, #areaPin').click(function(){
+	$('#linePin, #shapePin').click(function(){
+		if(this.id === currentPinSelection){
+			return;//don't trigger event if state already correct
+		}
+		
 		clearTempLineShape();
+		currentPinSelection = this.id;
+		
+		tempLineCoord = [];
+		tempShapeCoord = [];
+		
 		map.setOptions({draggableCursor: 'url(img/icons/editing.png), pointer', draggingCursor: 'url(img/icons/editing.png), pointer'});
 		$('#content').addClass('editing', function(){
 			sizeMap();
@@ -79,7 +86,7 @@ $(function(){
 		
 		if(markerType == 'linePin'){
 			saveButton.click(writeLine);
-		} else if(markerType == 'areaPin') {
+		} else if(markerType == 'shapePin') {
 			saveButton.click(writeShape);
 		}
 	});
@@ -1162,6 +1169,7 @@ function writeLine() {
 	}
 	
 	clearTempLineShape();
+	exitEdit();
 }
 
 function writeShape() {
@@ -1173,6 +1181,7 @@ function writeShape() {
 	}
 	
 	clearTempLineShape();
+	exitEdit();
 }
 
 function clearTempLineShape(){
@@ -1190,7 +1199,9 @@ function clearTempLineShape(){
 		tempShape.setMap(null);
 		tempShape = null;
 	}
-	
+}
+
+function exitEdit(){
 	map.setOptions({draggableCursor: '', draggingCursor: ''});
 		
 	$('#content').removeClass('editing', function(){
