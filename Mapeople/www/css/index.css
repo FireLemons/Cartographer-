@@ -66,12 +66,10 @@ ul.firebaseui-idp-list > .firebaseui-list-item {
 }
 
 #content.editing #editFinish{
-	display: flex;
 	height: auto;
 }
 
 #editFinish {
-	display: none;
 	background-color: var(--mapeople-pastel-green);
 	height: 0;
 	width: 100%;

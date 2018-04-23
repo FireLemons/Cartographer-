@@ -25,12 +25,11 @@
 			<script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     </head>
     <body>
-        <!-- 
-<div id="load">
+        <div id="load">
             <h1>Mapeople</h1>
             <h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
         </div>
- -->
+
 		<div id="nav"></div>
 		<div id="content">
 			<div id="map"></div>
@@ -52,7 +51,7 @@
 					<a class="pin" onclick="selectPin('meetingPin')">
 						<img alt='Event' src="img/icons/event.svg">
 					</a>
-					<a id='linePin' class="pin" onclick="selectPin('linePin')">
+					<a id="linePin" class="pin" onclick="selectPin('linePin')">
 						<img alt="Line" src="img/icons/line.svg">
 					</a>
 					<a class="pin" onclick="selectPin('picturePin')">
@@ -61,12 +60,12 @@
 					<a class="pin" onclick="selectPin('pollPin')">
 						<img alt="Poll" src="img/icons/poll.png">
 					</a>
-					<a id='areaPin' class="pin" onclick="selectPin('shapePin')">
+					<a id="areaPin" class="pin" onclick="selectPin('shapePin')">
 						<img alt="Area" src="img/icons/area.png">
 					</a>
 				</div>
 			</div>
-			<div id="editFinish">
+			<div class="flex" id="editFinish">
 				<a id="confirmMarker" class="btn col s5">Confirm</a>
 				<a id="cancelMarker" class="btn col s5">Cancel</a>
 			</div>
