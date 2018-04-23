@@ -92,7 +92,10 @@ $(function(){
 	});
 	
 	//Exit editing mode for multinode markers
-	$('#cancelMarker').click(clearTempLineShape);
+	$('#cancelMarker').click(function(){
+		clearTempLineShape();
+		exitEdit();
+	});
 	
 	/*
 	 * Init pin modals
@@ -316,6 +319,7 @@ function initMap(){
 				case 'linePin':
 					if(!tempLine){//init new google line object if not done already
 						tempLine = new google.maps.Polyline({
+							clickable: false,
 							map: map,
 							path: tempLineCoord,
 							strokeColor: '#b35600',
@@ -345,6 +349,7 @@ function initMap(){
 				case 'shapePin':
 					if(!tempShape){
 						tempShape = new google.maps.Polygon({
+							clickable: false,
 							map: map,
 							paths: tempShapeCoord,
 							fillColor: '#b35600',
@@ -455,6 +460,7 @@ function initMap(){
 					});       
 
 					var lineDraw = new google.maps.Polyline({
+						clickable: false,
 						path: coorids,
 						geodesic: true,
 						strokeColor: '#b35600',
@@ -468,6 +474,7 @@ function initMap(){
 					var coorids = data.val().latLongs;
 				   
 					var shapeDraw = new google.maps.Polygon({
+						clickable: false,
 						map: map,
 						paths: coorids,
 						strokeColor: '#b35600',
