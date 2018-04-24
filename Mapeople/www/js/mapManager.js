@@ -14,7 +14,7 @@ $(function(){
 	
 	firebase.auth().onAuthStateChanged(function(user){
 		if(!user){//hide logged in only UI
-			$('#buttonNewMap').hide();
+			//$('#buttonNewMap').hide();
 		}
 	});
 	
@@ -53,6 +53,8 @@ function createMap(){
 			"center":uluru
 		});
 		//callback hide loadbar
+		
+		$('#createMap').modal('close');
 	} else {
 		//show blank name error to user
 	}

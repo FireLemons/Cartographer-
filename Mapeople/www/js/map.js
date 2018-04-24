@@ -1,4 +1,5 @@
 var map;
+var mapID = window.localStorage.getItem('mapID');
 var currentPinSelection = 'none';
 
 //globals to manage states of markers being edited before being saved
@@ -11,7 +12,6 @@ var tempShape;
 var pollPolylines = [];
 
 // Cordova is ready
-//
 function onDeviceReady() {
 	var options = {
 		timeout: 30000
@@ -21,7 +21,6 @@ function onDeviceReady() {
 }
 
 // DOM has loaded
-//
 $(function(){
 	if(!(firebase || jQuery)){
 		document.getElementById('noInet').display = 'block';
@@ -177,15 +176,36 @@ function onError(error) {
 }
 
 document.addEventListener('deviceready', onDeviceReady, false);
-var mapRef = db.ref('Maps/public/' + window.localStorage.getItem('mapID'));
+var mapRef = db.ref('Maps/public/' + mapID);
 
 function initMap(){
 	
 	//load map data from DB
 	mapRef.once('value', function(data) {
+		var mapData = data.val();
+		var lastPinID;
+		
+		if(!mapData){//load default map view if not one selected
+			mapData = {
+				center: {
+					lat: 38.94457585473687,
+					lng: -92.32607690901631
+				},
+				zoom: 5
+			};
+			
+			$('#load').fadeOut();
+		}else{
+			if(mapData.pins){//Store id of most recent pin from db
+				lastPinID = Object.keys(mapData.pins).reverse()[0];
+			}else{//no pins => hide load screen
+				$('#load').fadeOut();
+			}
+		}
+		
 		map = new google.maps.Map(document.getElementById('map'), {
-			center: data.val().center,
-			zoom: data.val().zoom
+			center: mapData.center,
+			zoom: mapData.zoom
 		});
 		
 		var customMapTypeId = 'custom_style';
@@ -376,7 +396,12 @@ function initMap(){
 		
 		//load all pins
 		var commentsRef = mapRef.child('pins');
+		
 		commentsRef.on('child_added', function(data) {
+			if(lastPinID === data.key){
+				$('#load').fadeOut();
+			}
+			
 			switch (data.val().type) {
 				case 'basicPin':
 					var myLatLng = {
@@ -511,14 +536,13 @@ function initMap(){
 					console.error('Unknown marker type from database');
 					break;
 			} //End switch (data.val().type)
-			$('#load').fadeOut();
 		});
 			
 		//listen for changes in votes in order to update a poll's results
-		var pollVotesRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls');
+		var pollVotesRef = db.ref('Maps/public/' + mapID + '/polls');
 		pollVotesRef.once('value', function(data) {
 			for (var pollKey in data.val()) {
-				var voteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollKey + '/votes');
+				var voteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollKey + '/votes');
 				voteRef.on('child_added', function(data) {
 					//data.ref.parent.ref.parent.key is the key to the poll that contains the specific voteRef
 					//For some reason using pollKey didn't work, it would just be the last pollKey in the loop for all of the event listeners
@@ -526,7 +550,7 @@ function initMap(){
 										 
 					pollPinDisplayVotes(parentPollKey);
 
-					var userVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + parentPollKey + '/votes/' + data.key);
+					var userVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + parentPollKey + '/votes/' + data.key);
 					userVoteRef.on('value', function(data) {
 						pollPinDisplayVotes(data.ref.parent.ref.parent.key);
 					});
@@ -705,7 +729,7 @@ function newMeetingPin(lat, lng) {
 function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) {
     var pollName = '';
 	
-    pollRef = db.ref('Maps/public/' + window.localStorage.getItem('mapID') + '/polls/' + pollID);
+    pollRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID);
     
     var contentString = '';
     
@@ -719,7 +743,7 @@ function initPollPin(pollID, myLatLng, map, pinIcon, pollInfoWindows, markerID) 
 				'</h6>'+
 				'<div id="bodyContent" class="pollPinContent">';
 		}).then(function() {
-			pollOptionsRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/options/');
+			pollOptionsRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/options/');
 			
 			pollOptionsRef.once("value", function(data) {
 				contentString +=
@@ -844,13 +868,13 @@ function addPollPinToFirebase() {
     var pollRef;
     
     if ($('#poll-new-poll').is(':visible')) {
-        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls').push();
+        pollRef = db.ref('Maps/public/' + mapID + '/polls').push();
         pollRef.set({
                     "pollName": $('#poll-pin-dialog-textarea').val()
                     });
         
         $('ul#poll-new-choices > li > input.poll-option-input').each(function() {
-                                                                     db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/options/').push().set({
+                                                                     db.ref('Maps/public/' + mapID + '/polls/' + pollRef.key + '/options/').push().set({
                                                                                                                                               "pollOption": this.value
                                                                                                                                               });
                                                                      });
@@ -858,10 +882,10 @@ function addPollPinToFirebase() {
     else if ($('#poll-add-to-poll').is(':visible')) {
         var id = $('ul#poll-list > li > button#' + $('#poll-pin-dialog').dialog('option', 'title').split(' ').join('-')).attr('name');
         
-        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + id);
+        pollRef = db.ref('Maps/public/' + mapID + '/polls/' + id);
         
         $('ul#poll-add-choices > li > input.poll-option-input').each(function() {
-                                                                     optionRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/options/').push();
+                                                                     optionRef = db.ref('Maps/public/' + mapID + '/polls/' + pollRef.key + '/options/').push();
                                                                      optionRef.set({
                                                                                    "pollOption": this.value
                                                                                    });
@@ -889,17 +913,17 @@ function addPollPinToFirebase() {
                "type":"pollPin"
                });
     
-    db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/associatedPins/').push().set({
+    db.ref('Maps/public/' + mapID + '/polls/' + pollRef.key + '/associatedPins/').push().set({
                                                                                     "pinID": pinRef.key
                                                                                     });
     
-    var voteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollRef.key + '/votes');
+    var voteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollRef.key + '/votes');
     voteRef.on('child_added', function(data) {
                var parentPollKey = data.ref.parent.ref.parent.key;
                
                pollPinDisplayVotes(parentPollKey)
                
-               var userVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + parentPollKey + '/votes/' + data.key);
+               var userVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + parentPollKey + '/votes/' + data.key);
                userVoteRef.on('value', function(data) {
                               pollPinDisplayVotes(data.ref.parent.ref.parent.key);
                               });
@@ -939,7 +963,7 @@ function pollPinShowOtherMarkers(pollID) {
     
     var markerID = $('#show-' + pollID).attr('name')
     
-    var pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/associatedPins');
+    var pollRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/associatedPins');
     
     pollRef.once('value', function(data) {
                  var originMarkerRef = mapRef.child('pins').child(markerID);
@@ -977,14 +1001,14 @@ function pollPinShowOtherMarkers(pollID) {
 } //End function pollPinShowOtherMarkers(pollID, markerID)
 
 function pollPinHideOtherMarkers(pollID) {
-    $('#show-' + pollID).show();
-    $('#hide-' + pollID).hide();
-    
-    pollPolylines.forEach(function(poll) {
-                          if (poll.pollID == pollID) {
-                          poll.polyline.setMap(null);
-                          } //End if (poll.pollID == pollID)
-                          });
+	$('#show-' + pollID).show();
+	$('#hide-' + pollID).hide();
+	
+	pollPolylines.forEach(function(poll) {
+		if (poll.pollID == pollID) {
+			poll.polyline.setMap(null);
+		} //End if (poll.pollID == pollID)
+	});
     
     pollPolylines = pollPolylines.filter(poll => poll.pollID != pollID);
 } //End function pollPinHideOtherMarkers(pollID)
@@ -993,30 +1017,33 @@ function pollPinHideOtherMarkers(pollID) {
 function pollPinDisplayVotes(pollID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/votes');
         
-        pollVoteRef.once("value", function(data) {
-                         var votes = []
+		pollVoteRef.once('value', function(data) {
+			var votes = [];
+			var voteFilter = function(vote) { 
+				return vote.choice == data.val()[key].choice 
+			};
+			
+			for (var key in data.val()) {
+				if (votes.some(voteFilter)) {
+					votes.find(voteFilter).voteCount += 1;
+				} //End
+				else {
+					votes.push({
+						voteCount: 1,
+						choice: data.val()[key].choice
+					});
+				} //End else
+			} //End for (var key in data.val())
                          
-                         for (var key in data.val()) {
-                         if (votes.some(function(vote) { return vote.choice == data.val()[key].choice })) {
-                         votes.find(function(vote) { return vote.choice == data.val()[key].choice }).voteCount += 1;
-                         } //End
-                         else {
-                         votes.push({
-                                    'voteCount': 1,
-                                    'choice': data.val()[key].choice
-                                    });
-                         } //End else
-                         } //End for (var key in data.val())
+			$('label.votes-label.' + pollID +':visible').text(' Votes: 0');
                          
-                         $('label.votes-label.' + pollID +':visible').text(' Votes: 0');
-                         
-                         votes.forEach(function(data) {
-                                       $('#votes-' + data.choice).text(' Votes: ' + data.voteCount);
-                                       });
-                         
-                         });
+			votes.forEach(function(data) {
+				$('#votes-' + data.choice).text(' Votes: ' + data.voteCount);
+			});
+		});
+		
         $('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input').prop('checked', false).change();
         $('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input#' + optionID).prop('checked', true).change();
     } //End if (user)
@@ -1029,34 +1056,34 @@ function pollPinDisplayVotes(pollID) {
 function pollPinUserMadeChoice(pollID, optionID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/votes');
         
-        pollVoteRef.once("value", function(data) {
-                         
-                         var userAlreadyVoted = false;
-                         for (var key in data.val()) {
-                         if (data.val()[key].user == user.uid) {
-                         db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes/' + key).set({
-                                                                                          "user": user.uid,
-                                                                                          "choice": optionID
-                                                                                          }).then(function() {
-                                                                                                  pollPinDisplayVotes(pollID);
-                                                                                                  });
-                         
-                         userAlreadyVoted = true;
-                         } //End if (data.val()[key].user == user)
-                         } //End for (var key in data.val())
-                         
-                         if (!userAlreadyVoted) {
-                         var pollUserVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes').push();
-                         pollUserVoteRef.set({
-                                             "user": user.uid,
-                                             "choice": optionID
-                                             }).then(function() {
-                                                     pollPinDisplayVotes(pollID);
-                                                     });
-                         } //End if (!userAlreadyVoted)
-                         });
+		pollVoteRef.once('value', function(data) {
+			var userAlreadyVoted = false;
+			
+			for (var key in data.val()) {
+				if (data.val()[key].user == user.uid) {
+					db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/votes/' + key).set({
+						user: user.uid,
+						choice: optionID
+					}).then(function() {
+						pollPinDisplayVotes(pollID);
+					});
+						 
+					userAlreadyVoted = true;
+				} //End if (data.val()[key].user == user)
+			} //End for (var key in data.val())
+							 
+			if (!userAlreadyVoted) {
+				var pollUserVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/votes').push();
+				pollUserVoteRef.set({
+					"user": user.uid,
+					"choice": optionID
+				}).then(function() {
+					pollPinDisplayVotes(pollID);
+				});
+			} //End if (!userAlreadyVoted)
+		});
         
         $('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input').prop('checked', false).change();
         $('#poll-infoWindow-' + pollID + ' > div#bodyContent > fieldset > label > input#' + optionID).prop('checked', true).change();
@@ -1069,7 +1096,7 @@ function pollPinUserMadeChoice(pollID, optionID) {
 function pollPinDisplayUserChoice(pollID) {
     var user = firebase.auth().currentUser;
     if (user) {
-        var pollVoteRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/' + pollID + '/votes');
+        var pollVoteRef = db.ref('Maps/public/' + mapID + '/polls/' + pollID + '/votes');
         
         pollVoteRef.once("value", function(data) {
                          
@@ -1086,7 +1113,7 @@ function getExistingPolls() {
     var pollList = $('#poll-list');
     
     if (pollList.children().length == 0) {
-        pollRef = db.ref('Maps/public/'+window.localStorage.getItem("mapID")+'/polls/');
+        pollRef = db.ref('Maps/public/' + mapID + '/polls/');
         
         pollRef.once("value", function(data) {
                      for (var key in data.val()) {
