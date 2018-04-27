@@ -92,6 +92,7 @@ $(function(){
 	
 	//Exit editing mode for multinode markers
 	$('#cancelMarker').click(function(){
+		unsetPin();
 		clearTempLineShape();
 		exitEdit();
 	});
@@ -1219,8 +1220,6 @@ function writeShape() {
 }
 
 function clearTempLineShape(){
-	unsetPin();
-	
 	tempLineCoord = [];
 	tempShapeCoord = [];
 	

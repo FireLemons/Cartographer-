@@ -28,3 +28,6 @@ plugins/
 
 # res
 resources/signing/
+
+#firebase
+.firebaserc

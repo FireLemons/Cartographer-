@@ -42,15 +42,15 @@ function initMap() {
 
 function createMap(){
     var uluru = {lat: map.getCenter().lat(), lng: map.getCenter().lng()};
-    var publicPrivate = $('#isPublic').is(":checked") ? 'public/' : 'private/';
+    var publicPrivate = $('#isPublic').is(':checked') ? 'public/' : 'private/';
 	var mapName = $('#mapName').val();
 	
 	if(mapName){// && firebase.auth().currentUser){//don't create map is name is blank or no one is logged in
 		//loadBarNewMap.show();
 		db.ref('Maps/' + publicPrivate).push().set({
-			"name": mapName, 
-			"zoom":map.getZoom(), 
-			"center":uluru
+			name: mapName,
+			center: uluru,
+			zoom: map.getZoom()
 		});
 		//callback hide loadbar
 		
