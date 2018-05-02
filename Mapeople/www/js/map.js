@@ -1,4 +1,4 @@
-var map;
+var map;//var to hold google maps object
 var mapID = window.localStorage.getItem('mapID');
 var currentPinSelection = 'none';
 
@@ -177,12 +177,10 @@ function onError(error) {
 }
 
 document.addEventListener('deviceready', onDeviceReady, false);
-var mapRef = db.ref('Maps/public/' + mapID);
 
 function initMap(){
-	
 	//load map data from DB
-	mapRef.once('value', function(data) {
+	mapRef.once('value', function(data){
 		var mapData = data.val();
 		var lastPinID;
 		
