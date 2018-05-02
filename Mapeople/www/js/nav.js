@@ -1,15 +1,10 @@
-var jQueryLoadErr = typeof jQuery === 'undefined';
 var firebaseLoadErr = typeof firebase === 'undefined';
 
-if(jQueryLoadErr && firebaseLoadErr){
+if(firebaseLoadErr){
 	document.getElementById('noInet').removeAttribute('hidden');
 	
 	if(firebaseLoadErr){
 		console.error("Firebase has failed to load on this page.");
-	}
-	
-	if(jQueryLoadErr){
-		console.error("JQuery failed to load on this page.");
 	}
 } else {
 	var provider = new firebase.auth.GoogleAuthProvider();

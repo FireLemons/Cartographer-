@@ -4,8 +4,9 @@ var ids = [];
 $(function(){
 	$('.modal').modal();
 	
-	var commentsRef = db.ref('Maps/public');
-	var i = 0;
+	var commentsRef = db.ref('Maps/public'),
+		i = 0;
+	
 	commentsRef.on('child_added', function(data) {
 		$('#mainList').append('<li class="collection-item" onclick="publicMapJump(' + i + ')">' + data.val().name + '</li>');
 		ids.push(data.key);
@@ -33,7 +34,11 @@ $(function(){
 });
 
 function initMap() {
-    var uluru = {lat: 38.9517, lng: -92.3341};
+    var uluru = {
+		lat: 38.9517, 
+		lng: -92.3341
+	};
+	
     map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 5,
 		center: uluru
@@ -41,7 +46,11 @@ function initMap() {
 }
 
 function createMap(){
-    var uluru = {lat: map.getCenter().lat(), lng: map.getCenter().lng()};
+    var uluru = {
+		lat: map.getCenter().lat(),
+		lng: map.getCenter().lng()
+	};
+	
     var publicPrivate = $('#isPublic').is(':checked') ? 'public/' : 'private/';
 	var mapName = $('#mapName').val();
 	
