@@ -11,20 +11,12 @@
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
             <link rel="stylesheet" type="text/css" href="css/theme.css">
-            <link rel="stylesheet" type="text/css" href="css/maps.css">
+            <link rel="stylesheet" type="text/css" href="css/index.css">
 			
-			<script src="js/jquery.min.js"></script>
 			<script src="js/materialize.min.js"></script>
 			<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
 			<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase-firestore.js"></script>
 			<script src="js/config.js"></script>
-			<script src="js/mapManager.js"></script>
-            <style>
-                #map {
-                    height: 400px;
-                    width: 100%;
-                }
-            </style>
     </head>
     <body>
 		<div id="load">
@@ -32,49 +24,91 @@
 			<h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
 		</div>
         <div id="nav"></div>
-		
-		<div id="container" class="container">
-			<ul class="collection" id="mainList"></ul>
-			<!-- Opens modal form -->
-			<a id="buttonNewMap" class="waves-effect waves-light btn modal-trigger" href="#createMap"><i class="material-icons">add</i> Create Map</a>
-		</div>
-		
-		<!-- Form to make new map -->
-		<div id="createMap" class="modal">
-			<div class="modal-content">
-				<h4>Create Map</h4>
-				<div class="row">
-					<form class="col s12" action="#">
-						<div class="row">
-							<div class="input-field col s12">
-								<input placeholder="Map Name" type="text" id="mapName" class="validate">
-								<label for="mapName">Map Name</label>
-							</div>
-						</div> 
-						<div class="row">
-							<div id="map"></div>
-						</div>
-						<p id="optionPublic">
-							Make map public?
-							<a class="btn-flat tooltipped" data-position="bottom" data-delay="50" data-tooltip="Public maps can be searched for and viewed by anyone"><i class="material-icons">info</i></a>
-							<input type="checkbox" id="isPublic" class="filled-in" />
-							<label for="isPublic">Public</label>
-						</p>
-					</form>
-				</div>
-			</div>
-			<div class="modal-footer">
+		<div id="content">
+			<div id="map"></div>
+			<div id="legend">
+				<p id="pinHide" class="flex pinToggleButton"><i class="material-icons left">chevron_left</i> Hide</br>Pins</p>
+				<p id="pinShow" class="pinToggleButton" style="display:none;"><i class="material-icons">chevron_right</i></p>
 				<div class="flex">
-					<a href="#" id="buttonCreateMap" onclick="createMap()" class="waves-effect waves-light btn">
-						<i class="material-icons">add</i>
-					Create</a>
-					<a href="#" class="modal-action modal-close waves-effect waves-light btn red">Cancel</a>
+					<div class="flex">
+						<a id="noMarker" class="pin selected" onclick="unsetPin()" data-toast="Move">
+							<img alt='Point' src="img/icons/none.png">
+						</a>
+						<a class="pin" onclick="selectPin('textPin')" data-position="right" data-toast="Text Pin">
+							<img alt="Sign" src="img/icons/text.png">
+						</a>
+						<a class="pin" onclick="selectPin('meetingPin')" data-position="right" data-toast="Event Pin">
+							<img alt='Event' src="img/icons/event.svg">
+						</a>
+						<a id="linePin" class="pin" data-position="right" data-toast="Line Marker">
+							<img alt="Line" src="img/icons/line.svg">
+						</a>
+					</div>
+					<div class="flex">
+						<a class="pin" onclick="selectPin('basicPin')" data-position="right" data-toast="Basic Pin">
+							<img alt='Point' src="img/icons/point.png">
+						</a>
+						<a class="pin" onclick="selectPin('picturePin')" data-position="right" data-toast="Picture Pin">
+							<img alt="Picture" src="img/icons/picture.png">
+						</a>
+						<a class="pin" onclick="selectPin('pollPin')" data-position="right" data-toast="Poll Pin">
+							<img alt="Poll" src="img/icons/poll.png">
+						</a>
+						<a id="shapePin" class="pin" data-position="right" data-toast="Area Marker">
+							<img alt="Area" src="img/icons/area.png">
+						</a>
+					</div>
 				</div>
-				<div class="progress" style="display:none">
-					<div class="indeterminate"></div>
+			</div>
+			<div id="editFinish">
+				<a id="confirmMarker" class="btn col s5">Confirm</a>
+				<a id="cancelMarker" class="btn col s5">Cancel</a>
+			</div>
+		</div>
+		</div>
+		<!--Custom Modal Popups-->
+        <div id="text-pin-dialog" title="New Text Pin">
+            <textarea id="text-pin-dialog-textarea" maxlength="240" warp="hard" placeholder="What do you want to say?"></textarea>
+		</div>
+		<div id="meeting-pin-dialog" title="New Meeting Pin">
+            <textarea id="meeting-pin-dialog-textarea" maxlength="240" warp="hard" placeholder="What's the meeting for?"></textarea>
+			<p>Date: <input type="text" id="meetingPinDatePicker"></p>
+		</div>
+		<div id="poll-pin-dialog-container">
+			<div id="poll-pin-dialog">
+				<div id="poll-pin-lat" hidden></div>
+				<div id="poll-pin-lng" hidden></div>
+				<div id="poll-starting-choice">
+					<button id="poll-new-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('new')">New Poll</button>
+					<button id="poll-add-to-poll-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="pollStartingChoice('add')">Add to Poll</button>
+				</div>
+				<div id="poll-after-choice-made">
+					<div id="poll-new-poll">
+						<textarea id="poll-pin-dialog-textarea" class="" maxlength="240" warp="hard" placeholder="What's the poll for?"></textarea>
+						<button id="poll-new-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('new')">Add Poll Option</button>
+						<ul id="poll-new-choices"></ul>
+					</div>
+					<div id="poll-add-to-poll">
+						<ul id="poll-list"></ul>
+						<button id="poll-add-add-choice-btn" class="ui-button ui-widget rounded-corners" type="button" onclick="addNewPollChoice('add')">Add Poll Option</button>
+						<ul id="poll-add-choices"></ul>
+					</div>
 				</div>
 			</div>
 		</div>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP2qdOuJiMt5fpKPWMPTzIxhaX72D51hg&libraries=visualization&callback=initMap"></script>
+		
+		<div hidden>
+			<h6 id="geolocation">Location</h6>
+		</div>
+		<script src="js/config.js"></script>
+		<script src="js/index.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP2qdOuJiMt5fpKPWMPTzIxhaX72D51hg&libraries=visualization&callback=initMap">
+        </script>
+		<script src="js/map.js"></script>
+		<div class="app"></div>
+        <script src="cordova.js"></script>
+        <script>
+            app.initialize();
+        </script>
     </body>
 </html>
