@@ -85,6 +85,13 @@
 	font-family: 'Bitter';
 }
 
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 1s;
+}
+.fade-leave-to, .fade-enter {
+    opacity: 0;
+}
+
 .flex{
 	display: flex;
 }
@@ -195,9 +202,21 @@
 	}
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 1s;
+#nav-mobile-list a{
+	font-weight: bold;
+    font-size: 14pt;
 }
-.fade-leave-to, .fade-enter {
-    opacity: 0;
+
+#siteNav{
+	background-color: var(--mapeople-pastel-green);
+}
+
+#siteNav .brand-logo{
+    margin-left: .5em;
+}
+
+@media only screen and (max-width: 992px){
+    #siteNav .brand-logo {
+        margin-left: 0;
+    }
 }

@@ -11,6 +11,7 @@ var dashboard = new Vue({
         'load-screen': loadScreen,
         'map-options': mapOptions,
         'map-search': search,
+        'nav-bar': navBar,
         'new-map': newMapForm
     },
     data: {
