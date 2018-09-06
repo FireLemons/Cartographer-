@@ -2,16 +2,14 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Cartographer</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/theme.css">
-        <link rel="stylesheet" type="text/css" href="css/maps.css">
-
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-
-        <!-- CSS  -->
+        
+        <title>Cartographer</title>
+        
         <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link rel="stylesheet" type="text/css" href="css/theme.css">
+        <link rel="stylesheet" type="text/css" href="css/maps.css">
         
         <script src="js/materialize.min.js"></script>
         <script src="js/vue.min.js"></script>
@@ -19,15 +17,14 @@
         <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase-firestore.js"></script>
         <script src="js/config.js"></script>
-        <script src="js/mapManager.js"></script>
+        <script src="js/globalComponents.js"></script>
     </head>
     <body>
-        <div id="load">
-            <h1>Cartographer</h1>
-            <h2>is Loading <i class="medium material-icons">place</i><span></span></h2>
+        <div id="app">
+            <load-screen v-bind:is-visible="loadVisible"></load-screen>
+            <div></div>
         </div>
-        <div></div>
-		<div id="dashboard" class="container"></div>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP2qdOuJiMt5fpKPWMPTzIxhaX72D51hg&libraries=visualization&callback=initMap"></script>
+        <script src="js/dashboard.js"></script>
+		<!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP2qdOuJiMt5fpKPWMPTzIxhaX72D51hg&libraries=visualization&callback=initMap"></script>-->
     </body>
 </html>

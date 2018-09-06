@@ -47,7 +47,7 @@
 		margin-right: .75rem;
 	}
 	
-    33% {
+    40% {
 		height: .75rem;
 		width: 1.5rem;
 		margin-top: 0;
@@ -60,11 +60,11 @@
 
 @keyframes drop{
 	0% {
-		bottom: 1rem;
+		bottom: .5em;
 	}
 	
-	33% {
-		bottom: 0reml
+	40% {
+		bottom: .25em;
 	}
 	
 	100%{}
@@ -117,7 +117,7 @@
 	height: 100vh;
 	width: 100%;
 	background-color: #92c27c;
-	background-image: url(/assets/img/loadScreen.png);
+	background-image: url(/assets/img/loadScreen.jpg);
 	color: var(--mapeople-vibrant-blue);
 	position: fixed;
 	text-align: center;
@@ -138,9 +138,9 @@
 
 #load i{
 	position: relative;
-	bottom: 10px;
+	bottom: .25em;
 	animation-name: drop;
-    animation-duration: 1.75s;
+    animation-duration: 1.5s;
 	animation-iteration-count: infinite;
 }
 
@@ -148,7 +148,7 @@
 	height: .75rem;
 	width: 1.5rem;
 	animation-name: shadow;
-    animation-duration: 1.75s;
+    animation-duration: 1.5s;
 	animation-iteration-count: infinite;
 	background-color: var(--mapeople-vibrant-blue);
 	border-radius: 50%;
@@ -193,4 +193,11 @@
 		margin-left: -2.45rem;
 		animation-name: shadowMobile;
 	}
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 1s;
+}
+.fade-leave-to, .fade-enter {
+    opacity: 0;
 }
