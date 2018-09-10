@@ -15,11 +15,21 @@ var dashboard = new Vue({
         'new-map': newMapForm
     },
     data: {
-        loadVisible: true
+        isLoadVisible: true,
+        signedInAccount: undefined
     },
     mounted: function(){
         this.$nextTick(function(){
-            this.loadVisible = false;
+            var dashboardInstance = this;
+            
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    dashboardInstance.signedInAccount = user;
+                    console.log(user);
+                }
+                
+                //dashboardInstance.isLoadVisible = false;
+            });
         })
     }
 });
