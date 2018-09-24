@@ -1,0 +1,24 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect x="-1" y="-1" width="302" height="302" id="canvas_background" fill="none"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <ellipse fill="none" stroke="#ffc400" stroke-width="4.5" cx="48.5" cy="145.6" id="svg_3" rx="23" ry="23"/>
+  <path id="svg_15" stroke-width="1.5" stroke="#ffc400" fill="#ffc400"/>
+  <path id="svg_20" stroke-width="1.5" stroke="#ffc400" fill="#ffc400"/>
+  <path d="m64.26214,138.82082a0.24001,0.27334 0 0 0 24.00111,0" stroke-width="1.5" fill="#ffc400" id="svg_1" transform="rotate(-90 76.26269531250004,145.65435791015628) " stroke="#ffc400"/>
+  <rect fill="#ffc400" stroke-width="1.5" x="71.40223" y="134.44554" width="28.66706" height="7.53743" id="svg_2" transform="rotate(-20 85.73575592041014,138.21426391601562) " stroke="#ffc400"/>
+  <rect fill="#ffc400" stroke-width="1.5" x="71.02003" y="149.88193" width="28.66706" height="7.82301" id="svg_4" transform="rotate(20 85.35356140136729,153.79342651367188) " stroke="#ffc400"/>
+  <line fill="none" stroke-width="2.5" x1="89.19896" y1="117.59899" x2="89.5323" y2="222.26518" id="svg_5" stroke-linejoin="null" stroke-linecap="null" stroke="#ffc400"/>
+  <path fill="#ffc400" stroke="#ffc400" stroke-width="1.5" id="svg_7"/>
+  <path fill="#ffc400" stroke="#ffc400" stroke-width="1.5" id="svg_12"/>
+  <path fill="#ffc400" stroke="#ffc400" stroke-width="1.5" id="svg_16"/>
+  <path fill="#ffc400" stroke="#ffc400" stroke-width="1.5" id="svg_18"/>
+  <path fill="#ffc400" d="m94.66855,131.78579c0,0 7.96252,-78.58915 86.36281,-78.58915c78.40028,0 83.30031,74.52419 83.30031,75.20168c0,0.67749 -11.63754,-71.81421 -83.30031,-69.78173c-71.66276,2.03247 -79.62529,77.91164 -79.62529,77.91164c0,0 -6.73752,-4.74244 -6.73752,-4.74244z" id="svg_23" stroke="#ffc400"/>
+  <path fill="#ffc400" d="m264.0009,236.33809c0,0 -7.97841,-80.4753 -86.5351,-80.4753c-78.55668,0 -83.46648,76.31278 -83.46648,77.00653c0,0.69375 11.66075,-73.53776 83.46648,-71.4565c71.80572,2.08125 79.78414,79.78153 79.78414,79.78153c0,0 6.75096,-4.85626 6.75096,-4.85626z" id="svg_27" transform="rotate(180 179.00009155273438,198.528564453125) " stroke="#ffc400"/>
+ </g>
+</svg>

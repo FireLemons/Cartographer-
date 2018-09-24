@@ -1,0 +1,19 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g stroke="null">
+  <title>background</title>
+  <rect stroke="null" fill="none" id="canvas_background" height="302" width="302" y="-1" x="-1"/>
+  <g stroke="null" display="none" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%" id="svg_1"/>
+  </g>
+ </g>
+ <g stroke="null">
+  <title>Layer 1</title>
+  <path stroke="#ffc400" fill="#ffc400" stroke-width="0" d="m199.425311,36.798827l15.253827,-19.759454l1.416421,140.345357c-2.65413,35.697044 -3.881789,40.174741 -7.794339,62.305642c-3.912563,22.130913 -10.205797,56.60269 -14.21785,65.717147l-12.539688,15.357732l-0.857733,-144.054184l0.342619,-119.692344l18.396742,-0.219897z" id="svg_30" transform="rotate(-15.969942092895508 198.3907623291016,158.9023132324218) "/>
+  <path stroke="#ffc400" fill="#ffc400" stroke-width="0" d="m100.86765,35.58799l-14.462926,-21.869363l-1.34509,142.619692c2.520479,36.275524 3.686313,40.825784 7.401848,63.315323c3.715536,22.48955 9.691862,57.519952 13.501874,66.782123l11.908226,15.606597l0.814547,-146.388621l0.744776,-118.364144l-18.563255,-1.701607z" id="svg_32" transform="rotate(15.978541374206543 102.2452697753908,157.88050842285156) "/>
+  <ellipse stroke="#ffc400" fill="none" stroke-width="12" cx="150.500016" cy="26.751214" id="svg_33" rx="20.249847" ry="20.249846"/>
+  <rect stroke="#ffc400" fill="#ffc400" stroke-width="0" x="102.251094" y="139.500435" width="156.496404" height="25.499557" id="svg_44"/>
+  <path stroke="#ffc400" transform="rotate(-0.052369918674230576 254.9600067138783,152.0746002197385) " id="svg_2" d="m257.082806,135.282874c7.52992,-0.00046 12.91875,5.63723 12.91943,7.98912l0.08905,19.43177c-1.04868,1.05968 -5.06514,6.08134 -13.14279,6.16182c-8.07765,0.08048 -17.36462,-6.36761 -17.11484,-17.33517c0.24978,-10.96756 9.71923,-16.24708 17.24915,-16.24754z" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#ffc400"/>
+ </g>
+</svg>
