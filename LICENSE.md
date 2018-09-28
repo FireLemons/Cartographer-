@@ -6,7 +6,7 @@
 
 **License Grant.** Licensor hereby grants to each recipient of the Software (“you”) a non-exclusive, non-transferable, royalty-free and fully-paid-up license, under all of the Licensor’s copyright and patent rights, to use, copy, distribute, prepare derivative works of, publicly perform and display the Software, subject to the Use Limitation and the conditions set forth below.
 
-**Conditions.** Redistribution in source code or other forms must include a copy of this license document to be provided in a reasonable manner. Redistribution of the source code or any derivative works of the source code as a web application accessible over the world wide web is prohibited without express written consent of the copyright owner. Any redistribution of the Software is only allowed subject to this license.
+**Conditions.** Redistribution in source code or other forms must include a copy of this license document to be provided in a reasonable manner. Redistribution of the source code or any derivative works of the source code as a web application accessible from the world wide web is prohibited unless given express written consent from the copyright owner. Any redistribution of the Software is only allowed subject to this license.
 
 **Trademarks.** This license does not grant you any right in the trademarks, service marks, brand names or logos of Licensor.
 
