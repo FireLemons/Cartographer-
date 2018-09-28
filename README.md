@@ -1,2 +1,2 @@
 # Cartographer-
-A shareable map with markers that update in real time.
+A web app featuring shareable maps with markers that update in real time.
