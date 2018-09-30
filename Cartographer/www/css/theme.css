@@ -117,6 +117,10 @@ header .modal .input-field{
 	display: flex;
 }
 
+.formError{
+    font-size: 16pt;
+}
+
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;

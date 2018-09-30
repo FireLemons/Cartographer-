@@ -28,7 +28,7 @@ var dashboard = new Vue({
                     console.log(user);
                 }
                 
-                //dashboardInstance.isLoadVisible = false;
+                dashboardInstance.isLoadVisible = false;
             });
         })
     }

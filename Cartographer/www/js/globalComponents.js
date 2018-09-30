@@ -10,11 +10,97 @@ var loadScreen = {
                </transition>`
 };
 
-var navBar = {
+var registerAccountForm = {
+    computed:{
+        emailFieldClass: function(){
+            return this.email.isInvalid ? 'validate invalid' : 'validate';
+        },
+        passwordFieldClass: function(){
+            return this.password.isInvalid ? 'validate invalid' : 'validate';
+        },
+        passwordConfirmFieldClass: function(){
+            return this.passwordConfirm.isInvalid ? 'validate invalid' : 'validate';
+        }
+    },
     data: function(){
         return {
-            accounts: localStorage.getItem('cartographer.authList'),
-            loginAccount: undefined
+            errorMessage: null,
+            email:{
+                input: '',
+                isInvalid: false
+            },
+            password:{
+                input: '',
+                isInvalid: false
+            },
+            passwordConfirm:{
+                input: '',
+                isInvalid: false
+            }
+        }
+    },
+    methods: {
+        clearForm: function(){
+            this.email.input = '';
+            this.clearRegistrationError();
+        },
+        clearRegistrationError: function(){
+            this.errorMessage = null;
+            this.email.isInvalid = false;
+            this.password.isInvalid = false;
+            this.passwordConfirm.isInvalid = false;
+        },
+        createAccount: function(){
+            var outer = this;
+            
+            if(this.password.input !== this.passwordConfirm.input){
+                this.errorMessage = 'Passwords don\'t match';
+            } else {
+                cartographer.auth.createAccount(this.email.input, this.password.input, function(error) {
+                    outer.errorMessage = error.message;
+                });
+            }
+        }
+    },
+    template: `<div id="create-account" class="modal">
+                  <div class="modal-content">
+                      <div class="row">
+                          <div class="input-field col s12">
+                              <input id="email-new" type="email" v-bind:class="emailFieldClass" v-model="email.input">
+                              <label for="email-new">Email</label>
+                          </div>
+                          <div class="input-field col s12">
+                              <input id="password-new" type="password" v-bind:class="passwordFieldClass" v-model="password.input">
+                              <label for="password-new">Password</label>
+                          </div>
+                          <div class="input-field col s12">
+                              <input id="password-confirm-new" type="password" v-bind:class="passwordConfirmFieldClass" v-model="passwordConfirm.input">
+                              <label for="password-confirm-new">Confirm Password</label>
+                          </div>
+                      </div>
+                      <div class="row" v-if="errorMessage">
+                          <p class="formError red-text text-darken-4">{{errorMessage}}</p>
+                      </div>
+                      <div class="row">
+                          <a href="#!" class="btn btn-flat cartographer-green col s12" @click="createAccount">Create Account</a>
+                      </div>
+                      <div class="row">
+                          <a href="#!" class="btn btn-flat col grey lighten-2 modal-close s12">Cancel</a>
+                      </div>
+                  </div>
+              </div>`
+};
+
+var navBar = {
+    components: {
+        'register-account-form': registerAccountForm
+    },
+    data: function(){
+        return {
+            loginForm:{
+                
+            },
+            loginError: null
         }
     },
     props: {
@@ -25,7 +111,7 @@ var navBar = {
             //initialize mobile menu
             var mobileMenus = M.Sidenav.init(document.querySelectorAll('.sidenav'));
             var authModals =  M.Modal.init(document.querySelectorAll('.modal'));
-        })
+        });
     },
     template: `<header>
                   <nav id="siteNav" role="navigation">
@@ -50,11 +136,6 @@ var navBar = {
                           </div>
                       </div>
                   </nav>
-                  <ul id="saved-accounts" class="dropdown-content" v-if="accounts && accounts.length > 1">
-                      <li v-for="account in accounts">
-                          <a href="#!">{{account.email}}</a>
-                      </li>
-                  </ul>
                   <ul class="sidenav" id="mobile-menu">
                       <li class="login-button">
                           <a class="modal-trigger" href="#sign-in">
@@ -71,7 +152,7 @@ var navBar = {
                   <div id="sign-in" class="modal">
                       <div class="modal-content">
                           <div class="row">
-                              <div class="input-field col s12" v-if="">
+                              <div class="input-field col s12">
                                   <input id="email" type="text" class="validate">
                                   <label for="email">Email</label>
                               </div>
@@ -88,29 +169,6 @@ var navBar = {
                           </div>
                       </div>
                   </div>
-                  <div id="create-account" class="modal">
-                      <div class="modal-content">
-                          <div class="row">
-                              <div class="input-field col s12">
-                                  <input id="email-new" type="text" class="validate">
-                                  <label for="email-new">Email</label>
-                              </div>
-                              <div class="input-field col s12">
-                                  <input id="password-new" type="password" class="validate">
-                                  <label for="password-new">Password</label>
-                              </div>
-                              <div class="input-field col s12">
-                                  <input id="password-confirm-new" type="text" class="validate">
-                                  <label for="password-confirm-new">Confirm Password</label>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <a href="#!" class="btn btn-flat cartographer-green col s12">Create Account</a>
-                          </div>
-                          <div class="row">
-                              <a href="#!" class="btn btn-flat col grey lighten-2 modal-close s12">Cancel</a>
-                          </div>
-                      </div>
-                  </div>
+                  <register-account-form></register-account-form>
               </header>`
 };
