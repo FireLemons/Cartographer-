@@ -144,6 +144,10 @@ header .modal .input-field{
     -moz-osx-font-smoothing: grayscale;
 }
 
+#create-account .input-field+span{
+    margin-top: 2rem;
+}
+
 /*load screen styling*/
 #load{
 	height: 100vh;

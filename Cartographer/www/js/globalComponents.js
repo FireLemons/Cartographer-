@@ -55,7 +55,7 @@ var registerAccountForm = {
             
             if(this.password.input !== this.passwordConfirm.input){
                 this.errorMessage = 'Passwords don\'t match';
-            } else {
+            } else if(this.password.input.length){
                 cartographer.auth.createAccount(this.email.input, this.password.input, function(error) {
                     outer.errorMessage = error.message;
                 });
@@ -65,17 +65,25 @@ var registerAccountForm = {
     template: `<div id="create-account" class="modal">
                   <div class="modal-content">
                       <div class="row">
-                          <div class="input-field col s12">
-                              <input id="email-new" type="email" v-bind:class="emailFieldClass" v-model="email.input">
-                              <label for="email-new">Email</label>
+                          <div class="flex">
+                              <div class="input-field col s12">
+                                  <input id="email-new" type="email" v-bind:class="emailFieldClass" v-model="email.input">
+                                  <label for="email-new">Email</label>
+                              </div>
                           </div>
-                          <div class="input-field col s12">
-                              <input id="password-new" type="password" v-bind:class="passwordFieldClass" v-model="password.input">
-                              <label for="password-new">Password</label>
+                          <div class="flex">
+                              <div class="input-field col s12">
+                                  <input id="password-new" type="password" v-bind:class="passwordFieldClass" v-model="password.input">
+                                  <label for="password-new">Password</label>
+                              </div>
+                              <span>{{password.input.length + '/8'}}</span>
                           </div>
-                          <div class="input-field col s12">
-                              <input id="password-confirm-new" type="password" v-bind:class="passwordConfirmFieldClass" v-model="passwordConfirm.input">
-                              <label for="password-confirm-new">Confirm Password</label>
+                          <div class="flex">
+                              <div class="input-field col s12">
+                                  <input id="password-confirm-new" type="password" v-bind:class="passwordConfirmFieldClass" v-model="passwordConfirm.input">
+                                  <label for="password-confirm-new">Confirm Password</label>
+                              </div>
+                              <span>{{passwordConfirm.input.length + '/8'}}</span>
                           </div>
                       </div>
                       <div class="row" v-if="errorMessage">
