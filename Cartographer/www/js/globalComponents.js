@@ -12,14 +12,17 @@ var loadScreen = {
 
 var registerAccountForm = {
     computed:{
+        formValid: function(){
+            return this.email.input && this.password.length > 7 && this.password === this.passwordVerify;
+        },
         emailFieldClass: function(){
             return this.email.isInvalid ? 'validate invalid' : 'validate';
         },
         passwordFieldClass: function(){
             return this.password.isInvalid ? 'validate invalid' : 'validate';
         },
-        passwordConfirmFieldClass: function(){
-            return this.passwordConfirm.isInvalid ? 'validate invalid' : 'validate';
+        passwordVerifyFieldClass: function(){
+            return this.passwordVerify.isInvalid ? 'validate invalid' : 'validate';
         }
     },
     data: function(){
@@ -33,7 +36,7 @@ var registerAccountForm = {
                 input: '',
                 isInvalid: false
             },
-            passwordConfirm:{
+            passwordVerify:{
                 input: '',
                 isInvalid: false
             }
@@ -48,12 +51,12 @@ var registerAccountForm = {
             this.errorMessage = null;
             this.email.isInvalid = false;
             this.password.isInvalid = false;
-            this.passwordConfirm.isInvalid = false;
+            this.passwordVerify.isInvalid = false;
         },
         createAccount: function(){
             var outer = this;
             
-            if(this.password.input !== this.passwordConfirm.input){
+            if(this.password.input !== this.passwordVerify.input){
                 this.errorMessage = 'Passwords don\'t match';
             } else if(this.password.input.length){
                 cartographer.auth.createAccount(this.email.input, this.password.input, function(error) {
@@ -80,17 +83,17 @@ var registerAccountForm = {
                           </div>
                           <div class="flex">
                               <div class="input-field col s12">
-                                  <input id="password-confirm-new" type="password" v-bind:class="passwordConfirmFieldClass" v-model="passwordConfirm.input">
-                                  <label for="password-confirm-new">Confirm Password</label>
+                                  <input id="password-verify-new" type="password" v-bind:class="passwordVerifyFieldClass" v-model="passwordVerify.input">
+                                  <label for="password-verify-new">Verify Password</label>
                               </div>
-                              <span>{{passwordConfirm.input.length + '/8'}}</span>
+                              <span>{{passwordVerify.input.length + '/8'}}</span>
                           </div>
                       </div>
                       <div class="row" v-if="errorMessage">
                           <p class="formError red-text text-darken-4">{{errorMessage}}</p>
                       </div>
                       <div class="row">
-                          <a href="#!" class="btn btn-flat cartographer-green col s12" @click="createAccount">Create Account</a>
+                          <a href="#!" class="btn btn-flat cartographer-green col s12" @click="createAccount" :disabled="formValid">Create Account</a>
                       </div>
                       <div class="row">
                           <a href="#!" class="btn btn-flat col grey lighten-2 modal-close s12">Cancel</a>
